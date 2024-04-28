@@ -8,7 +8,7 @@ import {
   EventPhase,
 } from "@prisma/client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { api } from "~/trpc/react";
 
@@ -17,6 +17,8 @@ import DemoDashboard from "./components/DemoDashboard";
 import EventSelectionHeader from "./components/EventSelectionHeader";
 import PreEventDashboard from "./components/PreEventDashboard";
 
+import { useEventAdmin } from "./hooks/useEventAdmin";
+
 type CompleteEvent = Event & {
   demos: Demo[];
   attendees: Attendee[];
@@ -24,22 +26,8 @@ type CompleteEvent = Event & {
 };
 
 export default function AdminPage() {
-  const [selectedEventId, setSelectedEventId] = useState<string | undefined>(
-    undefined,
-  );
-  const { data: event, refetch: refetchEvent } = api.event.getAdmin.useQuery(
-    selectedEventId ?? "",
-    {
-      enabled: !!selectedEventId,
-      refetchInterval: 5_000,
-    },
-  );
-
-  useEffect(() => {
-    if (selectedEventId) {
-      refetchEvent();
-    }
-  }, [selectedEventId, refetchEvent]);
+  const { event, refetchEvent, selectedEventId, setSelectedEventId } =
+    useEventAdmin();
 
   return (
     <main className="flex min-h-screen w-full flex-col text-black">
@@ -147,7 +135,7 @@ function EventDashboard({
           </div>
           <div className="size-full flex-1">{dashboard()}</div>
         </div>
-        <AttendeeList attendees={event.attendees} />
+        <AttendeeList attendees={event.attendees} refetchEvent={refetchEvent} />
       </div>
     </div>
   );

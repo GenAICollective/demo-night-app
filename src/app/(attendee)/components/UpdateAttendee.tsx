@@ -1,97 +1,116 @@
 "use client";
 
-import { type Attendee, type Event } from "@prisma/client";
+import { type Attendee } from "@prisma/client";
+import { CircleUserRoundIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
-import { api } from "~/trpc/react";
 
 import SubmitButton from "~/components/SubmitButton";
 import { useModal } from "~/components/modal/provider";
 
 export function UpdateAttendeeButton({
   attendee,
-  onUpdated,
+  setAttendee,
 }: {
-  attendee: Attendee;
-  onUpdated: (attendee: Attendee) => void;
+  attendee: Attendee | null;
+  setAttendee: (attendee: Attendee) => void;
 }) {
   const modal = useModal();
   return (
-    <button
-      className="rounded-lg bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
+    <CircleUserRoundIcon
+      className="cursor-pointer hover:opacity-50 focus:outline-none"
+      color="black"
       onClick={() =>
         modal?.show(
-          <UpdateAttendeeModal attendee={attendee} onUpdated={onUpdated} />,
+          <UpdateAttendeeModal attendee={attendee} setAttendee={setAttendee} />,
         )
       }
-    >
-      Update Profile
-    </button>
+    />
   );
 }
 
 export function UpdateAttendeeModal({
   attendee,
-  onUpdated,
+  setAttendee,
 }: {
-  attendee: Attendee;
-  onUpdated: (attendee: Attendee) => void;
+  attendee: Attendee | null;
+  setAttendee: (attendee: Attendee) => void;
 }) {
-  const updateMutation = api.attendee.update.useMutation();
-  const { register, handleSubmit } = useForm();
   const modal = useModal();
+
+  return (
+    <UpdateAttendeeForm
+      attendee={attendee}
+      setAttendee={setAttendee}
+      onSubmit={() => modal?.hide()}
+    />
+  );
+}
+
+export function UpdateAttendeeForm({
+  attendee,
+  setAttendee,
+  onSubmit,
+}: {
+  attendee: Attendee | null;
+  setAttendee: (attendee: Attendee) => void;
+  onSubmit?: () => void;
+}) {
+  const { register, handleSubmit } = useForm();
 
   return (
     <form
       onSubmit={handleSubmit((data) => {
-        updateMutation
-          .mutateAsync({
-            id: attendee.id,
-            name: data.name as string,
-            email: data.email as string,
-            type: data.type as string,
-          })
-          .then((result) => {
-            modal?.hide();
-            toast.success("Successfully updated profile!");
-            onUpdated(result);
-          })
-          .catch((error) => {
-            toast.error(`Failed to update profile: ${error.message}`);
-          });
+        if (!attendee) {
+          toast.error("Failed to update profile. Hang with us!");
+          return;
+        }
+        setAttendee({
+          id: attendee.id,
+          name: data.name,
+          email: data.email,
+          type: data.type,
+        });
+        toast.success("Successfully updated profile!");
+        onSubmit?.();
       })}
-      className="flex flex-col gap-4"
+      className="flex w-full flex-col items-center gap-4"
     >
-      <h1 className="text-center text-xl font-bold">Update Profile</h1>
-      <label className="flex flex-col gap-1">
+      <div>
+        <h1 className="text-center text-3xl font-bold">Hey There! 👋</h1>
+        <p className="text-md max-w-[330px] pt-1 text-center font-medium leading-5 text-gray-500">
+          Put on your best smile! Don&apos;t worry, your contact info will only
+          be shared with demoists you choose to connect with!
+        </p>
+      </div>
+      <label className="flex w-full flex-col gap-1">
         <span className="font-semibold">Name</span>
         <input
           type="text"
-          defaultValue={attendee.name ?? ""}
+          defaultValue={attendee?.name ?? ""}
           {...register("name")}
           className="rounded-md border border-gray-200 p-2"
         />
       </label>
-      <label className="flex flex-col gap-1">
+      <label className="flex w-full flex-col gap-1">
         <span className="font-semibold">Email</span>
         <input
           type="email"
-          defaultValue={attendee.email ?? ""}
+          defaultValue={attendee?.email ?? ""}
           {...register("email")}
           className="rounded-md border border-gray-200 p-2"
         />
       </label>
-      <label className="flex flex-col gap-1">
+      <label className="flex w-full flex-col gap-1">
         <span className="font-semibold">Type</span>
         <input
           type="text"
-          defaultValue={attendee.type ?? ""}
+          defaultValue={attendee?.type ?? ""}
           {...register("type")}
           className="rounded-md border border-gray-200 p-2"
         />
       </label>
-      <SubmitButton title="Update Profile" pending={updateMutation.isPending} />
+      <SubmitButton title="Update Profile" pending={false} />
     </form>
   );
 }

@@ -3,7 +3,15 @@
 import { type Attendee } from "@prisma/client";
 import { toast } from "sonner";
 
-export default function AttendeeList({ attendees }: { attendees: Attendee[] }) {
+import { api } from "~/trpc/react";
+
+export default function AttendeeList({
+  attendees,
+  refetchEvent,
+}: {
+  attendees: Attendee[];
+  refetchEvent: () => void;
+}) {
   return (
     <div className="flex w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
       <div className="flex flex-col justify-between">
@@ -14,14 +22,25 @@ export default function AttendeeList({ attendees }: { attendees: Attendee[] }) {
       </div>
       <ul className="flex flex-col gap-2 overflow-auto">
         {attendees.map((attendee) => (
-          <AttendeeItem key={attendee.id} attendee={attendee} />
+          <AttendeeItem
+            key={attendee.id}
+            attendee={attendee}
+            refetchEvent={refetchEvent}
+          />
         ))}
       </ul>
     </div>
   );
 }
 
-function AttendeeItem({ attendee }: { attendee: Attendee }) {
+function AttendeeItem({
+  attendee,
+  refetchEvent,
+}: {
+  attendee: Attendee;
+  refetchEvent: () => void;
+}) {
+  const deleteMutation = api.attendee.delete.useMutation();
   const copyIdToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(attendee.id);
@@ -32,17 +51,24 @@ function AttendeeItem({ attendee }: { attendee: Attendee }) {
   };
 
   return (
-    <li
-      className="flex cursor-pointer flex-row items-center gap-2 rounded-lg bg-white p-2 font-medium"
-      onClick={copyIdToClipboard}
-    >
-      <div className="flex flex-1 flex-row items-center justify-between gap-2 rounded-lg font-medium focus:outline-none">
+    <li className="flex flex-row items-center gap-2">
+      <div
+        className="flex-1 cursor-pointer rounded-lg bg-white p-2 font-medium focus:outline-none"
+        onClick={copyIdToClipboard}
+      >
         {attendee.name ? (
-          <span>{attendee.name}</span>
+          <p>{attendee.name}</p>
         ) : (
-          <span className="italic text-gray-400">Anonymous</span>
+          <p className="italic text-gray-400">Anonymous</p>
         )}
       </div>
+      <button
+        onClick={() => {
+          deleteMutation.mutateAsync(attendee.id).then(() => refetchEvent());
+        }}
+      >
+        🗑️
+      </button>
     </li>
   );
 }

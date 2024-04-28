@@ -35,9 +35,9 @@ export const attendeeRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        name: z.string(),
-        email: z.string(),
-        type: z.string(),
+        name: z.string().nullable(),
+        email: z.string().nullable(),
+        type: z.string().nullable(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -46,4 +46,7 @@ export const attendeeRouter = createTRPCRouter({
         data: { name: input.name, email: input.email, type: input.type },
       });
     }),
+  delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
+    return db.attendee.delete({ where: { id: input } });
+  }),
 });

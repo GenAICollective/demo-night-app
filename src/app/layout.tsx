@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en" className={`${kallisto.variable} font-sans`}>
       <body>
         <TRPCReactProvider>
-          <Toaster />
+          <Toaster position="top-center" />
           <ModalProvider>{children}</ModalProvider>
         </TRPCReactProvider>
       </body>
