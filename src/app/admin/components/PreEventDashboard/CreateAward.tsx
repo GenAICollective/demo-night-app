@@ -68,6 +68,7 @@ export function CreateAwardModal({
           type="text"
           {...register("name", { required: true, minLength: 3 })}
           className="rounded-md border border-gray-200 p-2"
+          autoComplete="off"
         />
       </label>
       <SubmitButton title="Create Award" pending={createMutation.isPending} />

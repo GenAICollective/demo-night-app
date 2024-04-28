@@ -1,6 +1,7 @@
 import { eventRouter } from "~/server/api/routers/event";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
+import { attendeeRouter } from "./routers/attendee";
 import { awardRouter } from "./routers/award";
 import { demoRouter } from "./routers/demo";
 import { feedbackRouter } from "./routers/feedback";
@@ -13,6 +14,7 @@ import { feedbackRouter } from "./routers/feedback";
 export const appRouter = createTRPCRouter({
   event: eventRouter,
   demo: demoRouter,
+  attendee: attendeeRouter,
   award: awardRouter,
   feedback: feedbackRouter,
 });

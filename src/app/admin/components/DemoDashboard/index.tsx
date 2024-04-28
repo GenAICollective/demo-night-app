@@ -53,22 +53,20 @@ function DemoItem({
 
   return (
     <li className="flex flex-row items-center gap-2">
+      <p className="w-[17px] font-bold">{`${demo.index + 1}.`}</p>
       <div
         className={cn(
-          "flex flex-1 flex-row justify-between rounded-lg p-2 font-medium focus:outline-none",
+          "flex flex-1 cursor-pointer flex-row justify-between rounded-lg p-2 font-medium focus:outline-none",
           { "bg-green-200": isCurrent, "bg-white": !isCurrent },
         )}
+        onClick={() => {
+          updateCurrentDemoMutation
+            .mutateAsync({ id: demo.eventId, demoId: demo.id })
+            .then(() => refetchEvent());
+        }}
       >
-        <p>{demo.name}</p>
-        <button
-          onClick={() => {
-            updateCurrentDemoMutation
-              .mutateAsync({ id: demo.eventId, demoId: demo.id })
-              .then(() => refetchEvent());
-          }}
-        >
-          ⊕
-        </button>
+        <span>{demo.name}</span>
+        <span>⊕</span>
       </div>
       <div className="flex flex-row gap-2 font-semibold">
         <button

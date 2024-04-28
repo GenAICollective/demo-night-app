@@ -62,6 +62,7 @@ export function CreateEventModal({
           defaultValue="SF Demo Extravaganza 🚀"
           {...register("name", { required: true })}
           className="rounded-md border border-gray-200 p-2"
+          autoComplete="off"
         />
       </label>
       <label className="flex flex-col gap-1">
@@ -79,6 +80,7 @@ export function CreateEventModal({
           type="url"
           {...register("url", { required: true })}
           className="rounded-md border border-gray-200 p-2"
+          autoComplete="off"
         />
       </label>
       <SubmitButton title="Create Event" pending={createMutation.isPending} />

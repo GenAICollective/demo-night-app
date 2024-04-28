@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { api } from "~/trpc/server";
 
-import DemoSelectionHeader from "./components/EventHeader";
+import EventHeader from "./components/EventHeader";
 import Workspaces from "./components/Workspaces";
 
 export default async function AttendeePage() {
@@ -20,8 +20,8 @@ export default async function AttendeePage() {
   }
   return (
     <main className="flex min-h-screen w-full flex-col text-black">
-      <DemoSelectionHeader eventOverview={currentEvent} />
-      <Workspaces />
+      <EventHeader currentEvent={currentEvent} />
+      <Workspaces currentEvent={currentEvent} />
     </main>
   );
 }

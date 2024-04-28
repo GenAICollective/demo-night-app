@@ -61,6 +61,7 @@ function DemoItem({
 
   return (
     <li className="flex flex-row items-center gap-2">
+      <p className="w-[17px] font-bold">{`${demo.index + 1}.`}</p>
       <input
         className="flex-1 rounded-lg bg-white p-2 font-medium focus:outline-none"
         type="text"
@@ -139,6 +140,7 @@ function AwardItem({
 
   return (
     <li className="flex flex-row items-center gap-2">
+      <p className="w-[17px] font-bold">{`${award.index + 1}.`}</p>
       <input
         className="flex-1 rounded-lg bg-white p-2 font-medium focus:outline-none"
         type="text"

@@ -31,6 +31,7 @@ export default function AdminPage() {
     selectedEventId ?? "",
     {
       enabled: !!selectedEventId,
+      refetchInterval: 5_000,
     },
   );
 

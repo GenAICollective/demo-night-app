@@ -96,9 +96,8 @@ model Demo {
 }
 
 model Attendee {
-    id      String @id @default(cuid())
-    event   Event  @relation(fields: [eventId], references: [id])
-    eventId String
+    id     String  @id @default(cuid())
+    events Event[]
 
     name  String?
     email String?
