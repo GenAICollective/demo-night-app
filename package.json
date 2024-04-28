@@ -21,6 +21,7 @@
     "@trpc/client": "next",
     "@trpc/react-query": "next",
     "@trpc/server": "next",
+    "@vercel/kv": "^1.0.1",
     "clsx": "^2.1.1",
     "focus-trap-react": "^10.2.3",
     "framer-motion": "^11.1.7",

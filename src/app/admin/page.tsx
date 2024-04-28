@@ -13,9 +13,9 @@ import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 
 import AttendeeList from "./components/AttendeeList";
-import DemoWorkspace from "./components/DemoWorkspace";
+import DemoDashboard from "./components/DemoDashboard";
 import EventSelectionHeader from "./components/EventSelectionHeader";
-import PreEventWorkspace from "./components/PreEventWorkspace";
+import PreEventDashboard from "./components/PreEventDashboard";
 
 type CompleteEvent = Event & {
   demos: Demo[];
@@ -23,11 +23,11 @@ type CompleteEvent = Event & {
   awards: Award[];
 };
 
-export default function AdminDashboard() {
+export default function AdminPage() {
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>(
     undefined,
   );
-  const { data: event, refetch: refetchEvent } = api.event.get.useQuery(
+  const { data: event, refetch: refetchEvent } = api.event.getAdmin.useQuery(
     selectedEventId ?? "",
     {
       enabled: !!selectedEventId,
@@ -67,11 +67,11 @@ function EventDashboard({
   const [phase, setPhase] = useState(event.phase);
   const updatePhaseMutation = api.event.updatePhase.useMutation();
 
-  function workspace() {
+  function dashboard() {
     switch (phase) {
       case EventPhase.PRE:
         return (
-          <PreEventWorkspace
+          <PreEventDashboard
             eventId={event.id}
             demos={event.demos}
             awards={event.awards}
@@ -80,11 +80,15 @@ function EventDashboard({
         );
       case EventPhase.DEMO:
         return (
-          <DemoWorkspace demos={event.demos} refetchEvent={refetchEvent} />
+          <DemoDashboard
+            demos={event.demos}
+            currentDemoId={event.currentDemoId}
+            refetchEvent={refetchEvent}
+          />
         );
       case EventPhase.VOTING:
         return (
-          <PreEventWorkspace
+          <PreEventDashboard
             eventId={event.id}
             demos={event.demos}
             awards={event.awards}
@@ -93,7 +97,7 @@ function EventDashboard({
         );
       case EventPhase.RESULTS:
         return (
-          <PreEventWorkspace
+          <PreEventDashboard
             eventId={event.id}
             demos={event.demos}
             awards={event.awards}
@@ -140,7 +144,7 @@ function EventDashboard({
               Select Phase
             </button>
           </div>
-          <div className="size-full flex-1">{workspace()}</div>
+          <div className="size-full flex-1">{dashboard()}</div>
         </div>
         <AttendeeList attendees={event.attendees} />
       </div>

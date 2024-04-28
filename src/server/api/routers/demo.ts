@@ -126,23 +126,6 @@ export const demoRouter = createTRPCRouter({
         });
       });
     }),
-  makeCurrent: protectedProcedure
-    .input(z.object({ eventId: z.string(), demoId: z.string() }))
-    .mutation(async ({ input }) => {
-      return db.$transaction(async (prisma) => {
-        await prisma.demo.updateMany({
-          where: { eventId: input.eventId },
-          data: { isCurrent: false },
-        });
-        return prisma.demo.update({
-          where: {
-            id: input.demoId,
-            eventId: input.eventId,
-          },
-          data: { isCurrent: true },
-        });
-      });
-    }),
   create: protectedProcedure
     .input(
       z.object({

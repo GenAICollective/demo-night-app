@@ -2,11 +2,12 @@ import Image from "next/image";
 
 import { api } from "~/trpc/server";
 
-import DemoSelectionHeader from "./components/DemoSelectionHeader";
+import DemoSelectionHeader from "./components/EventHeader";
+import Workspaces from "./components/Workspaces";
 
 export default async function AttendeePage() {
-  const event = await api.event.getCurrent();
-  if (!event) {
+  const currentEvent = await api.event.getCurrent();
+  if (!currentEvent) {
     return (
       <main className="flex min-h-screen w-full flex-col items-center justify-center pb-16 font-kallisto text-black">
         <Image src="/images/logo.png" alt="logo" width={160} height={160} />
@@ -19,7 +20,8 @@ export default async function AttendeePage() {
   }
   return (
     <main className="flex min-h-screen w-full flex-col text-black">
-      <DemoSelectionHeader event={event} />
+      <DemoSelectionHeader eventOverview={currentEvent} />
+      <Workspaces />
     </main>
   );
 }

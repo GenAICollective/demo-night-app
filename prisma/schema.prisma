@@ -60,11 +60,13 @@ model VerificationToken {
 model Event {
     id String @id @default(cuid())
 
-    name      String
-    date      DateTime
-    url       String
-    phase     EventPhase @default(PRE)
-    isCurrent Boolean    @default(false)
+    name String
+    date DateTime
+    url  String
+
+    phase         EventPhase @default(PRE)
+    isCurrent     Boolean    @default(false)
+    currentDemoId String?
 
     demos     Demo[]
     attendees Attendee[]
@@ -82,9 +84,7 @@ model Demo {
     id      String @id @default(cuid())
     event   Event  @relation(fields: [eventId], references: [id])
     eventId String
-
-    index     Int
-    isCurrent Boolean @default(false)
+    index   Int
 
     name  String
     email String
@@ -112,11 +112,11 @@ model Award {
     id       String  @id @default(cuid())
     event    Event   @relation(fields: [eventId], references: [id])
     eventId  String
+    index    Int
     winner   Demo?   @relation(fields: [winnerId], references: [id])
     winnerId String?
 
-    index Int
-    name  String
+    name String
 
     votes Vote[]
 }

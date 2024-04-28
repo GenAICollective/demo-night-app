@@ -4,14 +4,15 @@ import { useState } from "react";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
-export default function DemoWorkspace({
+export default function DemoDashboard({
   demos,
+  currentDemoId,
   refetchEvent,
 }: {
   demos: Demo[];
+  currentDemoId: string | null;
   refetchEvent: () => void;
 }) {
-  const makeCurrentMutation = api.demo.makeCurrent.useMutation();
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>(
     undefined,
   );
@@ -22,7 +23,12 @@ export default function DemoWorkspace({
         <h2 className="text-2xl font-bold">Demos</h2>
         <ul className="flex flex-col gap-2 overflow-auto">
           {demos.map((demo) => (
-            <DemoItem key={demo.id} demo={demo} refetchEvent={refetchEvent} />
+            <DemoItem
+              key={demo.id}
+              demo={demo}
+              isCurrent={demo.id === currentDemoId}
+              refetchEvent={refetchEvent}
+            />
           ))}
         </ul>
       </div>
@@ -35,12 +41,14 @@ export default function DemoWorkspace({
 
 function DemoItem({
   demo,
+  isCurrent,
   refetchEvent,
 }: {
   demo: Demo;
+  isCurrent: boolean;
   refetchEvent: () => void;
 }) {
-  const makeCurrentMutation = api.demo.makeCurrent.useMutation();
+  const updateCurrentDemoMutation = api.event.updateCurrentDemo.useMutation();
   const updateIndexMutation = api.demo.updateIndex.useMutation();
 
   return (
@@ -48,14 +56,14 @@ function DemoItem({
       <div
         className={cn(
           "flex flex-1 flex-row justify-between rounded-lg p-2 font-medium focus:outline-none",
-          { "bg-green-200": demo.isCurrent, "bg-white": !demo.isCurrent },
+          { "bg-green-200": isCurrent, "bg-white": !isCurrent },
         )}
       >
         <p>{demo.name}</p>
         <button
           onClick={() => {
-            makeCurrentMutation
-              .mutateAsync({ eventId: demo.eventId, demoId: demo.id })
+            updateCurrentDemoMutation
+              .mutateAsync({ id: demo.eventId, demoId: demo.id })
               .then(() => refetchEvent());
           }}
         >

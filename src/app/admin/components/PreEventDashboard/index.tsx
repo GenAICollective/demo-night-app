@@ -5,7 +5,7 @@ import { api } from "~/trpc/react";
 import { CreateAwardButton } from "./CreateAward";
 import { CreateDemoButton } from "./CreateDemo";
 
-export default function PreEventWorkspace({
+export default function PreEventDashboard({
   eventId,
   demos,
   awards,
