@@ -7,26 +7,10 @@ generator client {
 
 datasource db {
     provider = "postgresql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
-}
-
-// Necessary for Next auth
+// ############# Next auth #############
 model Account {
     id                String  @id @default(cuid())
     userId            String
@@ -61,7 +45,6 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
 }
 
 model VerificationToken {
@@ -70,4 +53,102 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// ############# Business logic #############
+
+model Event {
+    id String @id @default(cuid())
+
+    name      String
+    date      DateTime
+    url       String
+    phase     EventPhase @default(PRE)
+    isCurrent Boolean    @default(false)
+
+    demos     Demo[]
+    attendees Attendee[]
+    awards    Award[]
+}
+
+enum EventPhase {
+    PRE
+    DEMO
+    VOTING
+    RESULTS
+}
+
+model Demo {
+    id      String @id @default(cuid())
+    event   Event  @relation(fields: [eventId], references: [id])
+    eventId String
+
+    index     Int
+    isCurrent Boolean @default(false)
+
+    name  String
+    email String
+    url   String
+
+    feedback Feedback[]
+    votes    Vote[]
+    awards   Award[]
+}
+
+model Attendee {
+    id      String @id @default(cuid())
+    event   Event  @relation(fields: [eventId], references: [id])
+    eventId String
+
+    name  String?
+    email String?
+    type  String?
+
+    feedback Feedback[]
+    votes    Vote[]
+}
+
+model Award {
+    id       String  @id @default(cuid())
+    event    Event   @relation(fields: [eventId], references: [id])
+    eventId  String
+    winner   Demo?   @relation(fields: [winnerId], references: [id])
+    winnerId String?
+
+    index Int
+    name  String
+
+    votes Vote[]
+}
+
+model Feedback {
+    id         String    @id @default(cuid())
+    attendee   Attendee? @relation(fields: [attendeeId], references: [id])
+    attendeeId String?
+    demo       Demo      @relation(fields: [demoId], references: [id])
+    demoId     String
+
+    rating       Int
+    claps        Int
+    star         Boolean
+    wantToAccess Boolean
+    wantToInvest Boolean
+    wantToWork   Boolean
+    comment      String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Vote {
+    id         String   @id @default(cuid())
+    attendee   Attendee @relation(fields: [attendeeId], references: [id])
+    attendeeId String
+    award      Award    @relation(fields: [awardId], references: [id])
+    awardId    String
+    demo       Demo?    @relation(fields: [demoId], references: [id])
+    demoId     String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
