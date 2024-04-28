@@ -9,7 +9,7 @@ export default function PreEventWorkspace({
   setAttendee: (attendee: Attendee) => void;
 }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex size-full flex-1 flex-col items-center justify-center gap-2 p-4">
       <UpdateAttendeeForm attendee={attendee} setAttendee={setAttendee} />
     </div>
   );

@@ -14,10 +14,10 @@ export default function EventHeader({
   setAttendee: (attendee: Attendee) => void;
 }) {
   return (
-    <header className="flex w-full items-center justify-between bg-gray-100 p-2 text-black">
-      <div className="flex flex-row items-center gap-2">
+    <header className="fixed top-0 flex h-12 w-full items-center justify-between bg-white/60 px-3 text-black backdrop-blur-xl">
+      <div className="flex flex-row items-center">
         <Image src="/images/logo.png" alt="logo" width={25} height={25} />
-        <h1 className="font-kallisto text-xl font-bold tracking-tighter">
+        <h1 className="line-clamp-1 text-ellipsis px-3 font-kallisto text-xl font-bold tracking-tighter">
           {currentEvent.name}
         </h1>
       </div>

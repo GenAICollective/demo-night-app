@@ -23,16 +23,12 @@ export function useAttendee(eventId: string) {
 
   useEffect(() => {
     if (!attendee) return;
-    // Debounce update
-    const handler = setTimeout(() => {
-      updateMutation.mutate({
-        id: attendee.id,
-        name: attendee.name,
-        email: attendee.email,
-        type: attendee.type,
-      });
-    }, 5000);
-    return () => clearTimeout(handler);
+    updateMutation.mutate({
+      id: attendee.id,
+      name: attendee.name,
+      email: attendee.email,
+      type: attendee.type,
+    });
   }, [attendee]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { attendee, setAttendee, refetch };

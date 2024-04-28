@@ -56,7 +56,16 @@ export function UpdateAttendeeForm({
   setAttendee: (attendee: Attendee) => void;
   onSubmit?: () => void;
 }) {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      name: attendee?.name ?? "",
+      email: attendee?.email ?? "",
+      type: selectedType(attendee),
+      // customType: attendeePreselectTypes.includes(attendee?.type ?? "")
+      //   ? ""
+      //   : attendee?.type ?? "",
+    },
+  });
 
   return (
     <form
@@ -87,30 +96,56 @@ export function UpdateAttendeeForm({
         <span className="font-semibold">Name</span>
         <input
           type="text"
-          defaultValue={attendee?.name ?? ""}
           {...register("name")}
-          className="rounded-md border border-gray-200 p-2"
+          className="rounded-lg border border-gray-200 p-2"
         />
       </label>
       <label className="flex w-full flex-col gap-1">
         <span className="font-semibold">Email</span>
         <input
           type="email"
-          defaultValue={attendee?.email ?? ""}
           {...register("email")}
-          className="rounded-md border border-gray-200 p-2"
+          className="rounded-lg border border-gray-200 p-2"
         />
       </label>
       <label className="flex w-full flex-col gap-1">
-        <span className="font-semibold">Type</span>
-        <input
-          type="text"
-          defaultValue={attendee?.type ?? ""}
+        <span className="font-semibold">I consider myself a...</span>
+        <select
           {...register("type")}
-          className="rounded-md border border-gray-200 p-2"
-        />
+          className="rounded-lg border border-gray-200 p-2"
+        >
+          <option value="">Select one...</option>
+          {attendeePreselectTypes.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+        {/* {watch("type") === "Other" && (
+          <input
+            type="text"
+            {...register("customType")}
+            className="rounded-lg border border-gray-200 p-2"
+          />
+        )} */}
       </label>
       <SubmitButton title="Update Profile" pending={false} />
     </form>
   );
+}
+
+const attendeePreselectTypes = [
+  "Founder",
+  "Investor",
+  "Engineer",
+  "Product Manager",
+  "Designer",
+  "Other",
+];
+
+function selectedType(attendee: Attendee | null) {
+  if (!attendee?.type) return "";
+  return attendeePreselectTypes.includes(attendee.type)
+    ? attendee.type
+    : "Other";
 }

@@ -42,14 +42,14 @@ export default function Workspaces({
   }
 
   return (
-    <div className="flex w-full flex-col text-black">
+    <>
       <EventHeader
         currentEvent={currentEvent}
         attendee={attendee}
         setAttendee={setAttendee}
       />
-      {workspace()}
-    </div>
+      <div className="size-full flex-1 pt-12">{workspace()}</div>
+    </>
   );
 }
 
