@@ -36,7 +36,7 @@ export function CreateDemoModal({
   eventId: string;
   onCreated: (demo: Demo) => void;
 }) {
-  const createMutation = api.demos.create.useMutation();
+  const createMutation = api.demo.create.useMutation();
   const { register, handleSubmit } = useForm();
   const modal = useModal();
 

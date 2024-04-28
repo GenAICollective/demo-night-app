@@ -38,7 +38,7 @@ export function CreateAwardModal({
   eventId: string;
   onCreated: (award: Award) => void;
 }) {
-  const createMutation = api.awards.create.useMutation();
+  const createMutation = api.award.create.useMutation();
   const { register, handleSubmit } = useForm();
   const modal = useModal();
 

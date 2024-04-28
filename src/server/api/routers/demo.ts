@@ -7,7 +7,7 @@ import {
 } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
-export const demosRouter = createTRPCRouter({
+export const demoRouter = createTRPCRouter({
   get: publicProcedure.input(z.string()).query(async ({ input }) => {
     return db.demo.findUnique({
       where: {
@@ -38,6 +38,14 @@ export const demosRouter = createTRPCRouter({
             type: true,
           },
         },
+      },
+    });
+  }),
+  getFeedback: protectedProcedure.input(z.string()).query(async ({ input }) => {
+    return db.feedback.findMany({
+      where: { demoId: input },
+      include: {
+        attendee: { select: { name: true } },
       },
     });
   }),
@@ -123,22 +131,15 @@ export const demosRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return db.$transaction(async (prisma) => {
         await prisma.demo.updateMany({
-          where: {
-            eventId: input.eventId,
-            id: input.demoId,
-          },
-          data: {
-            isCurrent: false,
-          },
+          where: { eventId: input.eventId },
+          data: { isCurrent: false },
         });
         return prisma.demo.update({
           where: {
             id: input.demoId,
             eventId: input.eventId,
           },
-          data: {
-            isCurrent: true,
-          },
+          data: { isCurrent: true },
         });
       });
     }),
@@ -153,9 +154,7 @@ export const demosRouter = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       const index = await db.demo.count({
-        where: {
-          eventId: input.eventId,
-        },
+        where: { eventId: input.eventId },
       });
       return db.demo.create({
         data: {

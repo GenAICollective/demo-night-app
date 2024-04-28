@@ -30,7 +30,7 @@ export function CreateEventModal({
 }: {
   onCreated: (event: Event) => void;
 }) {
-  const createMutation = api.events.create.useMutation();
+  const createMutation = api.event.create.useMutation();
   const { register, handleSubmit } = useForm();
   const modal = useModal();
 

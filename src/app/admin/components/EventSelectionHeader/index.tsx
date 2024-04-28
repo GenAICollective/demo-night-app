@@ -15,8 +15,8 @@ export default function EventSelectionHeader({
   selectedEventId?: string;
   setSelectedEventId: (eventId?: string) => void;
 }) {
-  const { data: events, refetch: refetchEvents } = api.events.all.useQuery();
-  const makeCurrentMutation = api.events.makeCurrent.useMutation();
+  const { data: events, refetch: refetchEvents } = api.event.all.useQuery();
+  const makeCurrentMutation = api.event.makeCurrent.useMutation();
 
   useEffect(() => {
     if (events && events.length > 0 && !selectedEventId) {

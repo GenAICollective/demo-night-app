@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 
 import AttendeeList from "./components/AttendeeList";
+import DemoWorkspace from "./components/DemoWorkspace";
 import EventSelectionHeader from "./components/EventSelectionHeader";
 import PreEventWorkspace from "./components/PreEventWorkspace";
 
@@ -26,7 +27,7 @@ export default function AdminDashboard() {
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>(
     undefined,
   );
-  const { data: event, refetch: refetchEvent } = api.events.get.useQuery(
+  const { data: event, refetch: refetchEvent } = api.event.get.useQuery(
     selectedEventId ?? "",
     {
       enabled: !!selectedEventId,
@@ -64,7 +65,7 @@ function EventDashboard({
   refetchEvent: () => void;
 }) {
   const [phase, setPhase] = useState(event.phase);
-  const updatePhaseMutation = api.events.updatePhase.useMutation();
+  const updatePhaseMutation = api.event.updatePhase.useMutation();
 
   function workspace() {
     switch (phase) {
@@ -79,12 +80,7 @@ function EventDashboard({
         );
       case EventPhase.DEMO:
         return (
-          <PreEventWorkspace
-            eventId={event.id}
-            demos={event.demos}
-            awards={event.awards}
-            refetchEvent={refetchEvent}
-          />
+          <DemoWorkspace demos={event.demos} refetchEvent={refetchEvent} />
         );
       case EventPhase.VOTING:
         return (

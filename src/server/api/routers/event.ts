@@ -1,10 +1,14 @@
 import { EventPhase } from "@prisma/client";
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { db } from "~/server/db";
 
-export const eventsRouter = createTRPCRouter({
+export const eventRouter = createTRPCRouter({
   all: protectedProcedure.query(() => {
     return db.event.findMany({
       select: {
@@ -13,9 +17,12 @@ export const eventsRouter = createTRPCRouter({
         date: true,
         isCurrent: true,
       },
-      orderBy: {
-        date: "desc",
-      },
+      orderBy: { date: "desc" },
+    });
+  }),
+  getCurrent: publicProcedure.query(() => {
+    return db.event.findFirst({
+      where: { isCurrent: true },
     });
   }),
   get: protectedProcedure.input(z.string()).query(async ({ input }) => {
@@ -24,17 +31,9 @@ export const eventsRouter = createTRPCRouter({
         id: input,
       },
       include: {
-        demos: {
-          orderBy: {
-            index: "asc",
-          },
-        },
+        demos: { orderBy: { index: "asc" } },
         attendees: true,
-        awards: {
-          orderBy: {
-            index: "asc",
-          },
-        },
+        awards: { orderBy: { index: "asc" } },
       },
     });
   }),
@@ -43,20 +42,12 @@ export const eventsRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return db.$transaction(async (prisma) => {
         await prisma.event.updateMany({
-          where: {
-            isCurrent: true,
-          },
-          data: {
-            isCurrent: false,
-          },
+          where: { isCurrent: true },
+          data: { isCurrent: false },
         });
         return prisma.event.update({
-          where: {
-            id: input,
-          },
-          data: {
-            isCurrent: true,
-          },
+          where: { id: input },
+          data: { isCurrent: true },
         });
       });
     }),
@@ -69,12 +60,8 @@ export const eventsRouter = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       return db.event.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          phase: EventPhase[input.phase],
-        },
+        where: { id: input.id },
+        data: { phase: EventPhase[input.phase] },
       });
     }),
   create: protectedProcedure
@@ -96,9 +83,7 @@ export const eventsRouter = createTRPCRouter({
     }),
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
     return db.event.delete({
-      where: {
-        id: input,
-      },
+      where: { id: input },
     });
   }),
 });

@@ -55,9 +55,9 @@ function DemoItem({
   demo: Demo;
   refetchEvent: () => void;
 }) {
-  const updateMutation = api.demos.update.useMutation();
-  const updateIndexMutation = api.demos.updateIndex.useMutation();
-  const deleteMutation = api.demos.delete.useMutation();
+  const updateMutation = api.demo.update.useMutation();
+  const updateIndexMutation = api.demo.updateIndex.useMutation();
+  const deleteMutation = api.demo.delete.useMutation();
 
   return (
     <li className="flex flex-row items-center gap-2">
@@ -133,9 +133,9 @@ function AwardItem({
   award: Award;
   refetchEvent: () => void;
 }) {
-  const updateMutation = api.awards.update.useMutation();
-  const updateIndexMutation = api.awards.updateIndex.useMutation();
-  const deleteMutation = api.awards.delete.useMutation();
+  const updateMutation = api.award.update.useMutation();
+  const updateIndexMutation = api.award.updateIndex.useMutation();
+  const deleteMutation = api.award.delete.useMutation();
 
   return (
     <li className="flex flex-row items-center gap-2">

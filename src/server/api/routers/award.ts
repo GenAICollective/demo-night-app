@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
-export const awardsRouter = createTRPCRouter({
+export const awardRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ eventId: z.string(), name: z.string() }))
     .mutation(async ({ input }) => {

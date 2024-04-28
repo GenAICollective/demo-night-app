@@ -122,19 +122,19 @@ model Award {
 }
 
 model Feedback {
-    id         String    @id @default(cuid())
-    attendee   Attendee? @relation(fields: [attendeeId], references: [id])
-    attendeeId String?
-    demo       Demo      @relation(fields: [demoId], references: [id])
+    id         String   @id @default(cuid())
+    attendee   Attendee @relation(fields: [attendeeId], references: [id])
+    attendeeId String
+    demo       Demo     @relation(fields: [demoId], references: [id])
     demoId     String
 
-    rating       Int
-    claps        Int
-    star         Boolean
-    wantToAccess Boolean
-    wantToInvest Boolean
-    wantToWork   Boolean
-    comment      String
+    rating       Int?
+    claps        Int     @default(0)
+    star         Boolean @default(false)
+    wantToAccess Boolean @default(false)
+    wantToInvest Boolean @default(false)
+    wantToWork   Boolean @default(false)
+    comment      String?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

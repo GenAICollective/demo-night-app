@@ -35,7 +35,7 @@ export function DeleteEventModal({
   eventId: string;
   onDeleted: () => void;
 }) {
-  const deleteMutation = api.events.delete.useMutation();
+  const deleteMutation = api.event.delete.useMutation();
   const modal = useModal();
 
   const handleDelete = () => {
