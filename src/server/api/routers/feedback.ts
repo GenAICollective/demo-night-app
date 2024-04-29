@@ -24,27 +24,13 @@ export const feedbackRouter = createTRPCRouter({
         {} as Record<string, Feedback>,
       );
     }),
-  create: publicProcedure
-    .input(
-      z.object({
-        eventId: z.string(),
-        attendeeId: z.string(),
-        demoId: z.string(),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      return db.feedback.create({
-        data: {
-          eventId: input.eventId,
-          attendeeId: input.attendeeId,
-          demoId: input.demoId,
-        },
-      });
-    }),
-  update: publicProcedure
+  upsert: publicProcedure
     .input(
       z.object({
         id: z.string(),
+        eventId: z.string(),
+        attendeeId: z.string(),
+        demoId: z.string(),
         rating: z.number().min(1).max(10).optional().nullable(),
         claps: z.number().min(0).optional(),
         star: z.boolean().optional(),
@@ -55,17 +41,10 @@ export const feedbackRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
-      return db.feedback.update({
+      return db.feedback.upsert({
         where: { id: input.id },
-        data: {
-          rating: input.rating,
-          claps: input.claps,
-          star: input.star,
-          wantToAccess: input.wantToAccess,
-          wantToInvest: input.wantToInvest,
-          wantToWork: input.wantToWork,
-          comment: input.comment,
-        },
+        create: { ...input },
+        update: { ...input },
       });
     }),
   delete: publicProcedure.input(z.string()).mutation(async ({ input }) => {

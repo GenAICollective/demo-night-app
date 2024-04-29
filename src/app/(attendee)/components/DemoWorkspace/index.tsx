@@ -1,7 +1,8 @@
 import { type Attendee, type Demo, type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import { cn } from "~/lib/utils";
 import { type CurrentEvent } from "~/server/api/routers/event";
 
 import { DemoSelectionHeader } from "./DemoSelectionHeader";
@@ -18,7 +19,7 @@ export default function DemoWorkspace({
 }) {
   const { id: eventId, currentDemoId } = currentEvent;
   const [selectedDemo, setSelectedDemo] = useState<Demo>(demos[0]!);
-  const { feedback, setFeedback, refetch } = useFeedback(
+  const { feedback, setFeedback } = useFeedback(
     eventId,
     attendee,
     selectedDemo,
@@ -41,12 +42,13 @@ export default function DemoWorkspace({
         setSelectedDemo={setSelectedDemo}
         currentDemoId={currentDemoId}
       />
-      <div className="flex h-full flex-col items-center justify-center p-4 pt-16">
+      <div className="flex h-full flex-col items-center justify-center gap-8 p-8 pt-20">
+        <h1 className="text-3xl font-bold">{selectedDemo.name}</h1>
         <label
           htmlFor="rating-slider"
-          className="mb-2 block text-sm font-medium text-gray-900"
+          className="-mb-6 block text-lg font-semibold"
         >
-          Rate the Demo (1-10):
+          Rating: {feedback?.rating ?? 1}
         </label>
         <input
           id="rating-slider"
@@ -58,64 +60,73 @@ export default function DemoWorkspace({
             const updatedRating = parseInt(e.target.value, 10);
             setFeedback({ ...feedback, rating: updatedRating });
           }}
-          className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
+          className="w-full"
         />
-        <label
-          htmlFor="comment-input"
-          className="mb-2 mt-4 block text-sm font-medium text-gray-900"
-        >
-          Comment:
-        </label>
-        <div className="mt-1 text-center">{feedback?.rating ?? 1}</div>
         <textarea
-          id="comment-input"
           value={feedback?.comment ?? ""}
           onChange={(e) => {
             setFeedback({ ...feedback, comment: e.target.value });
           }}
-          className="block w-full rounded-lg border border-gray-200 p-2"
+          rows={4}
+          className="block w-full resize-none rounded-lg border-2 border-gray-200 p-2 text-lg shadow-lg"
           placeholder="Enter your feedback..."
         />
-        <div className="absolute bottom-4 flex items-center gap-4">
-          <button
-            className="h-16 w-16 rounded-full bg-red-100 text-center text-3xl shadow-xl transition-all hover:scale-110 hover:bg-blue-200"
-            onClick={() => {
-              if (feedback) {
-                const updatedFeedback = {
-                  ...feedback,
-                  star: !(feedback.star || false),
-                };
-                setFeedback(updatedFeedback);
-              }
-            }}
-          >
-            ⭐
-          </button>
-          <button
-            className="h-16 w-16 rounded-full bg-yellow-100 text-center text-3xl shadow-xl transition-all hover:scale-110 hover:bg-yellow-200"
-            onClick={() => {
-              if (feedback) {
-                const updatedFeedback = {
-                  ...feedback,
-                  claps: (feedback.claps || 0) + 1,
-                };
-                setFeedback(updatedFeedback);
-              }
-            }}
-          >
-            <span>👏</span>
-            <p className="text-lg font-semibold text-yellow-900">
-              {feedback?.claps ?? 0}
-            </p>
-          </button>
-          <ActionButton feedback={feedback} setFeedback={setFeedback} />
-        </div>
+      </div>
+      <div className="absolute bottom-6 flex w-full max-w-[500px] items-center justify-evenly">
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 1.5 }}
+          className={cn(
+            "aspect-square w-20 rounded-full text-center text-[40px] shadow-xl transition-all hover:scale-110",
+            feedback?.star
+              ? "border-4 border-yellow-500 bg-yellow-300 hover:bg-yellow-400"
+              : "bg-yellow-100 hover:bg-yellow-200",
+          )}
+          onClick={() => {
+            if (feedback) {
+              const updatedFeedback = {
+                ...feedback,
+                star: !(feedback.star || false),
+              };
+              setFeedback(updatedFeedback);
+            }
+          }}
+        >
+          ⭐
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 1.5 }}
+          className={cn(
+            "transition-al relative aspect-square w-28 rounded-full text-center text-lg shadow-xl",
+            feedback?.claps
+              ? "border-4 border-orange-500 bg-orange-300 text-orange-700 hover:bg-orange-400"
+              : "bg-orange-100 text-gray-500 hover:bg-orange-200",
+          )}
+          onClick={() => {
+            if (feedback) {
+              const updatedFeedback = {
+                ...feedback,
+                claps: (feedback.claps || 0) + 1,
+              };
+              setFeedback(updatedFeedback);
+            }
+          }}
+        >
+          <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform pb-2 text-[50px]">
+            👏
+          </p>
+          <p className="absolute bottom-8 left-1/2 -translate-x-1/2 translate-y-full transform font-bold">
+            {feedback?.claps ?? 0}
+          </p>
+        </motion.button>
+        <WantToButton feedback={feedback} setFeedback={setFeedback} />
       </div>
     </>
   );
 }
 
-function ActionButton({
+function WantToButton({
   feedback,
   setFeedback,
 }: {
@@ -124,14 +135,31 @@ function ActionButton({
 }) {
   const [showActionButtons, setShowActionButtons] = useState(false);
 
+  const hasActed = useMemo(() => {
+    return (
+      (feedback?.wantToAccess ?? false) ||
+      (feedback?.wantToInvest ?? false) ||
+      (feedback?.wantToWork ?? false)
+    );
+  }, [feedback]);
+
   return (
-    <>
-      <button
-        className="h-16 w-16 rounded-full bg-green-100 text-center text-3xl shadow-xl transition-all hover:scale-110 hover:bg-green-200"
+    <div>
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 1.5 }}
+        className={cn(
+          "aspect-square w-20 rounded-full text-center text-[40px] shadow-xl transition-all hover:scale-110",
+          showActionButtons
+            ? "bg-red-100 hover:bg-red-200"
+            : hasActed
+              ? "border-4 border-blue-500 bg-blue-300 hover:bg-blue-400"
+              : "bg-blue-100 hover:bg-blue-200",
+        )}
         onClick={() => setShowActionButtons(!showActionButtons)}
       >
-        <span>🤝</span>
-      </button>
+        {showActionButtons ? "❌" : "🤝"}
+      </motion.button>
       <AnimatePresence>
         {showActionButtons && (
           <motion.div
@@ -140,10 +168,17 @@ function ActionButton({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
             transition={{ duration: 0.2 }}
-            className="absolute mt-4 flex gap-4"
+            className="absolute -top-[270px] flex flex-col gap-4"
           >
-            <button
-              className="h-16 w-16 rounded-full bg-blue-100 text-center text-3xl shadow-xl transition-all hover:scale-110 hover:bg-blue-200"
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 1.5 }}
+              className={cn(
+                "aspect-square w-20 rounded-full text-center text-[40px] shadow-xl transition-all hover:scale-110",
+                feedback?.wantToAccess
+                  ? "border-4 border-blue-500 bg-blue-300 hover:bg-blue-400"
+                  : "bg-blue-100 hover:bg-blue-200",
+              )}
               onClick={() => {
                 if (feedback) {
                   const updatedFeedback = {
@@ -156,9 +191,16 @@ function ActionButton({
               }}
             >
               📬
-            </button>
-            <button
-              className="h-16 w-16 rounded-full bg-blue-100 text-center text-3xl shadow-xl transition-all hover:scale-110 hover:bg-blue-200"
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 1.5 }}
+              className={cn(
+                "aspect-square w-20 rounded-full text-center text-[40px] shadow-xl transition-all hover:scale-110",
+                feedback?.wantToInvest
+                  ? "border-4 border-blue-500 bg-blue-300 hover:bg-blue-400"
+                  : "bg-blue-100 hover:bg-blue-200",
+              )}
               onClick={() => {
                 if (feedback) {
                   const updatedFeedback = {
@@ -171,9 +213,16 @@ function ActionButton({
               }}
             >
               💰
-            </button>
-            <button
-              className="h-16 w-16 rounded-full bg-blue-100 text-center text-3xl shadow-xl transition-all hover:scale-110 hover:bg-blue-200"
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 1.5 }}
+              className={cn(
+                "aspect-square w-20 rounded-full text-center text-[40px] shadow-xl transition-all hover:scale-110",
+                feedback?.wantToWork
+                  ? "border-4 border-blue-500 bg-blue-300 hover:bg-blue-400"
+                  : "bg-blue-100 hover:bg-blue-200",
+              )}
               onClick={() => {
                 if (feedback) {
                   const updatedFeedback = {
@@ -186,10 +235,10 @@ function ActionButton({
               }}
             >
               🧑‍💻
-            </button>
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 }

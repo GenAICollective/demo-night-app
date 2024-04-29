@@ -112,7 +112,7 @@ export function UpdateAttendeeForm({
         <span className="font-semibold">I consider myself a...</span>
         <select
           {...register("type")}
-          className="rounded-lg border border-gray-200 p-2"
+          className="rounded-lg border border-gray-200 bg-white p-2"
         >
           <option value="">Select one...</option>
           {attendeePreselectTypes.map((type) => (

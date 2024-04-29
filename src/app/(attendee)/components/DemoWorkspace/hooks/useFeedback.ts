@@ -10,15 +10,16 @@ export function useFeedback(
 ) {
   const [feedbacks, setFeedbacks] =
     useState<Record<string, Feedback>>(getLocalFeedbacks());
-  const { data: feedbacksData, refetch } = api.feedback.all.useQuery({
+  const { data: feedbacksData } = api.feedback.all.useQuery({
     eventId,
     attendeeId: attendee.id,
   });
-  const [feedback, setFeedback] = useState<Feedback | null>(
-    feedbacks[selectedDemo.id] ?? null,
+  const [feedback, setFeedback] = useState(
+    feedbacks[selectedDemo.id] ??
+      emptyFeedback(eventId, attendee.id, selectedDemo.id),
   );
-  const createMutation = api.feedback.create.useMutation();
-  const updateMutation = api.feedback.update.useMutation();
+  const [debouncedFeedback, setDebouncedFeedback] = useState(feedback);
+  const upsertMutation = api.feedback.upsert.useMutation();
 
   useEffect(() => {
     setLocalFeedbacks(feedbacks);
@@ -31,24 +32,61 @@ export function useFeedback(
   }, [feedbacksData]);
 
   useEffect(() => {
-    if (!feedback) {
-      createMutation
-        .mutateAsync({
-          eventId,
-          attendeeId: attendee.id,
-          demoId: selectedDemo.id,
-        })
-        .then((newFeedback) => {
-          setFeedback(newFeedback);
-          feedbacks[selectedDemo.id] = newFeedback;
-          setLocalFeedbacks(feedbacks);
-        });
-    } else {
-      updateMutation.mutate(feedback);
-    }
-  }, [feedback]); // eslint-disable-line react-hooks/exhaustive-deps
+    const newFeedback =
+      feedbacks[selectedDemo.id] ??
+      emptyFeedback(eventId, attendee.id, selectedDemo.id);
+    setFeedback(newFeedback);
+    setDebouncedFeedback(newFeedback); // Reset debounced feedback when demo changes
+  }, [selectedDemo.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { feedback, setFeedback, refetch };
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (feedbackIsEmpty(debouncedFeedback)) return;
+      upsertMutation.mutate(debouncedFeedback);
+    }, 3_000);
+
+    return () => clearTimeout(handler);
+  }, [debouncedFeedback]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setDebouncedFeedback(feedback);
+  }, [feedback]);
+
+  return { feedback, setFeedback };
+}
+
+function emptyFeedback(
+  eventId: string,
+  attendeeId: string,
+  demoId: string,
+): Feedback {
+  return {
+    id: crypto.randomUUID(),
+    eventId,
+    attendeeId,
+    demoId,
+    rating: null,
+    claps: 0,
+    star: false,
+    wantToAccess: false,
+    wantToInvest: false,
+    wantToWork: false,
+    comment: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
+
+function feedbackIsEmpty(feedback: Feedback): boolean {
+  return (
+    feedback.rating === null &&
+    feedback.claps === 0 &&
+    feedback.star === false &&
+    feedback.wantToAccess === false &&
+    feedback.wantToInvest === false &&
+    feedback.wantToWork === false &&
+    feedback.comment === null
+  );
 }
 
 function getLocalFeedbacks(): Record<string, Feedback> {

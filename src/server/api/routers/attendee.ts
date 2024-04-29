@@ -34,7 +34,7 @@ export const attendeeRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return db.attendee.update({
         where: { id: input.id },
-        data: { name: input.name, email: input.email, type: input.type },
+        data: { ...input },
       });
     }),
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
