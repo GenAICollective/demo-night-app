@@ -1,16 +1,22 @@
 {
-  "name": "gaico-demos",
-  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "next build",
-    "db:push": "prisma db push",
-    "db:studio": "prisma studio",
     "dev": "next dev",
-    "postinstall": "prisma generate",
-    "lint": "next lint",
-    "start": "next start"
+    "migrate": "dotenv -e .env.development.local prisma format && dotenv -e .env.development.local -- prisma generate && dotenv -e .env.development.local -- prisma migrate dev",
+    "migrate:create": "dotenv -e .env.development.local -- prisma format && dotenv -e .env.development.local -- prisma generate && dotenv -e .env.development.local -- prisma migrate dev --create-only",
+    "migrate:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "db:push:dev": "dotenv -e .env.development.local -- prisma db push",
+    "db:seed:dev": "dotenv -e .env.development.local -- prisma db seed",
+    "db:studio:dev": "dotenv -e .env.development.local -- prisma studio",
+    "build": "prisma migrate deploy && prisma generate && next build",
+    "start": "next start",
+    "start:dev": "next start --env-file .env.development.local",
+    "lint": "next lint"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.4.0",
