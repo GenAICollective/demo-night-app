@@ -71,6 +71,8 @@ model Event {
     demos     Demo[]
     attendees Attendee[]
     awards    Award[]
+    feedback  Feedback[]
+    votes     Vote[]
 }
 
 enum EventPhase {
@@ -122,6 +124,8 @@ model Award {
 
 model Feedback {
     id         String   @id @default(cuid())
+    event      Event    @relation(fields: [eventId], references: [id])
+    eventId    String
     attendee   Attendee @relation(fields: [attendeeId], references: [id])
     attendeeId String
     demo       Demo     @relation(fields: [demoId], references: [id])
@@ -137,10 +141,14 @@ model Feedback {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    @@index([eventId, attendeeId])
 }
 
 model Vote {
     id         String   @id @default(cuid())
+    event      Event    @relation(fields: [eventId], references: [id])
+    eventId    String
     attendee   Attendee @relation(fields: [attendeeId], references: [id])
     attendeeId String
     award      Award    @relation(fields: [awardId], references: [id])
@@ -150,4 +158,6 @@ model Vote {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    @@index(awardId)
 }

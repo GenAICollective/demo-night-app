@@ -8,28 +8,19 @@ import {
 import { db } from "~/server/db";
 
 export const attendeeRouter = createTRPCRouter({
-  get: publicProcedure
+  upsert: publicProcedure
     .input(z.object({ id: z.string(), eventId: z.string() }))
     .query(async ({ input }) => {
-      const attendee = await db.attendee.findUnique({
+      return db.attendee.upsert({
         where: { id: input.id },
-        include: { events: { select: { id: true } } },
+        create: {
+          id: input.id,
+          events: { connect: { id: input.eventId } },
+        },
+        update: {
+          events: { connect: { id: input.eventId } },
+        },
       });
-      if (!attendee) {
-        return db.attendee.create({
-          data: {
-            id: input.id,
-            events: { connect: { id: input.eventId } },
-          },
-        });
-      }
-      if (!attendee.events.some((event) => event.id === input.eventId)) {
-        return db.attendee.update({
-          where: { id: input.id },
-          data: { events: { connect: { id: input.eventId } } },
-        });
-      }
-      return attendee;
     }),
   update: publicProcedure
     .input(

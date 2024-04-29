@@ -41,14 +41,19 @@ export const demoRouter = createTRPCRouter({
       },
     });
   }),
-  getFeedback: protectedProcedure.input(z.string()).query(async ({ input }) => {
-    return db.feedback.findMany({
-      where: { demoId: input },
-      include: {
-        attendee: { select: { name: true } },
-      },
-    });
-  }),
+  getFeedback: protectedProcedure
+    .input(z.string().nullable())
+    .query(async ({ input }) => {
+      if (!input) {
+        return [];
+      }
+      return db.feedback.findMany({
+        where: { demoId: input },
+        include: {
+          attendee: { select: { name: true } },
+        },
+      });
+    }),
   update: protectedProcedure
     .input(
       z.object({

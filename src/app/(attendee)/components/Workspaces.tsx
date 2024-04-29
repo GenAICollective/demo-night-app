@@ -27,11 +27,12 @@ export default function Workspaces({
           <PreEventWorkspace attendee={attendee} setAttendee={setAttendee} />
         );
       case EventPhase.DEMO:
-        if (!event) return <LoadingScreen />;
+        if (!event || event.demos.length === 0) return <LoadingScreen />;
         return (
           <DemoWorkspace
+            currentEvent={currentEvent}
+            attendee={attendee}
             demos={event.demos}
-            currentDemoId={currentEvent.currentDemoId}
           />
         );
       case EventPhase.VOTING:

@@ -5,7 +5,7 @@ import { api } from "~/trpc/react";
 
 export function useAttendee(eventId: string) {
   const [attendee, setAttendee] = useState<Attendee>(getLocalAttendee());
-  const { data: attendeeData, refetch } = api.attendee.get.useQuery({
+  const { data: attendeeData } = api.attendee.upsert.useQuery({
     id: attendee.id,
     eventId: eventId,
   });
@@ -31,7 +31,7 @@ export function useAttendee(eventId: string) {
     });
   }, [attendee]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { attendee, setAttendee, refetch };
+  return { attendee, setAttendee };
 }
 
 function getLocalAttendee(): Attendee {
