@@ -50,7 +50,7 @@ export default function Leaflet({
       <motion.div
         ref={leafletRef}
         key="leaflet"
-        className="group fixed inset-x-0 bottom-0 z-40 w-screen cursor-grab rounded-t-2xl bg-white pb-5 active:cursor-grabbing md:hidden"
+        className="group fixed inset-x-0 bottom-0 z-40 w-screen cursor-grab rounded-t-[30px] bg-white pb-5 active:cursor-grabbing md:hidden"
         initial={{ y: "100%" }}
         animate={controls}
         exit={{ y: "100%" }}

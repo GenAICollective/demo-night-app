@@ -23,7 +23,7 @@ export default async function AttendeePage() {
     );
   }
   return (
-    <main className="flex min-h-screen w-full flex-col text-black">
+    <main className="flex size-full flex-col text-black">
       <Workspaces currentEvent={currentEvent} />
     </main>
   );

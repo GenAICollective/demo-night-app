@@ -17,7 +17,7 @@ export function CreateEventButton({
   const modal = useModal();
   return (
     <button
-      className="rounded-lg bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
+      className="rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
       onClick={() => modal?.show(<CreateEventModal onCreated={onCreated} />)}
     >
       Create Event
@@ -61,7 +61,7 @@ export function CreateEventModal({
           type="text"
           defaultValue="SF Demo Extravaganza 🚀"
           {...register("name", { required: true })}
-          className="rounded-md border border-gray-200 p-2"
+          className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
         />
       </label>
@@ -71,7 +71,7 @@ export function CreateEventModal({
           type="date"
           defaultValue={new Date().toISOString().split("T")[0]}
           {...register("date", { required: true })}
-          className="rounded-md border border-gray-200 p-2"
+          className="rounded-xl border border-gray-200 p-2"
         />
       </label>
       <label className="flex flex-col gap-1">
@@ -79,7 +79,7 @@ export function CreateEventModal({
         <input
           type="url"
           {...register("url", { required: true })}
-          className="rounded-md border border-gray-200 p-2"
+          className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
         />
       </label>

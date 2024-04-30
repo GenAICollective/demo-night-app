@@ -63,7 +63,7 @@ function DemoItem({
     <li className="flex flex-row items-center gap-2">
       <p className="w-[17px] font-bold">{`${demo.index + 1}.`}</p>
       <input
-        className="flex-1 rounded-lg bg-white p-2 font-medium focus:outline-none"
+        className="flex-1 basis-2 rounded-xl bg-white p-2 font-medium focus:outline-none"
         type="text"
         value={demo.name}
         onChange={(e) => {
@@ -72,7 +72,7 @@ function DemoItem({
         }}
       />
       <input
-        className="w-[80px] rounded-lg bg-white p-2 font-medium focus:outline-none"
+        className="basis-1 rounded-xl bg-white p-2 font-medium focus:outline-none"
         type="email"
         value={demo.email}
         onChange={(e) => {
@@ -81,7 +81,7 @@ function DemoItem({
         }}
       />
       <input
-        className="w-[80px] rounded-lg bg-white p-2 font-medium focus:outline-none"
+        className="basis-1 rounded-xl bg-white p-2 font-medium focus:outline-none"
         type="url"
         value={demo.url}
         onChange={(e) => {
@@ -142,7 +142,7 @@ function AwardItem({
     <li className="flex flex-row items-center gap-2">
       <p className="w-[17px] font-bold">{`${award.index + 1}.`}</p>
       <input
-        className="flex-1 rounded-lg bg-white p-2 font-medium focus:outline-none"
+        className="flex-1 rounded-xl bg-white p-2 font-medium focus:outline-none"
         type="text"
         value={award.name}
         onChange={(e) => {

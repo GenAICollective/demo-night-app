@@ -20,12 +20,13 @@ export function DemoSelectionHeader({
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
   return (
-    <div className="fixed w-full p-2">
+    <div className="fixed z-20 w-full p-2">
       <div
         onClick={toggleExpand}
         className={cn(
-          "flex w-full cursor-pointer flex-row items-center justify-between rounded-xl px-4 py-2 text-center font-semibold shadow-lg transition-all duration-300 ease-in-out focus:outline-none",
+          "flex w-full cursor-pointer flex-row items-center justify-between rounded-xl px-4 py-3 text-center text-lg font-semibold shadow-lg transition-all duration-300 ease-in-out",
           selectedDemo?.id === currentDemoId ? "bg-green-200" : "bg-red-200",
+          isExpanded ? "backdrop-blur-lg" : "",
         )}
       >
         <motion.div
@@ -37,7 +38,7 @@ export function DemoSelectionHeader({
           className="flex flex-row gap-2"
         >
           <p className="w-[17px]">{(selectedDemo?.index ?? 0) + 1}.</p>
-          <p>{`${selectedDemo?.name ?? ""} ${selectedDemo?.id === currentDemoId ? "(current demo)" : ""}`}</p>
+          <p>{selectedDemo?.name ?? ""}</p>
         </motion.div>
         <ChevronDown
           size={24}
@@ -49,7 +50,13 @@ export function DemoSelectionHeader({
       </div>
       <AnimatePresence>
         {isExpanded && (
-          <div className="absolute left-0 flex max-h-[calc(100vh-4rem)] w-full flex-col gap-2 overflow-y-auto px-2 pb-12 pt-2">
+          <motion.div
+            className="absolute left-0 flex max-h-[calc(100vh-4rem)] w-full flex-col gap-2 overflow-y-auto px-2 pb-[300px] pt-2 backdrop-blur-lg"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
             {demos.map((demo) => (
               <motion.div
                 initial={{ opacity: 0, y: -(demo.index + 1) * 30 }}
@@ -61,7 +68,7 @@ export function DemoSelectionHeader({
                   setIsExpanded(false);
                 }}
                 className={cn(
-                  "flex cursor-pointer flex-row items-center justify-between gap-2 rounded-xl p-2 px-4 font-semibold shadow-xl focus:outline-none",
+                  "flex cursor-pointer flex-row items-center justify-between gap-2 rounded-xl px-4 py-3 text-lg font-semibold shadow-xl focus:outline-none",
                   demo.id === currentDemoId ? "bg-green-200" : "bg-white",
                 )}
               >
@@ -74,7 +81,7 @@ export function DemoSelectionHeader({
                 )}
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

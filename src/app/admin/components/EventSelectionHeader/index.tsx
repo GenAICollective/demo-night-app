@@ -32,7 +32,7 @@ export default function EventSelectionHeader({
         {events && events.length > 0 && (
           <div className="flex flex-row items-center gap-2">
             <select
-              className="rounded-lg border border-gray-200 p-2"
+              className="rounded-xl border border-gray-200 p-2"
               value={selectedEventId}
               onChange={(e) => setSelectedEventId(e.target.value)}
             >
@@ -46,7 +46,7 @@ export default function EventSelectionHeader({
         )}
         {selectedEventId && (
           <button
-            className="rounded-lg bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
+            className="rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
             hidden={
               events?.filter((e) => e.id === selectedEventId)[0]?.isCurrent
             }

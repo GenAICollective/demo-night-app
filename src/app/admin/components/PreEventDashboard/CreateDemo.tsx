@@ -19,7 +19,7 @@ export function CreateDemoButton({
   const modal = useModal();
   return (
     <button
-      className="rounded-lg bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
+      className="rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
       onClick={() =>
         modal?.show(<CreateDemoModal eventId={eventId} onCreated={onCreated} />)
       }
@@ -67,7 +67,7 @@ export function CreateDemoModal({
         <input
           type="text"
           {...register("name", { required: true, minLength: 3 })}
-          className="rounded-md border border-gray-200 p-2"
+          className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
         />
       </label>
@@ -76,7 +76,7 @@ export function CreateDemoModal({
         <input
           type="email"
           {...register("email", { required: true })}
-          className="rounded-md border border-gray-200 p-2"
+          className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
         />
       </label>
@@ -85,7 +85,7 @@ export function CreateDemoModal({
         <input
           type="url"
           {...register("url", { required: true })}
-          className="rounded-md border border-gray-200 p-2"
+          className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
         />
       </label>

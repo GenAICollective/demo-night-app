@@ -88,7 +88,7 @@ function DemoItem({
       <p className="w-[17px] font-bold">{`${demo.index + 1}.`}</p>
       <div
         className={cn(
-          "flex flex-1 cursor-pointer flex-row items-center justify-between rounded-lg p-2 font-medium focus:outline-none",
+          "flex flex-1 cursor-pointer flex-row items-center justify-between rounded-xl p-2 font-medium focus:outline-none",
           isCurrent ? "bg-green-200" : "bg-white",
         )}
         onClick={() => {
@@ -178,7 +178,7 @@ function FeedbackItem({
 
   return (
     <li className="flex flex-row gap-2">
-      <div className="flex flex-1 flex-col gap-1 rounded-lg bg-white p-2">
+      <div className="flex flex-1 flex-col gap-1 rounded-xl bg-white p-2">
         <div className="flex flex-row gap-1">
           <p
             className={cn(

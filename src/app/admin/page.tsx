@@ -110,7 +110,7 @@ function EventDashboard({
           <div className="flex flex-row items-center pb-2">
             <h3 className="font-semibold">Phase:</h3>
             <select
-              className="ml-2 w-[150px] rounded-lg border border-gray-200 p-2"
+              className="ml-2 w-[150px] rounded-xl border border-gray-200 p-2"
               value={phase}
               onChange={(e) =>
                 setPhase(EventPhase[e.target.value as EventPhase])
@@ -122,7 +122,7 @@ function EventDashboard({
               <option value="RESULTS">Results</option>
             </select>
             <button
-              className="ml-2 rounded-lg bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
+              className="ml-2 rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
               hidden={phase === event.phase}
               onClick={() =>
                 updatePhaseMutation

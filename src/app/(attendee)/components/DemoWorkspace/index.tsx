@@ -68,7 +68,7 @@ export default function DemoWorkspace({
             setFeedback({ ...feedback, comment: e.target.value });
           }}
           rows={4}
-          className="block w-full resize-none rounded-lg border-2 border-gray-200 p-2 text-lg shadow-lg"
+          className="block w-full resize-none rounded-xl border-2 border-gray-200 p-2 text-lg shadow-lg"
           placeholder="Enter your feedback..."
         />
       </div>

@@ -13,8 +13,8 @@ export default function SubmitButton({
     <button
       type="submit"
       className={cn(
-        "flex h-10 w-full items-center justify-center space-x-2 rounded-lg bg-gray-200 font-semibold text-black transition-all focus:outline-none",
-        pending ? "cursor-not-allowed" : "hover:bg-gray-300",
+        "flex h-14 w-full items-center justify-center space-x-2 rounded-xl bg-orange-500 px-4 py-2 text-xl font-bold text-white transition-all focus:outline-none",
+        pending ? "cursor-not-allowed" : "hover:bg-orange-600",
       )}
       disabled={pending}
     >

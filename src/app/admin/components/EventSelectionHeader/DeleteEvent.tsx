@@ -16,7 +16,7 @@ export function DeleteEventButton({
   const modal = useModal();
   return (
     <button
-      className="rounded-lg bg-red-200 p-2 font-semibold transition-all hover:bg-red-300 focus:outline-none"
+      className="rounded-xl bg-red-200 p-2 font-semibold transition-all hover:bg-red-300 focus:outline-none"
       onClick={() =>
         modal?.show(
           <DeleteEventModal eventId={eventId} onDeleted={onDeleted} />,
@@ -58,7 +58,7 @@ export function DeleteEventModal({
         Are you sure you want to delete this event?
       </p>
       <button
-        className="rounded-lg bg-red-500 p-2 font-semibold text-white transition-all hover:bg-red-600 focus:outline-none"
+        className="rounded-xl bg-red-500 p-2 font-semibold text-white transition-all hover:bg-red-600 focus:outline-none"
         onClick={handleDelete}
         disabled={deleteMutation.isPending}
       >

@@ -53,7 +53,7 @@ function AttendeeItem({
   return (
     <li className="flex flex-row items-center gap-2">
       <div
-        className="flex-1 cursor-pointer rounded-lg bg-white p-2 font-medium focus:outline-none"
+        className="flex-1 cursor-pointer rounded-xl bg-white p-2 font-medium focus:outline-none"
         onClick={copyIdToClipboard}
       >
         {attendee.name ? (

@@ -19,6 +19,7 @@ export function UpdateAttendeeButton({
   return (
     <CircleUserRoundIcon
       className="cursor-pointer hover:opacity-50 focus:outline-none"
+      size={28}
       color="black"
       onClick={() =>
         modal?.show(
@@ -86,8 +87,8 @@ export function UpdateAttendeeForm({
       className="flex w-full flex-col items-center gap-4"
     >
       <div>
-        <h1 className="text-center text-3xl font-bold">Hey There! 👋</h1>
-        <p className="text-md max-w-[330px] pt-1 text-center font-medium leading-5 text-gray-500">
+        <h1 className="text-center text-4xl font-bold">Hey There! 👋</h1>
+        <p className="text-md max-w-[330px] pt-2 text-center font-medium leading-5 text-gray-500">
           Put on your best smile! Don&apos;t worry, your contact info will only
           be shared with demoists you choose to connect with!
         </p>
@@ -97,7 +98,7 @@ export function UpdateAttendeeForm({
         <input
           type="text"
           {...register("name")}
-          className="rounded-lg border border-gray-200 p-2"
+          className="rounded-xl border border-gray-200 p-2 text-lg"
         />
       </label>
       <label className="flex w-full flex-col gap-1">
@@ -105,14 +106,14 @@ export function UpdateAttendeeForm({
         <input
           type="email"
           {...register("email")}
-          className="rounded-lg border border-gray-200 p-2"
+          className="rounded-xl border border-gray-200 p-2 text-lg"
         />
       </label>
       <label className="flex w-full flex-col gap-1">
         <span className="font-semibold">I consider myself a...</span>
         <select
           {...register("type")}
-          className="rounded-lg border border-gray-200 bg-white p-2"
+          className="appearance-none rounded-xl border border-gray-200 bg-white p-2 text-lg"
         >
           <option value="">Select one...</option>
           {attendeePreselectTypes.map((type) => (
@@ -125,7 +126,7 @@ export function UpdateAttendeeForm({
           <input
             type="text"
             {...register("customType")}
-            className="rounded-lg border border-gray-200 p-2"
+            className="rounded-xl border border-gray-200 p-2"
           />
         )} */}
       </label>
