@@ -12,13 +12,13 @@ yarn install
 
 For `.env` key/value pairs, see [Vercel](https://vercel.com/genai-collective/gaico-demos/settings/environment-variables) and `.env.example`.
 
-### 3. Start the local Docker DB
+### 3. Start the local DB Docker Compose service
 
 ```bash
 ./start-database.sh
 ```
 
-### 4. Push the schema and seed the local DB with "test@example.com" example account
+### 4. Push the schema and seed the local DB with a "test@example.com" example account and a test event
 
 ```bash
 yarn db:push:dev

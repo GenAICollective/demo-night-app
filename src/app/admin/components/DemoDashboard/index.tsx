@@ -5,7 +5,10 @@ import { useMemo, useState } from "react";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
-const REFRESH_INTERVAL = 5_000;
+import { env } from "~/env";
+
+const REFRESH_INTERVAL =
+  env.NEXT_PUBLIC_NODE_ENV === "development" ? 1_000 : 5_000;
 
 export default function DemoDashboard({
   demos,

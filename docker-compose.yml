@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  gaico-demos-redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  gaico-demos-serverless-redis-http:
+    ports:
+      - "8079:80"
+    image: hiett/serverless-redis-http:latest
+    environment:
+      SRH_MODE: env
+      SRH_TOKEN: localhost_test_token
+      SRH_CONNECTION_STRING: "redis://gaico-demos-redis:6379" # Using `gaico-demos-redis` hostname since they're in the same Docker network.
+
+  gaico-demos-postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: gaico-demos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

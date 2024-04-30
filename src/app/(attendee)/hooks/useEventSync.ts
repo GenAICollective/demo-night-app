@@ -3,7 +3,10 @@ import { useEffect } from "react";
 import { type CurrentEvent } from "~/server/api/routers/event";
 import { api } from "~/trpc/react";
 
-const REFRESH_INTERVAL = 10_000;
+import { env } from "~/env";
+
+const REFRESH_INTERVAL =
+  env.NEXT_PUBLIC_NODE_ENV === "development" ? 1_000 : 5_000;
 
 export default function useEventSync(initialCurrentEvent: CurrentEvent) {
   const { data: currentEvent } = api.event.getCurrent.useQuery<CurrentEvent>(

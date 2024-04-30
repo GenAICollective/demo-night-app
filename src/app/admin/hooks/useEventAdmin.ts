@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 
 import { api } from "~/trpc/react";
 
-const REFRESH_INTERVAL = 10_000;
+import { env } from "~/env";
+
+const REFRESH_INTERVAL =
+  env.NEXT_PUBLIC_NODE_ENV === "development" ? 1_000 : 5_000;
 
 export function useEventAdmin() {
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>(
