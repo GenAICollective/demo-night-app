@@ -20,7 +20,7 @@ export default function PreEventDashboard({
     <div className="flex size-full flex-row gap-2">
       <div className="flex flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
         <h2 className="text-2xl font-bold">Demos</h2>
-        <ul className="flex flex-col gap-2 overflow-auto">
+        <ul className="flex flex-col gap-2 overflow-y-auto overflow-x-clip">
           {demos.map((demo) => (
             <DemoItem key={demo.id} demo={demo} refetchEvent={refetchEvent} />
           ))}
@@ -31,7 +31,7 @@ export default function PreEventDashboard({
       </div>
       <div className="flex w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
         <h2 className="text-2xl font-bold">Awards</h2>
-        <ul className="flex flex-col gap-2 overflow-auto">
+        <ul className="flex flex-col gap-2 overflow-y-auto overflow-x-clip">
           {awards.map((award) => (
             <AwardItem
               key={award.id}
@@ -61,9 +61,9 @@ function DemoItem({
 
   return (
     <li className="flex flex-row items-center gap-2">
-      <p className="w-[17px] font-bold">{`${demo.index + 1}.`}</p>
+      <p className="min-w-[17px] font-bold">{`${demo.index + 1}.`}</p>
       <input
-        className="flex-1 basis-2 rounded-xl bg-white p-2 font-medium focus:outline-none"
+        className="flex-1 rounded-xl bg-white p-2 font-medium focus:outline-none"
         type="text"
         value={demo.name}
         onChange={(e) => {
@@ -72,7 +72,7 @@ function DemoItem({
         }}
       />
       <input
-        className="basis-1 rounded-xl bg-white p-2 font-medium focus:outline-none"
+        className="w-[50px] rounded-xl bg-white p-2 font-medium transition-all hover:z-10 hover:-ml-[150px] hover:w-[200px] hover:shadow-xl focus:outline-none"
         type="email"
         value={demo.email}
         onChange={(e) => {
@@ -81,7 +81,7 @@ function DemoItem({
         }}
       />
       <input
-        className="basis-1 rounded-xl bg-white p-2 font-medium focus:outline-none"
+        className="w-[50px] rounded-xl bg-white p-2 font-medium transition-all hover:z-10 hover:-ml-[150px] hover:w-[200px] hover:shadow-xl focus:outline-none"
         type="url"
         value={demo.url}
         onChange={(e) => {
@@ -140,7 +140,7 @@ function AwardItem({
 
   return (
     <li className="flex flex-row items-center gap-2">
-      <p className="w-[17px] font-bold">{`${award.index + 1}.`}</p>
+      <p className="min-w-[17px] font-bold">{`${award.index + 1}.`}</p>
       <input
         className="flex-1 rounded-xl bg-white p-2 font-medium focus:outline-none"
         type="text"

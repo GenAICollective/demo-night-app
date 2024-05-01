@@ -54,7 +54,6 @@ function EventDashboard({
   refetchEvent: () => void;
 }) {
   const [phase, setPhase] = useState(event.phase);
-  const updatePhaseMutation = api.event.updatePhase.useMutation();
 
   function dashboard() {
     switch (phase) {
@@ -105,37 +104,63 @@ function EventDashboard({
       >
         {event?.name}
       </Link>
-      <div className="flex w-full flex-1 flex-row justify-between gap-2">
-        <div className="flex flex-1 flex-col">
-          <div className="flex flex-row items-center pb-2">
-            <h3 className="font-semibold">Phase:</h3>
-            <select
-              className="ml-2 w-[150px] rounded-xl border border-gray-200 p-2"
-              value={phase}
-              onChange={(e) =>
-                setPhase(EventPhase[e.target.value as EventPhase])
-              }
-            >
-              <option value="PRE">Pre-event</option>
-              <option value="DEMO">Demos</option>
-              <option value="VOTING">Voting</option>
-              <option value="RESULTS">Results</option>
-            </select>
-            <button
-              className="ml-2 rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
-              hidden={phase === event.phase}
-              onClick={() =>
-                updatePhaseMutation
-                  .mutateAsync({ id: event.id, phase: phase })
-                  .then(() => refetchEvent())
-              }
-            >
-              Select Phase
-            </button>
-          </div>
-          <div className="size-full flex-1">{dashboard()}</div>
+      <div className="flex w-full flex-1 flex-col justify-between gap-2">
+        <PhaseSelector
+          phase={phase}
+          setPhase={setPhase}
+          event={event}
+          refetchEvent={refetchEvent}
+        />
+        <div className="flex size-full flex-1 flex-row gap-2">
+          <div className="min-h-full flex-1">{dashboard()}</div>
+          <AttendeeList
+            attendees={event.attendees}
+            refetchEvent={refetchEvent}
+          />
         </div>
-        <AttendeeList attendees={event.attendees} refetchEvent={refetchEvent} />
+      </div>
+    </div>
+  );
+}
+
+function PhaseSelector({
+  phase,
+  setPhase,
+  event,
+  refetchEvent,
+}: {
+  phase: EventPhase;
+  setPhase: (phase: EventPhase) => void;
+  event: CompleteEvent;
+  refetchEvent: () => void;
+}) {
+  const updatePhaseMutation = api.event.updatePhase.useMutation();
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex flex-row items-center pb-2">
+        <h3 className="font-semibold">Phase:</h3>
+        <select
+          className="ml-2 w-[150px] rounded-xl border border-gray-200 p-2"
+          value={phase}
+          onChange={(e) => setPhase(EventPhase[e.target.value as EventPhase])}
+        >
+          <option value="PRE">Pre-event</option>
+          <option value="DEMO">Demos</option>
+          <option value="VOTING">Voting</option>
+          <option value="RESULTS">Results</option>
+        </select>
+        <button
+          className="ml-2 rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
+          hidden={phase === event.phase}
+          onClick={() =>
+            updatePhaseMutation
+              .mutateAsync({ id: event.id, phase: phase })
+              .then(() => refetchEvent())
+          }
+        >
+          Select Phase
+        </button>
       </div>
     </div>
   );

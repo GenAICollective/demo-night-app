@@ -72,7 +72,7 @@ export default function DemoWorkspace({
           placeholder="Enter your feedback..."
         />
       </div>
-      <div className="absolute bottom-6 flex w-full max-w-[500px] items-center justify-evenly">
+      <div className="absolute bottom-6 flex w-full max-w-xl items-center justify-evenly">
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 1.5 }}
