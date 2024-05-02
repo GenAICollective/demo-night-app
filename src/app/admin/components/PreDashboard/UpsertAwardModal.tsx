@@ -9,44 +9,28 @@ import { api } from "~/trpc/react";
 import SubmitButton from "~/components/SubmitButton";
 import { useModal } from "~/components/modal/provider";
 
-export function CreateAwardButton({
+export function UpsertAwardModal({
+  award,
   eventId,
   onCreated,
 }: {
+  award?: Award;
   eventId: string;
   onCreated: (award: Award) => void;
 }) {
-  const modal = useModal();
-  return (
-    <button
-      className="rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
-      onClick={() =>
-        modal?.show(
-          <CreateAwardModal eventId={eventId} onCreated={onCreated} />,
-        )
-      }
-    >
-      ⊕ Award
-    </button>
-  );
-}
-
-export function CreateAwardModal({
-  eventId,
-  onCreated,
-}: {
-  eventId: string;
-  onCreated: (award: Award) => void;
-}) {
-  const createMutation = api.award.create.useMutation();
-  const { register, handleSubmit } = useForm();
+  const upsertMutation = api.award.upsert.useMutation();
+  const { register, handleSubmit } = useForm({
+    defaultValues: award,
+  });
   const modal = useModal();
 
   return (
     <form
       onSubmit={handleSubmit((data) => {
-        createMutation
+        upsertMutation
           .mutateAsync({
+            originalId: award?.id,
+            id: award?.id,
             eventId: eventId,
             name: data.name as string,
           })
@@ -61,7 +45,9 @@ export function CreateAwardModal({
       })}
       className="flex flex-col gap-4"
     >
-      <h1 className="text-center text-xl font-bold">Create New Award</h1>
+      <h1 className="text-center text-xl font-bold">
+        {award ? "Update" : "Create"} Award
+      </h1>
       <label className="flex flex-col gap-1">
         <span className="font-semibold">Name</span>
         <input
@@ -71,7 +57,21 @@ export function CreateAwardModal({
           autoComplete="off"
         />
       </label>
-      <SubmitButton title="Create Award" pending={createMutation.isPending} />
+      {award && (
+        <label className="flex flex-col gap-1">
+          <span className="font-semibold">Award ID</span>
+          <input
+            type="text"
+            {...register("id")}
+            className="rounded-xl border border-gray-200 p-2"
+            autoComplete="off"
+          />
+        </label>
+      )}
+      <SubmitButton
+        title={`${award ? "Update" : "Create"} Award`}
+        pending={upsertMutation.isPending}
+      />
     </form>
   );
 }

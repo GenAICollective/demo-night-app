@@ -4,27 +4,33 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
 export const awardRouter = createTRPCRouter({
-  create: protectedProcedure
-    .input(z.object({ eventId: z.string(), name: z.string() }))
+  upsert: protectedProcedure
+    .input(
+      z.object({
+        originalId: z.string().optional(),
+        id: z.string().optional(),
+        eventId: z.string(),
+        name: z.string(),
+      }),
+    )
     .mutation(async ({ input }) => {
-      const index = await db.award.count({
-        where: { eventId: input.eventId },
-      });
-      return db.award.create({
-        data: {
-          eventId: input.eventId,
-          index: index,
-          name: input.name,
-        },
-      });
-    }),
-  update: protectedProcedure
-    .input(z.object({ id: z.string(), name: z.string() }))
-    .mutation(async ({ input }) => {
-      return db.award.update({
-        where: { id: input.id },
-        data: { name: input.name },
-      });
+      if (input.originalId) {
+        return db.award.update({
+          where: { id: input.originalId },
+          data: { name: input.name },
+        });
+      } else {
+        const index = await db.award.count({
+          where: { eventId: input.eventId },
+        });
+        return db.award.create({
+          data: {
+            eventId: input.eventId,
+            index: index,
+            name: input.name,
+          },
+        });
+      }
     }),
   updateIndex: protectedProcedure
     .input(z.object({ id: z.string(), index: z.number() }))

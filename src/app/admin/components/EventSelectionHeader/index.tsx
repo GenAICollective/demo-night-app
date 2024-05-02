@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
+import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import { CreateEventButton } from "./CreateEvent";
@@ -17,12 +18,18 @@ export default function EventSelectionHeader({
 }) {
   const { data: events, refetch: refetchEvents } = api.event.all.useQuery();
   const makeCurrentMutation = api.event.updateCurrent.useMutation();
+  const removeCurrentMutation = api.event.removeCurrent.useMutation();
 
   useEffect(() => {
     if (events && events.length > 0 && !selectedEventId) {
       setSelectedEventId(events[0]!.id);
     }
   }, [events, selectedEventId, setSelectedEventId]);
+
+  const isCurrent = useMemo(
+    () => events?.filter((e) => e.id === selectedEventId)[0]?.isCurrent,
+    [events, selectedEventId],
+  );
 
   return (
     <header className="flex w-full items-center justify-between bg-gray-100 p-2 text-black">
@@ -46,17 +53,23 @@ export default function EventSelectionHeader({
         )}
         {selectedEventId && (
           <button
-            className="rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
-            hidden={
-              events?.filter((e) => e.id === selectedEventId)[0]?.isCurrent
-            }
-            onClick={() =>
-              makeCurrentMutation
-                .mutateAsync(selectedEventId)
-                .then(() => refetchEvents())
-            }
+            className={cn(
+              "rounded-xl p-2 font-semibold transition-all focus:outline-none",
+              isCurrent
+                ? "bg-red-200 hover:bg-red-300"
+                : "bg-green-200 hover:bg-green-300",
+            )}
+            onClick={() => {
+              if (isCurrent) {
+                removeCurrentMutation.mutateAsync().then(() => refetchEvents());
+              } else {
+                makeCurrentMutation
+                  .mutateAsync(selectedEventId)
+                  .then(() => refetchEvents());
+              }
+            }}
           >
-            Make Current
+            {isCurrent ? "Stop" : "Start"}
           </button>
         )}
       </div>

@@ -10,7 +10,9 @@ import LoadingDots from "~/components/loading/loading-dots";
 
 import DemoWorkspace from "./DemoWorkspace";
 import EventHeader from "./EventHeader";
-import PreEventWorkspace from "./PreEventWorkspace";
+import PreWorkspace from "./PreWorkspace";
+import VotingWorkspace from "./VotingWorkspace";
+import ResultsWorkspace from "./VotingWorkspace";
 
 export default function Workspaces({
   currentEvent: initialCurrentEvent,
@@ -23,9 +25,7 @@ export default function Workspaces({
   function workspace() {
     switch (currentEvent?.phase) {
       case EventPhase.PRE:
-        return (
-          <PreEventWorkspace attendee={attendee} setAttendee={setAttendee} />
-        );
+        return <PreWorkspace attendee={attendee} setAttendee={setAttendee} />;
       case EventPhase.DEMO:
         if (!event || event.demos.length === 0) return <LoadingScreen />;
         return (
@@ -36,9 +36,9 @@ export default function Workspaces({
           />
         );
       case EventPhase.VOTING:
-        return <p>{`${currentEvent.phase} - ${currentEvent.currentDemoId}`}</p>;
+        return <VotingWorkspace />;
       case EventPhase.RESULTS:
-        return <p>{`${currentEvent.phase} - ${currentEvent.currentDemoId}`}</p>;
+        return <ResultsWorkspace />;
     }
   }
 

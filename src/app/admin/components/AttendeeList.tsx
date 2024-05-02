@@ -1,9 +1,12 @@
 "use client";
 
 import { type Attendee } from "@prisma/client";
+import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
+
+import AttendeeTypeBadge from "~/components/AttendeeTypeBadge";
 
 export default function AttendeeList({
   attendees,
@@ -13,7 +16,7 @@ export default function AttendeeList({
   refetchEvent: () => void;
 }) {
   return (
-    <div className="flex min-w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
+    <div className="flex min-w-[300px] max-w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
       <div className="flex flex-col justify-between">
         <h2 className="text-2xl font-bold">Attendees</h2>
         <p className="-mt-1 text-sm font-semibold text-gray-400">
@@ -21,13 +24,15 @@ export default function AttendeeList({
         </p>
       </div>
       <ul className="flex flex-col gap-2 overflow-auto">
-        {attendees.map((attendee) => (
-          <AttendeeItem
-            key={attendee.id}
-            attendee={attendee}
-            refetchEvent={refetchEvent}
-          />
-        ))}
+        <AnimatePresence>
+          {attendees.map((attendee) => (
+            <AttendeeItem
+              key={attendee.id}
+              attendee={attendee}
+              refetchEvent={refetchEvent}
+            />
+          ))}
+        </AnimatePresence>
       </ul>
     </div>
   );
@@ -51,16 +56,23 @@ function AttendeeItem({
   };
 
   return (
-    <li className="flex flex-row items-center gap-2">
+    <motion.li
+      className="flex flex-row items-center gap-2"
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div
-        className="flex-1 cursor-pointer rounded-xl bg-white p-2 font-medium focus:outline-none"
+        className="flex flex-1 cursor-pointer flex-row items-center justify-start gap-1 rounded-xl bg-white p-2 font-medium focus:outline-none"
         onClick={copyIdToClipboard}
       >
         {attendee.name ? (
-          <p>{attendee.name}</p>
+          <p className="line-clamp-1">{attendee.name}</p>
         ) : (
-          <p className="italic text-gray-400">Anonymous</p>
+          <p className="line-clamp-1 italic text-gray-400">Anonymous</p>
         )}
+        <AttendeeTypeBadge type={attendee.type} />
       </div>
       <button
         onClick={() => {
@@ -69,6 +81,6 @@ function AttendeeItem({
       >
         🗑️
       </button>
-    </li>
+    </motion.li>
   );
 }

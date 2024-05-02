@@ -15,7 +15,9 @@ import { api } from "~/trpc/react";
 import AttendeeList from "./components/AttendeeList";
 import DemoDashboard from "./components/DemoDashboard";
 import EventSelectionHeader from "./components/EventSelectionHeader";
-import PreEventDashboard from "./components/PreEventDashboard";
+import PreDashboard from "./components/PreDashboard";
+import ResultsDashboard from "./components/ResultsDashboard";
+import VotingDashboard from "./components/VotingDashboard";
 
 import { useEventAdmin } from "./hooks/useEventAdmin";
 
@@ -59,7 +61,7 @@ function EventDashboard({
     switch (phase) {
       case EventPhase.PRE:
         return (
-          <PreEventDashboard
+          <PreDashboard
             eventId={event.id}
             demos={event.demos}
             awards={event.awards}
@@ -75,23 +77,9 @@ function EventDashboard({
           />
         );
       case EventPhase.VOTING:
-        return (
-          <PreEventDashboard
-            eventId={event.id}
-            demos={event.demos}
-            awards={event.awards}
-            refetchEvent={refetchEvent}
-          />
-        );
+        return <VotingDashboard />;
       case EventPhase.RESULTS:
-        return (
-          <PreEventDashboard
-            eventId={event.id}
-            demos={event.demos}
-            awards={event.awards}
-            refetchEvent={refetchEvent}
-          />
-        );
+        return <ResultsDashboard />;
     }
   }
 
@@ -141,11 +129,11 @@ function PhaseSelector({
       <div className="flex flex-row items-center pb-2">
         <h3 className="font-semibold">Phase:</h3>
         <select
-          className="ml-2 w-[150px] rounded-xl border border-gray-200 p-2"
+          className="ml-2 w-[120px] rounded-xl border border-gray-200 p-2"
           value={phase}
           onChange={(e) => setPhase(EventPhase[e.target.value as EventPhase])}
         >
-          <option value="PRE">Pre-event</option>
+          <option value="PRE">Pre-demos</option>
           <option value="DEMO">Demos</option>
           <option value="VOTING">Voting</option>
           <option value="RESULTS">Results</option>

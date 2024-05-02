@@ -75,7 +75,7 @@ export const eventRouter = createTRPCRouter({
       },
       include: {
         demos: { orderBy: { index: "asc" } },
-        attendees: true,
+        attendees: { orderBy: { name: "asc" } },
         awards: { orderBy: { index: "asc" } },
       },
     });
@@ -96,6 +96,14 @@ export const eventRouter = createTRPCRouter({
         })
         .then(updateCurrentEvent);
     }),
+  removeCurrent: protectedProcedure.mutation(async () => {
+    return db.event
+      .updateMany({
+        where: { isCurrent: true },
+        data: { isCurrent: false },
+      })
+      .then(() => kv.del("currentEvent"));
+  }),
   updatePhase: protectedProcedure
     .input(
       z.object({

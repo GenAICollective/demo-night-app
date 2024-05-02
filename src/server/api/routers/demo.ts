@@ -50,30 +50,48 @@ export const demoRouter = createTRPCRouter({
       return db.feedback.findMany({
         where: { demoId: input },
         include: {
-          attendee: { select: { name: true } },
+          attendee: { select: { name: true, type: true } },
         },
       });
     }),
-  update: protectedProcedure
+  upsert: protectedProcedure
     .input(
       z.object({
-        id: z.string(),
-        name: z.string().optional(),
-        email: z.string().email().optional(),
-        url: z.string().url().optional(),
+        originalId: z.string().optional(),
+        id: z.string().optional(),
+        eventId: z.string(),
+        name: z.string(),
+        email: z.string().email(),
+        url: z.string().url(),
       }),
     )
     .mutation(async ({ input }) => {
-      return db.demo.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          name: input.name,
-          email: input.email,
-          url: input.url,
-        },
-      });
+      if (input.originalId) {
+        return db.demo.update({
+          where: {
+            id: input.originalId,
+          },
+          data: {
+            id: input.id,
+            name: input.name,
+            email: input.email,
+            url: input.url,
+          },
+        });
+      } else {
+        const index = await db.demo.count({
+          where: { eventId: input.eventId },
+        });
+        return db.demo.create({
+          data: {
+            eventId: input.eventId,
+            index: index,
+            name: input.name,
+            email: input.email,
+            url: input.url,
+          },
+        });
+      }
     }),
   updateIndex: protectedProcedure
     .input(z.object({ id: z.string(), index: z.number() }))
@@ -129,29 +147,6 @@ export const demoRouter = createTRPCRouter({
           where: { id: input.id },
           data: { index: input.index },
         });
-      });
-    }),
-  create: protectedProcedure
-    .input(
-      z.object({
-        eventId: z.string(),
-        name: z.string(),
-        email: z.string().email(),
-        url: z.string().url(),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      const index = await db.demo.count({
-        where: { eventId: input.eventId },
-      });
-      return db.demo.create({
-        data: {
-          eventId: input.eventId,
-          index: index,
-          name: input.name,
-          email: input.email,
-          url: input.url,
-        },
       });
     }),
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {

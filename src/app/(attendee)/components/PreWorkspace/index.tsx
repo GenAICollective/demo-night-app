@@ -1,7 +1,7 @@
 import { UpdateAttendeeForm } from "../UpdateAttendee";
 import { type Attendee } from "@prisma/client";
 
-export default function PreEventWorkspace({
+export default function PreWorkspace({
   attendee,
   setAttendee,
 }: {
