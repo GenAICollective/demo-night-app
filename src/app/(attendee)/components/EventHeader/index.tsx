@@ -1,18 +1,10 @@
+import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
 import { UpdateAttendeeButton } from "../UpdateAttendee";
-import { type Attendee, EventPhase } from "@prisma/client";
+import { EventPhase } from "@prisma/client";
 import Image from "next/image";
 
-import { type CurrentEvent } from "~/server/api/routers/event";
-
-export default function EventHeader({
-  currentEvent,
-  attendee,
-  setAttendee,
-}: {
-  currentEvent: CurrentEvent;
-  attendee: Attendee | null;
-  setAttendee: (attendee: Attendee) => void;
-}) {
+export default function EventHeader() {
+  const { currentEvent, attendee, setAttendee } = useWorkspaceContext();
   return (
     <header className="fixed top-0 flex h-12 w-full max-w-xl flex-col items-center bg-white/60 text-black backdrop-blur">
       {/* <PhasePills phase={currentEvent.phase} /> */}

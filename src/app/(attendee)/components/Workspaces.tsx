@@ -1,5 +1,6 @@
 "use client";
 
+import { WorkspaceContext } from "../contexts/WorkspaceContext";
 import { useAttendee } from "../hooks/useAttendee";
 import useEventSync from "../hooks/useEventSync";
 import { EventPhase } from "@prisma/client";
@@ -11,8 +12,8 @@ import LoadingDots from "~/components/loading/loading-dots";
 import DemoWorkspace from "./DemoWorkspace";
 import EventHeader from "./EventHeader";
 import PreWorkspace from "./PreWorkspace";
+import ResultsWorkspace from "./ResultsWorkspace";
 import VotingWorkspace from "./VotingWorkspace";
-import ResultsWorkspace from "./VotingWorkspace";
 
 export default function Workspaces({
   currentEvent: initialCurrentEvent,
@@ -25,32 +26,23 @@ export default function Workspaces({
   function workspace() {
     switch (currentEvent?.phase) {
       case EventPhase.PRE:
-        return <PreWorkspace attendee={attendee} setAttendee={setAttendee} />;
+        return <PreWorkspace />;
       case EventPhase.DEMO:
         if (!event || event.demos.length === 0) return <LoadingScreen />;
-        return (
-          <DemoWorkspace
-            currentEvent={currentEvent}
-            attendee={attendee}
-            demos={event.demos}
-          />
-        );
+        return <DemoWorkspace demos={event.demos} />;
       case EventPhase.VOTING:
-        return <VotingWorkspace />;
+        if (!event || event.demos.length === 0) return <LoadingScreen />;
+        return <VotingWorkspace awards={event.awards} demos={event.demos} />;
       case EventPhase.RESULTS:
         return <ResultsWorkspace />;
     }
   }
 
   return (
-    <>
-      <EventHeader
-        currentEvent={currentEvent}
-        attendee={attendee}
-        setAttendee={setAttendee}
-      />
+    <WorkspaceContext.Provider value={{ currentEvent, attendee, setAttendee }}>
+      <EventHeader />
       <div className="size-full flex-1 pt-12">{workspace()}</div>
-    </>
+    </WorkspaceContext.Provider>
   );
 }
 

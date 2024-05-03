@@ -1,22 +1,15 @@
-import { type Attendee, type Demo, type Feedback } from "@prisma/client";
+import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
+import { type Demo, type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 
 import { cn } from "~/lib/utils";
-import { type CurrentEvent } from "~/server/api/routers/event";
 
 import { DemoSelectionHeader } from "./DemoSelectionHeader";
 import { useFeedback } from "./hooks/useFeedback";
 
-export default function DemoWorkspace({
-  currentEvent,
-  attendee,
-  demos,
-}: {
-  currentEvent: CurrentEvent;
-  attendee: Attendee;
-  demos: Demo[];
-}) {
+export default function DemoWorkspace({ demos }: { demos: Demo[] }) {
+  const { currentEvent, attendee } = useWorkspaceContext();
   const { id: eventId, currentDemoId } = currentEvent;
   const [selectedDemo, setSelectedDemo] = useState<Demo>(demos[0]!);
   const { feedback, setFeedback } = useFeedback(
