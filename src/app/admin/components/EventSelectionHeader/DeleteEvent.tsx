@@ -16,7 +16,7 @@ export function DeleteEventButton({
   const modal = useModal();
   return (
     <button
-      className="rounded-xl bg-red-200 p-2 font-semibold transition-all hover:bg-red-300 focus:outline-none"
+      className="w-28 rounded-xl bg-red-200 p-2 font-semibold transition-all hover:bg-red-300 focus:outline-none"
       onClick={() =>
         modal?.show(
           <DeleteEventModal eventId={eventId} onDeleted={onDeleted} />,

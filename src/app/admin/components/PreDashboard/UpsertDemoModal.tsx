@@ -12,11 +12,11 @@ import { useModal } from "~/components/modal/provider";
 export function UpsertDemoModal({
   demo,
   eventId,
-  onCreated,
+  onSubmit,
 }: {
   demo?: Demo;
   eventId: string;
-  onCreated: (demo: Demo) => void;
+  onSubmit: (demo: Demo) => void;
 }) {
   const upsertMutation = api.demo.upsert.useMutation();
   const { register, handleSubmit } = useForm({
@@ -30,7 +30,7 @@ export function UpsertDemoModal({
         upsertMutation
           .mutateAsync({
             originalId: demo?.id,
-            id: demo?.id,
+            id: data.id as string,
             eventId: eventId,
             name: data.name as string,
             email: data.email as string,
@@ -38,11 +38,13 @@ export function UpsertDemoModal({
           })
           .then((result) => {
             modal?.hide();
-            toast.success("Successfully created demo!");
-            onCreated(result);
+            toast.success(`Successfully ${demo ? "updated" : "created"} demo!`);
+            onSubmit(result);
           })
           .catch((error) => {
-            toast.error(`Failed to create demo: ${error.message}`);
+            toast.error(
+              `Failed to ${demo ? "update" : "create"} demo: ${error.message}`,
+            );
           });
       })}
       className="flex flex-col gap-4"
@@ -57,6 +59,7 @@ export function UpsertDemoModal({
           {...register("name", { required: true, minLength: 3 })}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
+          autoFocus
         />
       </label>
       {demo && (

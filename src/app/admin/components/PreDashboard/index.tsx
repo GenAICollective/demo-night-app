@@ -23,11 +23,7 @@ export default function PreDashboard({
 
   const showUpsertDemoModal = (demo?: Demo) => {
     modal?.show(
-      <UpsertDemoModal
-        eventId={eventId}
-        demo={demo}
-        onCreated={refetchEvent}
-      />,
+      <UpsertDemoModal eventId={eventId} demo={demo} onSubmit={refetchEvent} />,
     );
   };
 
@@ -36,7 +32,7 @@ export default function PreDashboard({
       <UpsertAwardModal
         eventId={eventId}
         award={award}
-        onCreated={refetchEvent}
+        onSubmit={refetchEvent}
       />,
     );
   };

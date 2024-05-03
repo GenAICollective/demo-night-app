@@ -1,13 +1,16 @@
 "use client";
 
+import { type Event } from "@prisma/client";
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
 
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
-import { CreateEventButton } from "./CreateEvent";
+import { useModal } from "~/components/modal/provider";
+
 import { DeleteEventButton } from "./DeleteEvent";
+import { UpsertEventModal } from "./UpsertEventModal";
 
 export default function EventSelectionHeader({
   selectedEventId,
@@ -16,6 +19,7 @@ export default function EventSelectionHeader({
   selectedEventId?: string;
   setSelectedEventId: (eventId?: string) => void;
 }) {
+  const modal = useModal();
   const { data: events, refetch: refetchEvents } = api.event.all.useQuery();
   const makeCurrentMutation = api.event.updateCurrent.useMutation();
   const removeCurrentMutation = api.event.removeCurrent.useMutation();
@@ -30,6 +34,12 @@ export default function EventSelectionHeader({
     () => events?.filter((e) => e.id === selectedEventId)[0]?.isCurrent,
     [events, selectedEventId],
   );
+
+  const showUpsertEventModal = (event?: Event) => {
+    modal?.show(
+      <UpsertEventModal event={event} onSubmit={() => refetchEvents()} />,
+    );
+  };
 
   return (
     <header className="flex w-full items-center justify-between bg-gray-100 p-2 text-black">
@@ -52,25 +62,39 @@ export default function EventSelectionHeader({
           </div>
         )}
         {selectedEventId && (
-          <button
-            className={cn(
-              "rounded-xl p-2 font-semibold transition-all focus:outline-none",
-              isCurrent
-                ? "bg-red-200 hover:bg-red-300"
-                : "bg-green-200 hover:bg-green-300",
-            )}
-            onClick={() => {
-              if (isCurrent) {
-                removeCurrentMutation.mutateAsync().then(() => refetchEvents());
-              } else {
-                makeCurrentMutation
-                  .mutateAsync(selectedEventId)
-                  .then(() => refetchEvents());
-              }
-            }}
-          >
-            {isCurrent ? "Stop" : "Start"}
-          </button>
+          <>
+            <button
+              className="w-28 rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
+              onClick={() => {
+                showUpsertEventModal(
+                  events?.find((e) => e.id === selectedEventId),
+                );
+              }}
+            >
+              Edit Event
+            </button>
+            <button
+              className={cn(
+                "w-28 rounded-xl p-2 font-semibold transition-all focus:outline-none",
+                isCurrent
+                  ? "bg-red-200 hover:bg-red-300"
+                  : "bg-green-200 hover:bg-green-300",
+              )}
+              onClick={() => {
+                if (isCurrent) {
+                  removeCurrentMutation
+                    .mutateAsync()
+                    .then(() => refetchEvents());
+                } else {
+                  makeCurrentMutation
+                    .mutateAsync(selectedEventId)
+                    .then(() => refetchEvents());
+                }
+              }}
+            >
+              {isCurrent ? "Stop" : "Start"} Event
+            </button>
+          </>
         )}
       </div>
       <div className="flex flex-row items-center gap-2">
@@ -83,12 +107,12 @@ export default function EventSelectionHeader({
             }}
           />
         )}
-        <CreateEventButton
-          onCreated={(event) => {
-            setSelectedEventId(event.id);
-            refetchEvents();
-          }}
-        />
+        <button
+          className="w-28 rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
+          onClick={() => showUpsertEventModal()}
+        >
+          Create Event
+        </button>
       </div>
     </header>
   );

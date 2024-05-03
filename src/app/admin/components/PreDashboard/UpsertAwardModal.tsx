@@ -12,11 +12,11 @@ import { useModal } from "~/components/modal/provider";
 export function UpsertAwardModal({
   award,
   eventId,
-  onCreated,
+  onSubmit,
 }: {
   award?: Award;
   eventId: string;
-  onCreated: (award: Award) => void;
+  onSubmit: (award: Award) => void;
 }) {
   const upsertMutation = api.award.upsert.useMutation();
   const { register, handleSubmit } = useForm({
@@ -30,17 +30,21 @@ export function UpsertAwardModal({
         upsertMutation
           .mutateAsync({
             originalId: award?.id,
-            id: award?.id,
+            id: data.id as string,
             eventId: eventId,
             name: data.name as string,
           })
           .then((result) => {
             modal?.hide();
-            toast.success("Successfully created award!");
-            onCreated(result);
+            toast.success(
+              `Successfully ${award ? "updated" : "created"} award!`,
+            );
+            onSubmit(result);
           })
           .catch((error) => {
-            toast.error(`Failed to create award: ${error.message}`);
+            toast.error(
+              `Failed to ${award ? "update" : "create"} award: ${error.message}`,
+            );
           });
       })}
       className="flex flex-col gap-4"
@@ -55,6 +59,7 @@ export function UpsertAwardModal({
           {...register("name", { required: true, minLength: 3 })}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
+          autoFocus
         />
       </label>
       {award && (

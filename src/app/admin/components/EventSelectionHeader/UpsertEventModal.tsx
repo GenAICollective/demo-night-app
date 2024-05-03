@@ -9,67 +9,74 @@ import { api } from "~/trpc/react";
 import SubmitButton from "~/components/SubmitButton";
 import { useModal } from "~/components/modal/provider";
 
-export function CreateEventButton({
-  onCreated,
+export function UpsertEventModal({
+  event,
+  onSubmit,
 }: {
-  onCreated: (event: Event) => void;
+  event?: Event;
+  onSubmit: (event: Event) => void;
 }) {
-  const modal = useModal();
-  return (
-    <button
-      className="rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
-      onClick={() => modal?.show(<CreateEventModal onCreated={onCreated} />)}
-    >
-      Create Event
-    </button>
-  );
-}
-
-export function CreateEventModal({
-  onCreated,
-}: {
-  onCreated: (event: Event) => void;
-}) {
-  const createMutation = api.event.create.useMutation();
-  const { register, handleSubmit } = useForm();
+  const upsertMutation = api.event.upsert.useMutation();
+  const { register, handleSubmit } = useForm({
+    defaultValues: event,
+  });
   const modal = useModal();
 
   return (
     <form
       onSubmit={handleSubmit((data) => {
-        createMutation
+        upsertMutation
           .mutateAsync({
+            originalId: event?.id,
+            id: data.id as string,
             name: data.name as string,
             date: new Date(data.date).toISOString(),
             url: data.url as string,
           })
           .then((result) => {
             modal?.hide();
-            toast.success("Successfully created event!");
-            onCreated(result);
+            toast.success(
+              `Successfully ${event ? "updated" : "created"} event!`,
+            );
+            onSubmit(result);
           })
           .catch((error) => {
-            toast.error(`Failed to create event: ${error.message}`);
+            toast.error(
+              `Failed to ${event ? "update" : "create"} event: ${error.message}`,
+            );
           });
       })}
       className="flex flex-col gap-4"
     >
-      <h1 className="text-center text-xl font-bold">Create New Event</h1>
+      <h1 className="text-center text-xl font-bold">
+        {event ? "Update" : "Create New"} Event
+      </h1>
       <label className="flex flex-col gap-1">
         <span className="font-semibold">Name</span>
         <input
           type="text"
-          defaultValue="SF Demo Extravaganza 🚀"
           {...register("name", { required: true })}
           className="rounded-xl border border-gray-200 p-2"
+          placeholder="SF Demo Extravaganza 🚀"
           autoComplete="off"
+          autoFocus
         />
       </label>
+      {event && (
+        <label className="flex flex-col gap-1">
+          <span className="font-semibold">ID</span>
+          <input
+            type="text"
+            {...register("id", { required: true })}
+            className="rounded-xl border border-gray-200 p-2"
+            autoComplete="off"
+          />
+        </label>
+      )}
       <label className="flex flex-col gap-1">
         <span className="font-semibold">Date</span>
         <input
           type="date"
-          defaultValue={new Date().toISOString().split("T")[0]}
           {...register("date", { required: true })}
           className="rounded-xl border border-gray-200 p-2"
         />
@@ -81,9 +88,13 @@ export function CreateEventModal({
           {...register("url", { required: true })}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
+          placeholder="https://lu.ma/sf-demo"
         />
       </label>
-      <SubmitButton title="Create Event" pending={createMutation.isPending} />
+      <SubmitButton
+        title={event ? "Update Event" : "Create Event"}
+        pending={upsertMutation.isPending}
+      />
     </form>
   );
 }

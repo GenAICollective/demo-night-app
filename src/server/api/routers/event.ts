@@ -40,31 +40,34 @@ export const eventRouter = createTRPCRouter({
       },
     });
   }),
-  create: protectedProcedure
+  upsert: protectedProcedure
     .input(
       z.object({
+        originalId: z.string().optional(),
+        id: z.string().optional(),
         name: z.string(),
         date: z.string().datetime(),
         url: z.string().url(),
       }),
     )
     .mutation(async ({ input }) => {
+      if (input.originalId) {
+        return db.event.update({
+          where: { id: input.originalId },
+          data: {
+            id: input.id,
+            name: input.name,
+            date: new Date(input.date),
+            url: input.url,
+          },
+        });
+      }
       return db.event.create({
-        data: {
-          name: input.name,
-          date: input.date,
-          url: input.url,
-        },
+        data: { ...input },
       });
     }),
   all: protectedProcedure.query(() => {
     return db.event.findMany({
-      select: {
-        id: true,
-        name: true,
-        date: true,
-        isCurrent: true,
-      },
       orderBy: { date: "desc" },
     });
   }),

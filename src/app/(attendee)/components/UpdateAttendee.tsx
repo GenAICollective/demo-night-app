@@ -99,6 +99,7 @@ export function UpdateAttendeeForm({
           type="text"
           {...register("name")}
           className="rounded-xl border border-gray-200 p-2 text-lg"
+          autoFocus
         />
       </label>
       <label className="flex w-full flex-col gap-1">

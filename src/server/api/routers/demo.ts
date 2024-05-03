@@ -68,9 +68,7 @@ export const demoRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       if (input.originalId) {
         return db.demo.update({
-          where: {
-            id: input.originalId,
-          },
+          where: { id: input.originalId },
           data: {
             id: input.id,
             name: input.name,
@@ -84,11 +82,8 @@ export const demoRouter = createTRPCRouter({
         });
         return db.demo.create({
           data: {
-            eventId: input.eventId,
-            index: index,
-            name: input.name,
-            email: input.email,
-            url: input.url,
+            ...input,
+            index,
           },
         });
       }

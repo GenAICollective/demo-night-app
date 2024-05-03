@@ -1,9 +1,4 @@
-import {
-  AnimatePresence,
-  type PanInfo,
-  motion,
-  useAnimation,
-} from "framer-motion";
+import { type PanInfo, motion, useAnimation } from "framer-motion";
 import {
   type Dispatch,
   type ReactNode,
@@ -24,10 +19,7 @@ export default function Leaflet({
   const transitionProps = { type: "spring", stiffness: 500, damping: 30 };
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    controls.start({
-      y: 20,
-      transition: transitionProps,
-    });
+    controls.start({ y: 0, transition: transitionProps });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -37,7 +29,7 @@ export default function Leaflet({
     const velocity = info.velocity.y;
     const height = leafletRef.current?.getBoundingClientRect().height ?? 0;
     if (offset > height / 2 || velocity > 800) {
-      await controls.start({ y: "100%", transition: transitionProps });
+      controls.start({ y: "100%", transition: transitionProps });
       setShowModal(false);
     } else {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -46,11 +38,11 @@ export default function Leaflet({
   }
 
   return (
-    <AnimatePresence>
+    <>
       <motion.div
         ref={leafletRef}
         key="leaflet"
-        className="group fixed inset-x-0 bottom-0 z-40 w-screen cursor-grab rounded-t-[30px] bg-white pb-5 active:cursor-grabbing md:hidden"
+        className="group fixed inset-x-0 bottom-0 z-40 -mb-20 w-screen cursor-grab rounded-t-[30px] bg-white pb-20 shadow-xl active:cursor-grabbing md:hidden"
         initial={{ y: "100%" }}
         animate={controls}
         exit={{ y: "100%" }}
@@ -58,7 +50,7 @@ export default function Leaflet({
         drag="y"
         dragDirectionLock
         onDragEnd={handleDragEnd}
-        dragElastic={{ top: 0, bottom: 1 }}
+        dragElastic={{ top: 0.05, bottom: 1 }}
         dragConstraints={{ top: 0, bottom: 0 }}
       >
         <div className={`-mb-4 flex h-7 w-full items-center justify-center`}>
@@ -75,6 +67,6 @@ export default function Leaflet({
         exit={{ opacity: 0 }}
         onClick={() => setShowModal(false)}
       />
-    </AnimatePresence>
+    </>
   );
 }
