@@ -1,13 +1,16 @@
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
 import { type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, BadgeInfo } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+
+import { useModal } from "~/components/modal/provider";
 
 import { ActionButtons } from "./ActionButtons";
 import { ClapsConfetti, StarConfetti } from "./Confetti";
 import { DemoSelectionHeader } from "./DemoSelectionHeader";
+import InfoModal from "./InfoModal";
 import RatingSlider from "./RatingSlider";
 import { useFeedback } from "./hooks/useFeedback";
 
@@ -20,6 +23,7 @@ export default function DemoWorkspace({ demos }: { demos: Demo[] }) {
     attendee,
     selectedDemo,
   );
+  const modal = useModal();
   const [lastCommentChange, setLastCommentChange] = useState<number | null>(
     null,
   );
@@ -92,13 +96,19 @@ export default function DemoWorkspace({ demos }: { demos: Demo[] }) {
               setFeedback({ ...feedback, comment: e.target.value });
               setLastCommentChange(Date.now());
             }}
-            rows={4}
+            rows={3}
             className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
             placeholder="Enter your feedback..."
           />
         </motion.div>
         <ActionButtons feedback={feedback} setFeedback={setFeedback} />
       </AnimatePresence>
+      <button
+        className="fixed bottom-2 left-2 z-10 h-9 w-9 cursor-pointer rounded-full bg-gray-200 p-[6px] text-gray-500 shadow-xl hover:bg-gray-300 hover:text-gray-700"
+        onClick={() => modal?.show(<InfoModal />)}
+      >
+        <BadgeInfo />
+      </button>
       <StarConfetti feedback={feedback} />
       <ClapsConfetti feedback={feedback} />
     </>

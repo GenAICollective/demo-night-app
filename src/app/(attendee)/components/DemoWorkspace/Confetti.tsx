@@ -29,7 +29,7 @@ export function StarConfetti({ feedback }: { feedback: Feedback }) {
         clearTimeout(timeoutId.current);
       }
     };
-  }, [feedback.star]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [feedback.id, feedback.star]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const drawShape = (ctx: CanvasRenderingContext2D) => {
     ctx.font = "20px sans-serif";

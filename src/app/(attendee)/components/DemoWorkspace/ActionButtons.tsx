@@ -12,12 +12,12 @@ export function ActionButtons({
   setFeedback: (feedback: Feedback) => void;
 }) {
   return (
-    <div className="fixed bottom-4 z-10 flex w-full max-w-xl select-none items-center justify-evenly">
+    <div className="fixed bottom-3 z-10 flex w-full max-w-xl select-none items-center justify-evenly px-4 ">
       <motion.button
         whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
         whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
         className={cn(
-          "bg-radient-ellipse-c relative aspect-square w-20 rounded-full border-4 from-yellow-500/40 from-50% to-yellow-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all hover:bg-yellow-500/20",
+          "bg-radient-ellipse-c relative mb-10 aspect-square w-20 rounded-full border-4 from-yellow-500/40 from-50% to-yellow-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all hover:bg-yellow-500/20",
           feedback?.star ? "border-yellow-500" : "border-transparent",
         )}
         onClick={() => {
@@ -83,7 +83,7 @@ function WantToButton({
         whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
         whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
         className={cn(
-          "bg-radient-ellipse-c relative aspect-square w-20 rounded-full border-4 border-transparent from-blue-500/40 from-50% to-blue-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all hover:bg-blue-500/20",
+          "bg-radient-ellipse-c relative mb-10 aspect-square w-20 rounded-full border-4 border-transparent from-blue-500/40 from-50% to-blue-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all hover:bg-blue-500/20",
           showActionButtons
             ? "from-red-500/40 to-red-500/60 hover:bg-red-500/20"
             : hasActed
@@ -97,7 +97,7 @@ function WantToButton({
       <AnimatePresence>
         {showActionButtons && (
           <motion.div
-            className="absolute -top-[270px] flex flex-col gap-4"
+            className="absolute -top-[290px] flex flex-col gap-4"
             initial={{ opacity: 0, y: 100, scale: 0.5 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.5 }}

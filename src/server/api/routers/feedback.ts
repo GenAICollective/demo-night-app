@@ -41,6 +41,18 @@ export const feedbackRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
+      // Only allow a single feedback to have a star
+      if (input.star === true) {
+        await db.feedback.updateMany({
+          where: {
+            id: { not: input.id },
+            eventId: input.eventId,
+            attendeeId: input.attendeeId,
+            star: true,
+          },
+          data: { star: false },
+        });
+      }
       return db.feedback.upsert({
         where: { id: input.id },
         create: { ...input },

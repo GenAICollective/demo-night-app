@@ -50,7 +50,21 @@ export function useFeedback(
 
   useEffect(() => {
     setDebouncedFeedback(feedback);
-  }, [feedback]);
+    // Only allow a single feedback to have a star
+    if (feedback.star) {
+      const feedbacksWithStar = Object.values(feedbacks).filter(
+        (f) => f.eventId === feedback.eventId && f.star && f.id !== feedback.id,
+      );
+      let updatedFeedbacks = feedbacks;
+      feedbacksWithStar.forEach((f) => {
+        updatedFeedbacks = {
+          ...updatedFeedbacks,
+          [f.demoId]: { ...f, star: false },
+        };
+      });
+      setFeedbacks(updatedFeedbacks);
+    }
+  }, [feedback]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { feedback, setFeedback };
 }
