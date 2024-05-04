@@ -89,6 +89,7 @@ export function FeedbackItem({
               .mutateAsync(feedback.id)
               .then(() => refetchFeedback());
           }}
+          className="focus:outline-none"
         >
           🗑
         </button>

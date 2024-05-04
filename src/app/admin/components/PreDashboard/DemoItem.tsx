@@ -1,25 +1,24 @@
 import { type Demo } from "@prisma/client";
 import { motion } from "framer-motion";
-import { CircleCheck } from "lucide-react";
+import { toast } from "sonner";
 
-import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 export function DemoItem({
   demo,
-  selectedDemo,
-  setSelectedDemo,
-  isCurrent,
+  eventId,
+  onClick,
+  onClickQR,
   refetchEvent,
 }: {
   demo: Demo;
-  selectedDemo: Demo | undefined;
-  setSelectedDemo: (demo: Demo) => void;
-  isCurrent: boolean;
+  eventId: string;
+  onClick: () => void;
+  onClickQR: () => void;
   refetchEvent: () => void;
 }) {
-  const updateCurrentDemoMutation = api.event.updateCurrentDemo.useMutation();
   const updateIndexMutation = api.demo.updateIndex.useMutation();
+  const deleteMutation = api.demo.delete.useMutation();
 
   return (
     <motion.li
@@ -29,34 +28,38 @@ export function DemoItem({
       exit={{ opacity: 0 }}
       className="flex flex-row items-center gap-2"
     >
-      <p className="w-[17px] font-bold">{`${demo.index + 1}.`}</p>
+      <p className="min-w-[25px] font-bold">{`${demo.index + 1}.`}</p>
       <button
-        title="Select"
-        className={cn(
-          "flex flex-1 cursor-pointer flex-row items-center justify-between rounded-xl p-2 text-start font-medium focus:outline-none",
-          isCurrent ? "bg-green-200" : "bg-white",
-        )}
-        onClick={() => {
-          setSelectedDemo(demo);
-        }}
+        title="Edit Demo"
+        onClick={onClick}
+        className="flex-1 rounded-xl bg-white p-2 text-start font-medium focus:outline-none"
       >
-        <p className="line-clamp-1">{demo.name}</p>
-        {selectedDemo?.id === demo.id && (
-          <CircleCheck size={14} strokeWidth={3} />
-        )}
+        {demo.name}
       </button>
       <div className="flex flex-row gap-2 font-semibold">
         <button
-          title="Set as Current"
+          title="Copy URL"
           onClick={() => {
-            setSelectedDemo(demo);
-            updateCurrentDemoMutation
-              .mutateAsync({ id: demo.eventId, demoId: demo.id })
-              .then(() => refetchEvent());
+            const url = `${window.location.origin}/${eventId}/${demo.id}`;
+            navigator.clipboard.writeText(url).then(
+              () => {
+                toast.success("URL copied to clipboard!");
+              },
+              (err) => {
+                toast.error("Failed to copy URL: ", err);
+              },
+            );
           }}
           className="focus:outline-none"
         >
-          ⊕
+          📋
+        </button>
+        <button
+          title="View URL as QR Code"
+          onClick={onClickQR}
+          className="focus:outline-none"
+        >
+          🔳
         </button>
         <button
           title="Move Up"
@@ -85,6 +88,16 @@ export function DemoItem({
           className="focus:outline-none"
         >
           ↓
+        </button>
+
+        <button
+          title="Delete"
+          onClick={() => {
+            deleteMutation.mutateAsync(demo.id).then(() => refetchEvent());
+          }}
+          className="focus:outline-none"
+        >
+          🗑️
         </button>
       </div>
     </motion.li>

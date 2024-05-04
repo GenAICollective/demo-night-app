@@ -63,8 +63,9 @@ function AttendeeItem({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <div
-        className="flex flex-1 cursor-pointer flex-row items-center justify-start gap-1 rounded-xl bg-white p-2 font-medium focus:outline-none"
+      <button
+        title="Copy ID"
+        className="flex flex-1 cursor-pointer flex-row items-center justify-start gap-1 rounded-xl bg-white p-2 text-start font-medium focus:outline-none"
         onClick={copyIdToClipboard}
       >
         {attendee.name ? (
@@ -73,11 +74,13 @@ function AttendeeItem({
           <p className="line-clamp-1 italic text-gray-400">Anonymous</p>
         )}
         <AttendeeTypeBadge type={attendee.type} />
-      </div>
+      </button>
       <button
+        title="Delete"
         onClick={() => {
           deleteMutation.mutateAsync(attendee.id).then(() => refetchEvent());
         }}
+        className="focus:outline-none"
       >
         🗑️
       </button>
