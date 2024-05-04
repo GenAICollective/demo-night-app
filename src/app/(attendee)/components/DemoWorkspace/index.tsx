@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { ActionButtons } from "./ActionButtons";
+import { ClapsConfetti, StarConfetti } from "./Confetti";
 import { DemoSelectionHeader } from "./DemoSelectionHeader";
 import RatingSlider from "./RatingSlider";
 import { useFeedback } from "./hooks/useFeedback";
@@ -92,12 +93,14 @@ export default function DemoWorkspace({ demos }: { demos: Demo[] }) {
               setLastCommentChange(Date.now());
             }}
             rows={4}
-            className="mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 p-2 text-lg font-medium"
+            className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
             placeholder="Enter your feedback..."
           />
         </motion.div>
         <ActionButtons feedback={feedback} setFeedback={setFeedback} />
       </AnimatePresence>
+      <StarConfetti feedback={feedback} />
+      <ClapsConfetti feedback={feedback} />
     </>
   );
 }

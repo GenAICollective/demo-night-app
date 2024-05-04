@@ -1,5 +1,6 @@
 .rc-slider-mark-text {
   font-size: 20px;
+  user-select: none;
 }
 
 .rc-slider-handle {

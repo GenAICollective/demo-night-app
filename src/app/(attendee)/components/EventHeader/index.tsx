@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function EventHeader() {
   const { currentEvent, attendee, setAttendee } = useWorkspaceContext();
   return (
-    <header className="fixed flex h-20 w-full max-w-xl select-none flex-col items-center bg-white/60 text-black backdrop-blur">
+    <header className="fixed z-10 flex h-20 w-full max-w-xl select-none flex-col items-center bg-white/60 text-black backdrop-blur">
       <PhasePills phase={currentEvent.phase} />
       <div className="flex w-full flex-1 flex-row items-center justify-between px-3">
         <Image src="/images/logo.png" alt="logo" width={36} height={36} />
