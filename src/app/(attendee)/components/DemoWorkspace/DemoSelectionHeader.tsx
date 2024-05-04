@@ -21,7 +21,7 @@ export function DemoSelectionHeader({
   const toggleExpand = () => setIsExpanded(!isExpanded);
   return (
     <>
-      <div className="fixed z-20 w-full max-w-xl select-none p-2">
+      <div className="fixed z-20 w-full max-w-xl select-none px-4">
         <div
           onClick={toggleExpand}
           className={cn(
@@ -45,7 +45,14 @@ export function DemoSelectionHeader({
             )) || (
               <>
                 <p className="w-7">{(selectedDemo?.index ?? 0) + 1}.</p>
-                <p>{selectedDemo?.name ?? ""}</p>
+                <p>
+                  {selectedDemo?.name ?? ""}
+                  <span className="font-bold text-red-700">
+                    {selectedDemo?.id !== currentDemoId
+                      ? " (NOT current!)"
+                      : ""}
+                  </span>
+                </p>
               </>
             )}
           </motion.div>
@@ -62,7 +69,7 @@ export function DemoSelectionHeader({
         <AnimatePresence>
           {isExpanded && (
             <motion.div
-              className="absolute left-0 flex max-h-[calc(100vh-4rem)] w-full flex-col gap-2 overflow-y-auto px-2 pb-[60vh] pt-2"
+              className="absolute left-0 flex max-h-[calc(100vh-4rem)] w-full flex-col gap-2 overflow-y-auto px-4 pb-[60vh] pt-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -79,15 +86,20 @@ export function DemoSelectionHeader({
                     setIsExpanded(false);
                   }}
                   className={cn(
-                    "flex cursor-pointer flex-row items-center justify-between gap-2 rounded-xl px-4 py-3 text-lg font-semibold shadow-xl focus:outline-none",
+                    "flex cursor-pointer flex-row items-center justify-between gap-2 rounded-xl px-4 py-3 text-lg font-semibold shadow-xl backdrop-blur focus:outline-none",
                     demo.id === currentDemoId
-                      ? "bg-green-300 hover:bg-green-400"
-                      : "bg-white hover:bg-red-100",
+                      ? "bg-green-300/80 hover:bg-green-400/80"
+                      : "bg-white/80 hover:bg-red-100/80",
                   )}
                 >
                   <div className="flex flex-row gap-2">
                     <p className="w-7">{demo.index + 1}.</p>
-                    <p>{`${demo.name} ${demo.id === currentDemoId ? "(current)" : ""}`}</p>
+                    <p>
+                      {demo.name}
+                      <span className="font-bold text-green-700">
+                        {demo.id === currentDemoId ? " (current)" : ""}
+                      </span>
+                    </p>
                   </div>
                   {selectedDemo?.id === demo.id && (
                     <CircleCheck size={23} strokeWidth={2.25} />

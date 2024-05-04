@@ -33,6 +33,7 @@ export function UpsertAwardModal({
             id: data.id as string,
             eventId: eventId,
             name: data.name as string,
+            description: data.description as string,
           })
           .then((result) => {
             modal?.hide();
@@ -73,6 +74,14 @@ export function UpsertAwardModal({
           />
         </label>
       )}
+      <label className="flex flex-col gap-1">
+        <span className="font-semibold">Description</span>
+        <textarea
+          {...register("description", { required: true, minLength: 3 })}
+          className="rounded-xl border border-gray-200 p-2"
+          rows={2}
+        />
+      </label>
       <SubmitButton
         title={`${award ? "Update" : "Create"} Award`}
         pending={upsertMutation.isPending}

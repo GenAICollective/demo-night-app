@@ -11,13 +11,17 @@ export const awardRouter = createTRPCRouter({
         id: z.string().optional(),
         eventId: z.string(),
         name: z.string(),
+        description: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
       if (input.originalId) {
         return db.award.update({
           where: { id: input.originalId },
-          data: { name: input.name },
+          data: {
+            name: input.name,
+            description: input.description,
+          },
         });
       } else {
         const index = await db.award.count({
@@ -28,6 +32,7 @@ export const awardRouter = createTRPCRouter({
             eventId: input.eventId,
             index: index,
             name: input.name,
+            description: input.description,
           },
         });
       }

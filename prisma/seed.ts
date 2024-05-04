@@ -15,6 +15,7 @@ async function main() {
   const demos = Array.from({ length: 10 }, (_, index) => ({
     id: `demo-${index + 1}`,
     name: `Demo ${index + 1}`,
+    description: `Demo ${index + 1} description`,
     index: index,
     email: `demo-${index + 1}@example.com`,
     url: `https://example.com`,
@@ -23,6 +24,7 @@ async function main() {
   const awards = Array.from({ length: 3 }, (_, index) => ({
     id: `award-${index + 1}`,
     name: `Award ${index + 1}`,
+    description: `Award ${index + 1} description`,
     index: index,
   }));
 
@@ -30,6 +32,7 @@ async function main() {
     where: { id: "sf-demo" },
     update: {},
     create: {
+      id: "sf-demo",
       name: "SF Demo Extravaganza 🚀",
       date: new Date(Date.now() + 7 * 86_400_000).toISOString(),
       url: "https://lu.ma/sf-demo",

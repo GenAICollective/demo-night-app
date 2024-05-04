@@ -61,6 +61,7 @@ export const demoRouter = createTRPCRouter({
         id: z.string().optional(),
         eventId: z.string(),
         name: z.string(),
+        description: z.string(),
         email: z.string().email(),
         url: z.string().url(),
       }),
@@ -72,6 +73,7 @@ export const demoRouter = createTRPCRouter({
           data: {
             id: input.id,
             name: input.name,
+            description: input.description,
             email: input.email,
             url: input.url,
           },

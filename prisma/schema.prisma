@@ -89,9 +89,10 @@ model Demo {
     eventId String
     index   Int
 
-    name  String
-    email String
-    url   String
+    name        String
+    description String
+    email       String
+    url         String
 
     feedback Feedback[]
     votes    Vote[]
@@ -118,7 +119,8 @@ model Award {
     winner   Demo?   @relation(fields: [winnerId], references: [id])
     winnerId String?
 
-    name String
+    name        String
+    description String
 
     votes Vote[]
 }

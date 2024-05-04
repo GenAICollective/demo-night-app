@@ -37,7 +37,7 @@ export default function FeedbackOverview({
       <div className="flex basis-1/6 flex-col items-center justify-center rounded-xl bg-white py-2">
         <p className="text-gray-400">#️⃣</p>
         <p className="-mt-1 text-xl font-bold">
-          {(rating / feedback.length).toFixed(1)}
+          {feedback.length > 0 ? (rating / feedback.length).toFixed(1) : "-"}
         </p>
       </div>
       <div className="flex basis-1/6 flex-col items-center justify-center rounded-xl bg-white py-2">
