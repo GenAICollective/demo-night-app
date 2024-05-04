@@ -84,10 +84,12 @@ export function UpdateAttendeeForm({
         toast.success("Successfully updated profile!");
         onSubmit?.();
       })}
-      className="flex w-full flex-col items-center gap-4"
+      className="flex w-full flex-col items-center gap-4 font-medium"
     >
       <div>
-        <h1 className="text-center text-4xl font-bold">Hey There! 👋</h1>
+        <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
+          Hey There! 👋
+        </h1>
         <p className="text-md max-w-[330px] pt-2 text-center font-medium leading-5 text-gray-500">
           Put on your best smile! Don&apos;t worry, your contact info will only
           be shared with demoists you choose to connect with!
@@ -98,8 +100,7 @@ export function UpdateAttendeeForm({
         <input
           type="text"
           {...register("name")}
-          className="rounded-xl border border-gray-200 p-2 text-lg"
-          autoFocus
+          className="rounded-xl border-2 border-gray-200 p-2 text-lg"
         />
       </label>
       <label className="flex w-full flex-col gap-1">
@@ -107,14 +108,14 @@ export function UpdateAttendeeForm({
         <input
           type="email"
           {...register("email")}
-          className="rounded-xl border border-gray-200 p-2 text-lg"
+          className="rounded-xl border-2 border-gray-200 p-2 text-lg"
         />
       </label>
-      <label className="flex w-full flex-col gap-1">
+      <label className="flex w-full flex-col gap-1 pb-2">
         <span className="font-semibold">I consider myself a...</span>
         <select
           {...register("type")}
-          className="appearance-none rounded-xl border border-gray-200 bg-white p-2 text-lg"
+          className="appearance-none rounded-xl border-2 border-gray-200 bg-white p-2 text-lg"
         >
           <option value="">Select one...</option>
           {attendeePreselectTypes.map((type) => (

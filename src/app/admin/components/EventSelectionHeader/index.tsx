@@ -49,7 +49,7 @@ export default function EventSelectionHeader({
         {events && events.length > 0 && (
           <div className="flex flex-row items-center gap-2">
             <select
-              className="rounded-xl border border-gray-200 p-2"
+              className="rounded-xl border border-gray-200 p-2 font-medium"
               value={selectedEventId}
               onChange={(e) => setSelectedEventId(e.target.value)}
             >

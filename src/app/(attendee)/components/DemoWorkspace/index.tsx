@@ -1,6 +1,8 @@
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
 import { type Demo, type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { cn } from "~/lib/utils";
@@ -35,8 +37,21 @@ export default function DemoWorkspace({ demos }: { demos: Demo[] }) {
         setSelectedDemo={setSelectedDemo}
         currentDemoId={currentDemoId}
       />
-      <div className="flex h-full flex-col items-center justify-center gap-8 p-8 pt-20">
-        <h1 className="text-3xl font-bold">{selectedDemo.name}</h1>
+      <div className="flex h-full flex-col items-center justify-center gap-8 p-8 pt-24">
+        <Link
+          href={selectedDemo.url}
+          target="_blank"
+          className="group flex items-center gap-3 transition-all"
+        >
+          <h1 className="line-clamp-1 font-kallisto text-4xl font-bold tracking-tight group-hover:underline">
+            {selectedDemo.name}
+          </h1>
+          <ArrowUpRight
+            size={28}
+            strokeWidth={3}
+            className="-mt-[5px] aspect-square w-7 flex-none rounded-lg bg-gray-200 p-[2px] text-gray-500 group-hover:bg-gray-300 group-hover:text-gray-700"
+          />
+        </Link>
         <label
           htmlFor="rating-slider"
           className="-mb-6 block text-lg font-semibold"

@@ -4,6 +4,7 @@ import { WorkspaceContext } from "../contexts/WorkspaceContext";
 import { useAttendee } from "../hooks/useAttendee";
 import useEventSync from "../hooks/useEventSync";
 import { EventPhase } from "@prisma/client";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { type CurrentEvent } from "~/server/api/routers/event";
 
@@ -41,7 +42,20 @@ export default function Workspaces({
   return (
     <WorkspaceContext.Provider value={{ currentEvent, attendee, setAttendee }}>
       <EventHeader />
-      <div className="size-full flex-1 pt-12">{workspace()}</div>
+      <AnimatePresence initial={false} mode="popLayout">
+        <motion.div
+          key={currentEvent?.phase}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          variants={animationVariants}
+          className="size-full min-h-[calc(100dvh)] flex-1"
+        >
+          <div className="size-full min-h-[calc(100dvh)] pt-20">
+            {workspace()}
+          </div>
+        </motion.div>
+      </AnimatePresence>
     </WorkspaceContext.Provider>
   );
 }
@@ -57,3 +71,19 @@ function LoadingScreen() {
     </div>
   );
 }
+
+const animationVariants = {
+  initial: { opacity: 0, x: 400, scale: 0.75 },
+  animate: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: { type: "spring", stiffness: 200, damping: 20 },
+  },
+  exit: {
+    opacity: 0,
+    x: -400,
+    scale: 0.75,
+    transition: { type: "spring", stiffness: 200, damping: 20 },
+  },
+};

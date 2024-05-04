@@ -7,6 +7,7 @@ import {
   type Event,
   EventPhase,
 } from "@prisma/client";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -86,11 +87,18 @@ function EventDashboard({
   return (
     <div className="flex size-full flex-1 flex-col items-center justify-center gap-2 p-2 text-black">
       <Link
-        className="pt-2 text-4xl font-bold hover:text-blue-500 hover:underline focus:outline-none"
+        className="group flex items-center gap-3 pt-2 transition-all focus:outline-none"
         href={event?.url ?? ""}
         target="_blank"
       >
-        {event?.name}
+        <h1 className="font-kallisto text-4xl font-bold tracking-tight group-hover:underline">
+          {event?.name}
+        </h1>
+        <ArrowUpRight
+          size={28}
+          strokeWidth={3}
+          className="-mt-[5px] rounded-lg bg-gray-200 p-[2px] text-gray-500 group-hover:bg-gray-300 group-hover:text-gray-700"
+        />
       </Link>
       <div className="flex w-full flex-1 flex-col justify-between gap-2">
         <PhaseSelector
@@ -129,7 +137,7 @@ function PhaseSelector({
       <div className="flex flex-row items-center pb-2">
         <h3 className="font-semibold">Phase:</h3>
         <select
-          className="ml-2 w-[120px] rounded-xl border border-gray-200 p-2"
+          className="ml-2 w-[120px] rounded-xl border border-gray-200 p-2 font-medium"
           value={phase}
           onChange={(e) => setPhase(EventPhase[e.target.value as EventPhase])}
         >

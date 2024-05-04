@@ -21,7 +21,7 @@ export function DemoSelectionHeader({
   const toggleExpand = () => setIsExpanded(!isExpanded);
   return (
     <>
-      <div className="fixed z-20 w-full max-w-xl p-2">
+      <div className="fixed z-20 w-full max-w-xl select-none p-2">
         <div
           onClick={toggleExpand}
           className={cn(
@@ -29,7 +29,7 @@ export function DemoSelectionHeader({
             selectedDemo?.id === currentDemoId
               ? "bg-green-400/50"
               : "bg-red-400/50",
-            isExpanded ? " bg-black/20 backdrop-blur" : "",
+            isExpanded ? " bg-black/20 backdrop-blur hover:bg-black/30" : "",
           )}
         >
           <motion.div
@@ -44,7 +44,7 @@ export function DemoSelectionHeader({
               <p className="italic text-white">Select a demo:</p>
             )) || (
               <>
-                <p className="w-[17px]">{(selectedDemo?.index ?? 0) + 1}.</p>
+                <p className="w-7">{(selectedDemo?.index ?? 0) + 1}.</p>
                 <p>{selectedDemo?.name ?? ""}</p>
               </>
             )}
@@ -86,8 +86,8 @@ export function DemoSelectionHeader({
                   )}
                 >
                   <div className="flex flex-row gap-2">
-                    <p className="w-[17px]">{demo.index + 1}.</p>
-                    <p>{`${demo.name} ${demo.id === currentDemoId ? "(current demo)" : ""}`}</p>
+                    <p className="w-7">{demo.index + 1}.</p>
+                    <p>{`${demo.name} ${demo.id === currentDemoId ? "(current)" : ""}`}</p>
                   </div>
                   {selectedDemo?.id === demo.id && (
                     <CircleCheck size={23} strokeWidth={2.25} />

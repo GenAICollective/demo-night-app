@@ -14,7 +14,7 @@ export default function Presentations({
   const { currentEvent, event } = useEventSync(initialCurrentEvent);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 font-kallisto font-bold">
+    <div className="flex flex-col items-center justify-center gap-4 font-kallisto font-bold tracking-tight">
       <h1 className="text-4xl">{currentEvent.name}</h1>
       <QRCode size={256} value={window.location.origin} />
     </div>
