@@ -14,10 +14,10 @@ import InfoModal from "./InfoModal";
 import RatingSlider from "./RatingSlider";
 import { useFeedback } from "./hooks/useFeedback";
 
-export default function DemosWorkspace({ demos }: { demos: Demo[] }) {
-  const { currentEvent, attendee } = useWorkspaceContext();
+export default function DemosWorkspace() {
+  const { currentEvent, event, attendee } = useWorkspaceContext();
   const { id: eventId, currentDemoId } = currentEvent;
-  const [selectedDemo, setSelectedDemo] = useState<Demo>(demos[0]!);
+  const [selectedDemo, setSelectedDemo] = useState<Demo>(event!.demos[0]!);
   const { feedback, setFeedback } = useFeedback(
     eventId,
     attendee,
@@ -34,7 +34,7 @@ export default function DemosWorkspace({ demos }: { demos: Demo[] }) {
       currentDemoId &&
       (!lastCommentChange || Date.now() - lastCommentChange >= 3000)
     ) {
-      const demo = demos.find((demo) => demo.id === currentDemoId);
+      const demo = event?.demos.find((d) => d.id === currentDemoId);
       if (demo) {
         setSelectedDemo(demo);
         setLastCommentChange(null);
@@ -48,10 +48,12 @@ export default function DemosWorkspace({ demos }: { demos: Demo[] }) {
     }
   }, [selectedDemo]);
 
+  if (!event || event.demos.length === 0) return null;
+
   return (
     <>
       <DemoSelectionHeader
-        demos={demos}
+        demos={event.demos}
         selectedDemo={selectedDemo}
         setSelectedDemo={setSelectedDemo}
         currentDemoId={currentDemoId}
@@ -109,8 +111,10 @@ export default function DemosWorkspace({ demos }: { demos: Demo[] }) {
       >
         <BadgeInfo />
       </button>
-      <StarConfetti feedback={feedback} />
-      <ClapsConfetti feedback={feedback} />
+      <div className="z-3 pointer-events-none fixed inset-0">
+        <StarConfetti feedback={feedback} />
+        <ClapsConfetti feedback={feedback} />
+      </div>
     </>
   );
 }

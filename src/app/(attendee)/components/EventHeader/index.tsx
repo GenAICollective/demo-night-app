@@ -7,7 +7,7 @@ import { EventPhase, allPhases, displayName } from "~/lib/currentEvent";
 export default function EventHeader() {
   const { currentEvent, attendee, setAttendee } = useWorkspaceContext();
   return (
-    <header className="fixed left-0 right-0 z-10 flex h-20 w-full select-none flex-col items-center bg-white/60 text-black backdrop-blur">
+    <header className="fixed left-0 right-0 z-20 flex h-20 w-full select-none flex-col items-center bg-white/60 text-black backdrop-blur">
       <div className="flex w-full max-w-xl flex-1 flex-col items-center justify-between">
         <PhasePills currentPhase={currentEvent?.phase ?? EventPhase.Pre} />
         <div className="flex w-full flex-1 flex-row items-center justify-between px-3">

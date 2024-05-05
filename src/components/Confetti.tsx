@@ -40,7 +40,6 @@ export function StarConfetti({ feedback }: { feedback: LocalFeedback }) {
 
   return (
     <Confetti
-      className="selection-none"
       width={windowSize.width}
       height={windowSize.height}
       drawShape={drawShape}
@@ -93,7 +92,6 @@ export function ClapsConfetti({ feedback }: { feedback: LocalFeedback }) {
 
   return (
     <Confetti
-      className="selection-none"
       width={windowSize.width}
       height={windowSize.height}
       drawShape={drawShape}
@@ -138,7 +136,6 @@ export function ResultsConfetti({
 
   return (
     <Confetti
-      className="selection-none"
       width={windowSize.width}
       height={windowSize.height}
       tweenDuration={3000}
@@ -149,7 +146,7 @@ export function ResultsConfetti({
   );
 }
 
-export function PreConfetti() {
+export function GaicoConfetti() {
   const { windowSize } = useWindowSize();
 
   const drawShape = (ctx: CanvasRenderingContext2D) => {
@@ -160,7 +157,6 @@ export function PreConfetti() {
 
   return (
     <Confetti
-      className="selection-none"
       width={windowSize.width}
       height={windowSize.height}
       drawShape={drawShape}

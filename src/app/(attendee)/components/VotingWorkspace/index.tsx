@@ -4,28 +4,24 @@ import { type Award, type Demo } from "@prisma/client";
 import AwardVoteSelect from "./AwardVoteSelect";
 import { type LocalVote, useVotes } from "./hooks/useVotes";
 
-export default function VotingWorkspace({
-  awards,
-  demos,
-}: {
-  awards: Award[];
-  demos: Demo[];
-}) {
-  const { currentEvent, attendee } = useWorkspaceContext();
+export default function VotingWorkspace() {
+  const { currentEvent, event, attendee } = useWorkspaceContext();
   const { votes, setVote } = useVotes(currentEvent.id, attendee);
+
+  if (!event) return null;
 
   return (
     <div className="flex size-full flex-1 flex-col items-center justify-center gap-2 p-4">
-      <div className="absolute bottom-0 w-full max-w-xl p-4">
+      <div className="absolute bottom-0 max-h-[calc(100dvh-80px)] w-full max-w-xl p-4">
         <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
           Voting Time! 🗳️
         </h1>
         <div className="mt-4 grid grid-cols-1 gap-8">
-          {awards.map((award) => (
+          {event.awards.map((award) => (
             <AwardVoteItem
               key={award.id}
               award={award}
-              demos={demos}
+              demos={event.demos}
               vote={votes[award.id]}
               setVote={setVote}
             />

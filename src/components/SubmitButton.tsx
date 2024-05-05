@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
 
-import LoadingDots from "./loading/loading-dots";
+import LoadingDots from "./loading/LoadingDots";
 
 export default function SubmitButton({
   title,

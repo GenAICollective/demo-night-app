@@ -8,37 +8,35 @@ import ConfettiExplosion from "react-dom-confetti";
 
 import { ResultsConfetti } from "~/components/Confetti";
 
-export default function ResultsWorkspace({
-  awards,
-  demos,
-}: {
-  awards: Award[];
-  demos: Demo[];
-}) {
-  const { currentEvent } = useWorkspaceContext();
+export default function ResultsWorkspace() {
+  const { currentEvent, event } = useWorkspaceContext();
 
-  const currentAwardIndex = awards.findIndex(
-    (award) => award.id === currentEvent.currentAwardId,
+  if (!event) return null;
+
+  const currentAwardIndex = event.awards.findIndex(
+    (a) => a.id === currentEvent.currentAwardId,
   );
 
   return (
     <div className="flex size-full flex-1 flex-col items-center justify-center gap-2 p-4">
-      <div className="absolute bottom-0 w-full max-w-xl p-4">
+      <div className="absolute bottom-0 max-h-[calc(100dvh-80px)] w-full max-w-xl p-4">
         <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
           Voting Results! 🤩
         </h1>
         <div className="mt-4 grid grid-cols-1 gap-8">
-          {awards.map((award) => (
+          {event?.awards.map((award) => (
             <AwardWinnerItem
               key={award.id}
               award={award}
-              demos={demos}
+              demos={event?.demos}
               currentAwardIndex={currentAwardIndex}
             />
           ))}
         </div>
       </div>
-      <ResultsConfetti currentAwardIndex={currentAwardIndex} />
+      <div className="z-3 pointer-events-none fixed inset-0">
+        <ResultsConfetti currentAwardIndex={currentAwardIndex} />
+      </div>
     </div>
   );
 }
@@ -70,7 +68,7 @@ function AwardWinnerItem({
 
   return (
     <div className="flex flex-col font-medium">
-      <h2 className="text-2xl font-bold">{award.name}</h2>
+      <h2 className="font-kallisto text-2xl font-bold">{award.name}</h2>
       <p className="text-md pb-2 pl-[2px] text-lg font-semibold italic leading-6 text-gray-500">
         {award.description}
       </p>
@@ -103,13 +101,13 @@ function AwardWinnerItem({
               className="flex size-full flex-col font-medium"
             >
               <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold group-hover:underline">
+                <h2 className="font-kallisto text-2xl font-bold group-hover:underline">
                   {winner.name}
                 </h2>
                 <ArrowUpRight
                   size={24}
                   strokeWidth={3}
-                  className="h-5 w-5 flex-none rounded-md bg-green-400/50 p-[2px] text-green-500 group-hover:bg-gray-300 group-hover:text-gray-700"
+                  className="h-5 w-5 flex-none rounded-md bg-green-400/50 p-[2px] text-green-500 group-hover:bg-green-500/50 group-hover:text-green-700"
                 />
               </div>
               <p className="font-medium italic text-gray-700">

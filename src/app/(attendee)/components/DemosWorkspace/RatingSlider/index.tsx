@@ -9,7 +9,7 @@ export default function RatingSlider({
   setFeedback,
 }: {
   feedback: LocalFeedback;
-  setFeedback: (feedback: LocalFeedback) => void;
+  setFeedback?: (feedback: LocalFeedback) => void;
 }) {
   return (
     <Slider
@@ -27,10 +27,11 @@ export default function RatingSlider({
       // @ts-ignore
       value={feedback?.rating}
       onChange={(value) => {
-        setFeedback({ ...feedback, rating: value as number });
+        setFeedback?.({ ...feedback, rating: value as number });
       }}
       styles={{
         track: { backgroundColor: "rgb(249 115 22)" },
+        rail: { backgroundColor: setFeedback ? "#ddd" : "#ccc" },
         handle: {
           opacity: 1,
           backgroundColor: "white",
@@ -42,7 +43,7 @@ export default function RatingSlider({
         },
       }}
       dotStyle={{
-        borderColor: "#ddd",
+        borderColor: setFeedback ? "#ddd" : "#ccc",
         borderWidth: "3px",
         height: "12px",
         width: "12px",

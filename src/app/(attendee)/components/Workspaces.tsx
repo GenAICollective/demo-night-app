@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { type CurrentEvent, EventPhase } from "~/lib/currentEvent";
 
-import LoadingDots from "~/components/loading/loading-dots";
+import LoadingScreen from "~/components/loading/LoadingScreen";
 
 import DemosWorkspace from "./DemosWorkspace";
 import EventHeader from "./EventHeader";
@@ -29,22 +29,25 @@ export default function Workspaces({
       case EventPhase.Pre:
         return <PreWorkspace />;
       case EventPhase.Demos:
-        if (!event || event.demos.length === 0) return <LoadingScreen />;
-        return <DemosWorkspace demos={event.demos} />;
+        if (!event || !event.demos.length) return <LoadingScreen />;
+        return <DemosWorkspace />;
       case EventPhase.Voting:
-        if (!event || event.demos.length === 0) return <LoadingScreen />;
-        return <VotingWorkspace awards={event.awards} demos={event.demos} />;
+        if (!event) return <LoadingScreen />;
+        return <VotingWorkspace />;
       case EventPhase.Results:
-        if (!event || event.awards.length === 0 || event.demos.length === 0)
-          return <LoadingScreen />;
-        return <ResultsWorkspace awards={event.awards} demos={event.demos} />;
+        if (!event) return <LoadingScreen />;
+        return <ResultsWorkspace />;
       case EventPhase.Recap:
+        if (!event || !event.awards.length || !event.demos.length)
+          return <LoadingScreen />;
         return <RecapWorkspace />;
     }
   }
 
   return (
-    <WorkspaceContext.Provider value={{ currentEvent, attendee, setAttendee }}>
+    <WorkspaceContext.Provider
+      value={{ currentEvent, event, attendee, setAttendee }}
+    >
       <EventHeader />
       <AnimatePresence initial={false} mode="popLayout">
         <motion.div
@@ -61,18 +64,6 @@ export default function Workspaces({
         </motion.div>
       </AnimatePresence>
     </WorkspaceContext.Provider>
-  );
-}
-
-function LoadingScreen() {
-  return (
-    <div className="flex w-full flex-1 animate-pulse flex-col items-center justify-center gap-2 py-16 font-kallisto text-black">
-      <h1 className="pt-4 text-center text-2xl font-semibold">
-        Loading Demos!
-      </h1>
-      <p className="text-lg font-medium italic">(hold tight!)</p>
-      <LoadingDots />
-    </div>
   );
 }
 
