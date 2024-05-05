@@ -67,7 +67,7 @@ export default function Modal({
                     }
                   }}
                 >
-                  <div className="min-w-[320px] rounded-2xl bg-white p-4 shadow-xl">
+                  <div className="min-w-[320px] rounded-2xl bg-white/60 p-4 shadow-xl backdrop-blur backdrop-brightness-125">
                     {children}
                   </div>
                 </motion.div>

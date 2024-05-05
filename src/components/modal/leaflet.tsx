@@ -42,7 +42,7 @@ export default function Leaflet({
       <motion.div
         ref={leafletRef}
         key="leaflet"
-        className="group fixed inset-x-0 bottom-0 z-40 -mb-20 w-screen cursor-grab rounded-t-[30px] bg-white pb-20 shadow-xl active:cursor-grabbing md:hidden"
+        className="group fixed inset-x-0 bottom-0 z-40 -mb-20 w-screen cursor-grab rounded-t-[30px] bg-white/60 pb-20 shadow-xl backdrop-blur backdrop-brightness-125 active:cursor-grabbing md:hidden"
         initial={{ y: "100%" }}
         animate={controls}
         exit={{ y: "100%" }}
@@ -54,8 +54,8 @@ export default function Leaflet({
         dragConstraints={{ top: 0, bottom: 0 }}
       >
         <div className={`-mb-4 flex h-7 w-full items-center justify-center`}>
-          <div className="-mr-1 h-1 w-6 rounded-full bg-gray-300 transition-all group-active:rotate-12" />
-          <div className="h-1 w-6 rounded-full bg-gray-300 transition-all group-active:-rotate-12" />
+          <div className="-mr-1 h-1 w-6 rounded-full bg-gray-400 transition-all group-active:rotate-12" />
+          <div className="h-1 w-6 rounded-full bg-gray-400 transition-all group-active:-rotate-12" />
         </div>
         <div className="p-4">{children}</div>
       </motion.div>

@@ -1,6 +1,7 @@
 import { type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
+import ConfettiExplosion from "react-confetti-explosion";
 
 import { cn } from "~/lib/utils";
 
@@ -11,13 +12,14 @@ export function ActionButtons({
   feedback: Feedback | null;
   setFeedback: (feedback: Feedback) => void;
 }) {
+  const [isExploding, setIsExploding] = useState(false);
   return (
     <div className="fixed bottom-3 z-10 flex w-full max-w-xl select-none items-center justify-evenly px-4 ">
       <motion.button
         whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
         whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
         className={cn(
-          "bg-radient-ellipse-c relative mb-10 aspect-square w-20 rounded-full border-4 from-yellow-500/40 from-50% to-yellow-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all hover:bg-yellow-500/20",
+          "relative mb-10 aspect-square w-20 rounded-full border-4 from-yellow-500/40 from-50% to-yellow-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all bg-radient-ellipse-c hover:bg-yellow-500/20",
           feedback?.star ? "border-yellow-500" : "border-transparent",
         )}
         onClick={() => {
@@ -36,10 +38,11 @@ export function ActionButtons({
         whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
         whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
         className={cn(
-          "bg-radient-ellipse-c relative aspect-square w-28 rounded-full border-4 from-orange-500/40 from-50% to-orange-500/60 text-center text-lg text-orange-600 shadow-2xl backdrop-blur transition-all hover:bg-orange-500/20",
+          "relative aspect-square w-28 rounded-full border-4 from-orange-500/40 from-50% to-orange-500/60 text-center text-lg text-orange-600 shadow-2xl backdrop-blur transition-all bg-radient-ellipse-c hover:bg-orange-500/20",
           feedback?.claps ? "border-orange-500" : "border-transparent",
         )}
         onClick={() => {
+          setIsExploding(true);
           if (feedback) {
             const updatedFeedback = {
               ...feedback,
@@ -49,6 +52,14 @@ export function ActionButtons({
           }
         }}
       >
+        {isExploding && (
+          <ConfettiExplosion
+            force={0.1}
+            duration={2200}
+            particleCount={30}
+            width={400}
+          />
+        )}
         <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform pb-4 text-[50px]">
           👏
         </p>
@@ -83,7 +94,7 @@ function WantToButton({
         whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
         whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
         className={cn(
-          "bg-radient-ellipse-c relative mb-10 aspect-square w-20 rounded-full border-4 border-transparent from-blue-500/40 from-50% to-blue-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all hover:bg-blue-500/20",
+          "relative mb-10 aspect-square w-20 rounded-full border-4 border-transparent from-blue-500/40 from-50% to-blue-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all bg-radient-ellipse-c hover:bg-blue-500/20",
           showActionButtons
             ? "from-red-500/40 to-red-500/60 hover:bg-red-500/20"
             : hasActed
@@ -112,7 +123,7 @@ function WantToButton({
                 whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                 whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
                 className={cn(
-                  "bg-radient-ellipse-c relative aspect-square w-20 rounded-full border-4 border-transparent from-blue-500/40 from-50% to-blue-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all hover:bg-blue-500/20",
+                  "relative aspect-square w-20 rounded-full border-4 border-transparent from-blue-500/40 from-50% to-blue-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all bg-radient-ellipse-c hover:bg-blue-500/20",
                   feedback?.[action.key as keyof typeof feedback]
                     ? "border-blue-500"
                     : "",

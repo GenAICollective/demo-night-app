@@ -144,3 +144,26 @@ export function ResultsConfetti({
     />
   );
 }
+
+export function PreConfetti() {
+  const { windowSize } = useWindowSize();
+
+  const drawShape = (ctx: CanvasRenderingContext2D) => {
+    const image = document.getElementById("logo") as HTMLImageElement;
+
+    ctx.drawImage(image, -18, -18, 36, 36);
+  };
+
+  return (
+    <Confetti
+      className="selection-none"
+      width={windowSize.width}
+      height={windowSize.height}
+      drawShape={drawShape}
+      basicFloat={true}
+      tweenDuration={20000}
+      gravity={0.01}
+      numberOfPieces={10}
+    />
+  );
+}

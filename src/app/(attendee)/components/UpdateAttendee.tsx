@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import SubmitButton from "~/components/SubmitButton";
 import { useModal } from "~/components/modal/provider";
+import { cn } from "~/lib/utils";
 
 export function UpdateAttendeeButton({
   attendee,
@@ -57,7 +58,7 @@ export function UpdateAttendeeForm({
   setAttendee: (attendee: Attendee) => void;
   onSubmit?: () => void;
 }) {
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, watch } = useForm({
     defaultValues: {
       name: attendee?.name ?? "",
       email: attendee?.email ?? "",
@@ -96,26 +97,31 @@ export function UpdateAttendeeForm({
         </p>
       </div>
       <label className="flex w-full flex-col gap-1">
-        <span className="font-semibold">Name</span>
+        <span className="font-semibold text-lg">Name</span>
         <input
           type="text"
+          placeholder="GenAI Collective"
           {...register("name")}
-          className="rounded-xl border-2 border-gray-200 p-2 text-lg"
+          className="z-30 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
         />
       </label>
       <label className="flex w-full flex-col gap-1">
-        <span className="font-semibold">Email</span>
+        <span className="font-semibold text-lg">Email</span>
         <input
           type="email"
+          placeholder="hello@genaicollective.ai"
           {...register("email")}
-          className="rounded-xl border-2 border-gray-200 p-2 text-lg"
+          className="z-10 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
         />
       </label>
       <label className="flex w-full flex-col gap-1 pb-2">
-        <span className="font-semibold">I consider myself a...</span>
+        <span className="font-semibold text-lg">I consider myself a...</span>
         <select
           {...register("type")}
-          className="appearance-none rounded-xl border-2 border-gray-200 bg-white p-2 text-lg"
+          className={cn(
+            "z-30 appearance-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur",
+            watch("type") === "" && "text-gray-400",
+          )}
         >
           <option value="">Select one...</option>
           {attendeePreselectTypes.map((type) => (

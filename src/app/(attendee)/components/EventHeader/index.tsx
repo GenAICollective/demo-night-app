@@ -6,20 +6,28 @@ import Image from "next/image";
 export default function EventHeader() {
   const { currentEvent, attendee, setAttendee } = useWorkspaceContext();
   return (
-    <header className="fixed z-10 flex h-20 w-full max-w-xl select-none flex-col items-center bg-white/60 text-black backdrop-blur">
-      <PhasePills phase={currentEvent.phase} />
-      <div className="flex w-full flex-1 flex-row items-center justify-between px-3">
-        <Image src="/images/logo.png" alt="logo" width={36} height={36} />
-        <h1 className="mt-1 line-clamp-1 text-ellipsis px-1 font-kallisto text-xl font-bold tracking-tight">
-          {currentEvent.name}
-        </h1>
-        <div className="flex aspect-square w-9 items-center justify-center">
-          {currentEvent.phase !== EventPhase.PRE && (
-            <UpdateAttendeeButton
-              attendee={attendee}
-              setAttendee={setAttendee}
-            />
-          )}
+    <header className="fixed left-0 right-0 z-10 flex h-20 w-full select-none flex-col items-center bg-white/60 text-black backdrop-blur">
+      <div className="flex w-full max-w-xl flex-1 flex-col items-center justify-between">
+        <PhasePills phase={currentEvent.phase} />
+        <div className="flex w-full flex-1 flex-row items-center justify-between px-3">
+          <Image
+            id="logo"
+            src="/images/logo.png"
+            alt="logo"
+            width={36}
+            height={36}
+          />
+          <h1 className="mt-1 line-clamp-1 text-ellipsis px-1 font-kallisto text-xl font-bold tracking-tight">
+            {currentEvent.name}
+          </h1>
+          <div className="flex aspect-square w-9 items-center justify-center">
+            {currentEvent.phase !== EventPhase.PRE && (
+              <UpdateAttendeeButton
+                attendee={attendee}
+                setAttendee={setAttendee}
+              />
+            )}
+          </div>
         </div>
       </div>
     </header>
