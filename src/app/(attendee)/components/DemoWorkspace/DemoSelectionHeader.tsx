@@ -116,7 +116,8 @@ export function DemoSelectionHeader({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute left-0 top-0 z-10 h-full w-full bg-black/20 backdrop-blur"
+            className="absolute left-0 top-0 z-[15] h-full w-full bg-black/20 backdrop-blur"
+            onClick={() => setIsExpanded(false)}
           />
         )}
       </AnimatePresence>

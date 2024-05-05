@@ -65,9 +65,10 @@ model Event {
     date DateTime
     url  String
 
-    phase         EventPhase @default(PRE)
-    isCurrent     Boolean    @default(false)
-    currentDemoId String?
+    phase             EventPhase @default(PRE)
+    isCurrent         Boolean    @default(false)
+    currentDemoId     String?
+    currentAwardIndex Int?
 
     demos     Demo[]
     attendees Attendee[]

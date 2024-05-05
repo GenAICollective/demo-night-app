@@ -8,6 +8,7 @@ import { DemoItem } from "./DemoItem";
 import { FeedbackItem, feedbackScore } from "./FeedbackItem";
 import FeedbackOverview from "./FeedbackOverview";
 import { env } from "~/env";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useMockFeedback } from "~/test/hooks/useMockFeedback";
 
 const REFRESH_INTERVAL =

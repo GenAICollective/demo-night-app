@@ -12,19 +12,77 @@ async function main() {
     },
   });
 
-  const demos = Array.from({ length: 10 }, (_, index) => ({
+  const demosInfo = [
+    {
+      name: "Cofactory",
+      description: "The future of value creation in an AI-based economy",
+    },
+    {
+      name: "ChatGPT",
+      description: "A chatbot for answering questions",
+    },
+    {
+      name: "Revamp",
+      description: "Optimize your e-commerce presence",
+    },
+    {
+      name: "Paradigm",
+      description: "A new way to think about the world",
+    },
+    {
+      name: "Xpecs",
+      description: "A platform for managing your projects",
+    },
+    {
+      name: "Messenger",
+      description: "A chat app for sending messages",
+    },
+    {
+      name: "Postman",
+      description: "An app for sending HTTP requests",
+    },
+    {
+      name: "Calculator",
+      description: "A simple calculator app",
+    },
+    {
+      name: "Spotifly",
+      description: "A music streaming app",
+    },
+    {
+      name: "PhotoView",
+      description: "Look at photos in a new way",
+    },
+  ];
+
+  const demos = demosInfo.map((demo, index) => ({
     id: `demo-${index + 1}`,
-    name: `Demo ${index + 1}`,
-    description: `Demo ${index + 1} description`,
+    name: demo.name,
+    description: demo.description,
     index: index,
     email: `demo-${index + 1}@example.com`,
     url: `https://example.com`,
   }));
 
-  const awards = Array.from({ length: 3 }, (_, index) => ({
+  const awardsInfo = [
+    {
+      name: "🎨 Best Design",
+      description: "Award for the most visually appealing demo",
+    },
+    {
+      name: "🤖 Best Technology",
+      description: "Award for the most technically impressive demo",
+    },
+    {
+      name: "🏆 Best Overall",
+      description: "Award for the best overall demo",
+    },
+  ];
+
+  const awards = awardsInfo.map((award, index) => ({
     id: `award-${index + 1}`,
-    name: `Award ${index + 1}`,
-    description: `Award ${index + 1} description`,
+    name: award.name,
+    description: award.description,
     index: index,
   }));
 

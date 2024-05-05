@@ -66,7 +66,7 @@ export function useFeedback(
     }
   }, [feedback]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { feedback, setFeedback };
+  return { feedbacks, feedback, setFeedback };
 }
 
 function emptyFeedback(

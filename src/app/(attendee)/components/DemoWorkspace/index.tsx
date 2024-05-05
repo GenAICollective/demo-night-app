@@ -5,10 +5,10 @@ import { ArrowUpRight, BadgeInfo } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { ClapsConfetti, StarConfetti } from "~/components/Confetti";
 import { useModal } from "~/components/modal/provider";
 
 import { ActionButtons } from "./ActionButtons";
-import { ClapsConfetti, StarConfetti } from "./Confetti";
 import { DemoSelectionHeader } from "./DemoSelectionHeader";
 import InfoModal from "./InfoModal";
 import RatingSlider from "./RatingSlider";
@@ -83,7 +83,7 @@ export default function DemoWorkspace({ demos }: { demos: Demo[] }) {
                 className="-mt-[5px] aspect-square w-7 flex-none rounded-lg bg-gray-200 p-[2px] text-gray-500 group-hover:bg-gray-300 group-hover:text-gray-700"
               />
             </Link>
-            <p className="min-h-[40px] px-2 text-center text-lg font-semibold leading-6 text-gray-500">
+            <p className="min-h-[40px] px-2 text-center text-lg font-semibold italic leading-6 text-gray-500">
               {selectedDemo.description}
             </p>
           </div>

@@ -17,7 +17,7 @@ export default function AttendeeList({
 }) {
   return (
     <div className="flex min-w-[300px] max-w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
-      <div className="flex flex-col justify-between">
+      <div className="flex flex-col">
         <h2 className="text-2xl font-bold">Attendees</h2>
         <p className="-mt-1 text-sm font-semibold text-gray-400">
           Total attendees: {attendees.length}

@@ -78,9 +78,23 @@ function EventDashboard({
           />
         );
       case EventPhase.VOTING:
-        return <VotingDashboard />;
+        return (
+          <VotingDashboard
+            awards={event.awards}
+            demos={event.demos}
+            refetchEvent={refetchEvent}
+          />
+        );
       case EventPhase.RESULTS:
-        return <ResultsDashboard />;
+        return (
+          <ResultsDashboard
+            eventId={event.id}
+            currentAwardIndex={event.currentAwardIndex}
+            awards={event.awards}
+            demos={event.demos}
+            refetchEvent={refetchEvent}
+          />
+        );
     }
   }
 

@@ -4,6 +4,19 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
 export const awardRouter = createTRPCRouter({
+  getVotes: protectedProcedure
+    .input(z.string().nullable())
+    .query(async ({ input }) => {
+      if (!input) {
+        return [];
+      }
+      return db.vote.findMany({
+        where: { awardId: input },
+        include: {
+          attendee: { select: { name: true, type: true } },
+        },
+      });
+    }),
   upsert: protectedProcedure
     .input(
       z.object({
@@ -36,6 +49,14 @@ export const awardRouter = createTRPCRouter({
           },
         });
       }
+    }),
+  updateWinner: protectedProcedure
+    .input(z.object({ id: z.string(), winnerId: z.string() }))
+    .mutation(async ({ input }) => {
+      return db.award.update({
+        where: { id: input.id },
+        data: { winnerId: input.winnerId },
+      });
     }),
   updateIndex: protectedProcedure
     .input(z.object({ id: z.string(), index: z.number() }))

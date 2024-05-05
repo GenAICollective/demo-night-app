@@ -35,7 +35,9 @@ export default function Workspaces({
         if (!event || event.demos.length === 0) return <LoadingScreen />;
         return <VotingWorkspace awards={event.awards} demos={event.demos} />;
       case EventPhase.RESULTS:
-        return <ResultsWorkspace />;
+        if (!event || event.awards.length === 0 || event.demos.length === 0)
+          return <LoadingScreen />;
+        return <ResultsWorkspace awards={event.awards} demos={event.demos} />;
     }
   }
 

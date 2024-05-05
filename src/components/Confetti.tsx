@@ -100,3 +100,47 @@ export function ClapsConfetti({ feedback }: { feedback: Feedback }) {
     />
   );
 }
+
+export function ResultsConfetti({
+  currentAwardIndex,
+}: {
+  currentAwardIndex: number | null;
+}) {
+  const { windowSize } = useWindowSize();
+  const [_active, _setActive] = useState(false);
+  const [previousAwardIndex, setPreviousAwardIndex] = useState<number | null>(
+    currentAwardIndex,
+  );
+  const timeoutId = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (
+      currentAwardIndex !== null &&
+      (previousAwardIndex == null || currentAwardIndex > previousAwardIndex)
+    ) {
+      _setActive(true);
+      timeoutId.current = setTimeout(() => {
+        _setActive(false);
+      }, 3000);
+    } else {
+      _setActive(false);
+    }
+    setPreviousAwardIndex(currentAwardIndex);
+    return () => {
+      if (timeoutId.current) {
+        clearTimeout(timeoutId.current);
+      }
+    };
+  }, [currentAwardIndex]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <Confetti
+      className="selection-none"
+      width={windowSize.width}
+      height={windowSize.height}
+      tweenDuration={3000}
+      gravity={0.05}
+      numberOfPieces={_active ? 500 : 0}
+    />
+  );
+}

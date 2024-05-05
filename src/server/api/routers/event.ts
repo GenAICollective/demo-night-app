@@ -14,6 +14,7 @@ export type CurrentEvent = {
   name: string;
   phase: EventPhase;
   currentDemoId: string | null;
+  currentAwardIndex: number | null;
 };
 
 function getCurrentEvent(): Promise<CurrentEvent | null> {
@@ -21,12 +22,14 @@ function getCurrentEvent(): Promise<CurrentEvent | null> {
 }
 
 function updateCurrentEvent(event: Event) {
-  return kv.set("currentEvent", {
+  const currentEvent: CurrentEvent = {
     id: event.id,
     name: event.name,
     phase: event.phase,
     currentDemoId: event.currentDemoId,
-  });
+    currentAwardIndex: event.currentAwardIndex,
+  };
+  return kv.set("currentEvent", currentEvent);
 }
 
 export const eventRouter = createTRPCRouter({
@@ -123,12 +126,22 @@ export const eventRouter = createTRPCRouter({
         .then(updateCurrentEvent);
     }),
   updateCurrentDemo: protectedProcedure
-    .input(z.object({ id: z.string(), demoId: z.string() }))
+    .input(z.object({ id: z.string(), demoId: z.string().nullable() }))
     .mutation(async ({ input }) => {
       return db.event
         .update({
           where: { id: input.id },
           data: { currentDemoId: input.demoId },
+        })
+        .then(updateCurrentEvent);
+    }),
+  updateCurrentAwardIndex: protectedProcedure
+    .input(z.object({ id: z.string(), index: z.number().nullable() }))
+    .mutation(async ({ input }) => {
+      return db.event
+        .update({
+          where: { id: input.id },
+          data: { currentAwardIndex: input.index },
         })
         .then(updateCurrentEvent);
     }),
