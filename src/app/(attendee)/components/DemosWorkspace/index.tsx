@@ -14,7 +14,7 @@ import InfoModal from "./InfoModal";
 import RatingSlider from "./RatingSlider";
 import { useFeedback } from "./hooks/useFeedback";
 
-export default function DemoWorkspace({ demos }: { demos: Demo[] }) {
+export default function DemosWorkspace({ demos }: { demos: Demo[] }) {
   const { currentEvent, attendee } = useWorkspaceContext();
   const { id: eventId, currentDemoId } = currentEvent;
   const [selectedDemo, setSelectedDemo] = useState<Demo>(demos[0]!);

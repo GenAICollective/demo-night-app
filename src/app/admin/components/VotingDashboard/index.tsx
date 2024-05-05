@@ -1,4 +1,4 @@
-import { type Award, type Demo } from "@prisma/client";
+import { useDashboardContext } from "../../contexts/DashboardContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircleCheck } from "lucide-react";
 import { useState } from "react";
@@ -11,17 +11,10 @@ import { env } from "~/env";
 const REFRESH_INTERVAL =
   env.NEXT_PUBLIC_NODE_ENV === "development" ? 1_000 : 5_000;
 
-export default function VotingDashboard({
-  awards,
-  demos,
-  refetchEvent,
-}: {
-  awards: Award[];
-  demos: Demo[];
-  refetchEvent: () => void;
-}) {
+export default function VotingDashboard() {
+  const { event, refetchEvent } = useDashboardContext();
   const [selectedAwardId, setSelectedAwardId] = useState<string | undefined>(
-    awards[0]?.id,
+    event?.awards[0]?.id,
   );
   const updateWinnerMutation = api.award.updateWinner.useMutation();
   const { data: votes } = api.award.getVotes.useQuery(selectedAwardId ?? "", {
@@ -29,7 +22,11 @@ export default function VotingDashboard({
     refetchInterval: REFRESH_INTERVAL,
   });
 
-  const selectedAward = awards.find((award) => award.id === selectedAwardId);
+  if (!event) {
+    return null;
+  }
+
+  const selectedAward = event.awards.find((a) => a.id === selectedAwardId);
 
   const votesByDemoId = votes?.reduce(
     (acc, vote) => {
@@ -50,7 +47,7 @@ export default function VotingDashboard({
       <div className="flex w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
         <h2 className="text-2xl font-bold">Awards</h2>
         <ul className="flex flex-col gap-2 overflow-auto">
-          {awards.map((award) => (
+          {event.awards.map((award) => (
             <li
               key={award.id}
               title="Select"
@@ -103,7 +100,7 @@ export default function VotingDashboard({
                 >
                   <div>
                     <p className="line-clamp-1">
-                      {`${votes} votes: ${demos.find((demo) => demo.id === demoId)?.name}`}
+                      {`${votes} votes: ${event.demos.find((demo) => demo.id === demoId)?.name}`}
                     </p>
                   </div>
                   {selectedAward?.winnerId === demoId && (

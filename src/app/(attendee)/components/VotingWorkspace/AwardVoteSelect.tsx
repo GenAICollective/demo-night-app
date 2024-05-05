@@ -1,9 +1,11 @@
-import { type Award, type Demo, type Vote } from "@prisma/client";
+import { type Award, type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircleCheck, Expand } from "lucide-react";
 import { useState } from "react";
 
 import { cn } from "~/lib/utils";
+
+import { type LocalVote } from "./hooks/useVotes";
 
 export default function AwardVoteSelect({
   award,
@@ -13,7 +15,7 @@ export default function AwardVoteSelect({
 }: {
   award: Award;
   demos: Demo[];
-  vote?: Vote;
+  vote?: LocalVote;
   onSelect: (awardId: string, demoId: string) => void;
 }) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);

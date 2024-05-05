@@ -1,24 +1,30 @@
-import { type Award, type Demo } from "@prisma/client";
+import { useDashboardContext } from "../../contexts/DashboardContext";
 import { ChevronRight } from "lucide-react";
 
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
-export default function ResultsDashboard({
-  currentAwardId,
-  awards,
-  demos,
-  refetchEvent,
-}: {
-  currentAwardId: string | null | undefined;
-  awards: Award[];
-  demos: Demo[];
-  refetchEvent: () => void;
-}) {
+export default function ResultsDashboard() {
+  const { currentEvent, event, refetchEvent } = useDashboardContext();
   const updateCurrentStateMutation = api.event.updateCurrentState.useMutation();
 
-  const currentAwardIndex = awards.findIndex(
-    (award) => award.id === currentAwardId,
+  if (!event || !currentEvent) {
+    return null;
+  }
+
+  if (event.awards.some((a) => a.winnerId === null)) {
+    return (
+      <div className="flex size-full flex-1 flex-col items-center justify-center gap-2 rounded-xl bg-gray-100 p-4">
+        <h2 className="text-2xl font-bold">Awards</h2>
+        <p className="text-lg font-medium text-red-500">
+          All awards must have a winner before revealing results!
+        </p>
+      </div>
+    );
+  }
+
+  const currentAwardIndex = event.awards.findIndex(
+    (a) => a.id === currentEvent.currentAwardId,
   );
 
   return (
@@ -37,8 +43,8 @@ export default function ResultsDashboard({
         </button>
       </div>
       <ul className="flex flex-col gap-2 overflow-auto">
-        {awards.map((award, index) => {
-          const demo = demos.find((demo) => demo.id === award.winnerId)!;
+        {event.awards.map((award, index) => {
+          const demo = event.demos.find((demo) => demo.id === award.winnerId)!;
           return (
             <li
               key={award.id}

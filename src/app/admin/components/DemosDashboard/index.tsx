@@ -1,3 +1,4 @@
+import { useDashboardContext } from "../../contexts/DashboardContext";
 import { type Demo, type Feedback } from "@prisma/client";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -18,17 +19,10 @@ export type FeedbackAndAttendee = Feedback & {
   attendee: { name: string | null; type: string | null };
 };
 
-export default function DemoDashboard({
-  demos,
-  currentDemoId,
-  refetchEvent,
-}: {
-  demos: Demo[];
-  currentDemoId: string | null | undefined;
-  refetchEvent: () => void;
-}) {
+export default function DemosDashboard() {
+  const { currentEvent, event, refetchEvent } = useDashboardContext();
   const [selectedDemo, setSelectedDemo] = useState<Demo | undefined>(
-    demos.find((demo) => demo.id === currentDemoId),
+    event?.demos.find((demo) => demo.id === currentEvent?.currentDemoId),
   );
   const { data: feedback, refetch: refetchFeedback } =
     api.demo.getFeedback.useQuery(selectedDemo?.id ?? "", {
@@ -36,6 +30,9 @@ export default function DemoDashboard({
       refetchInterval: REFRESH_INTERVAL,
     });
   // const { feedback, refetch: refetchFeedback } = useMockFeedback();
+  if (!currentEvent || !event) {
+    return null;
+  }
 
   return (
     <div className="flex size-full flex-row gap-2">
@@ -43,13 +40,13 @@ export default function DemoDashboard({
         <h2 className="text-2xl font-bold">Demos</h2>
         <ul className="flex flex-col gap-2  overflow-auto">
           <AnimatePresence>
-            {demos.map((demo) => (
+            {event.demos.map((demo) => (
               <DemoItem
                 key={demo.id}
                 demo={demo}
                 selectedDemo={selectedDemo}
                 setSelectedDemo={setSelectedDemo}
-                isCurrent={demo.id === currentDemoId}
+                isCurrent={demo.id === currentEvent.currentDemoId}
                 refetchEvent={refetchEvent}
               />
             ))}

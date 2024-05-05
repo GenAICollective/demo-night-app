@@ -1,11 +1,34 @@
 import { kv } from "@vercel/kv";
 
 export enum EventPhase {
-  Pre = "pre",
-  Demos = "demos",
-  Voting = "voting",
-  Results = "results",
-  Recap = "recap",
+  Pre,
+  Demos,
+  Voting,
+  Results,
+  Recap,
+}
+
+export const allPhases = [
+  EventPhase.Pre,
+  EventPhase.Demos,
+  EventPhase.Voting,
+  EventPhase.Results,
+  EventPhase.Recap,
+];
+
+export function displayName(phase: EventPhase): string {
+  switch (phase) {
+    case EventPhase.Pre:
+      return "Pre-Demos";
+    case EventPhase.Demos:
+      return "Demos";
+    case EventPhase.Voting:
+      return "Voting";
+    case EventPhase.Results:
+      return "Results";
+    case EventPhase.Recap:
+      return "Recap";
+  }
 }
 
 export type CurrentEvent = {
@@ -23,7 +46,6 @@ export async function getCurrentEvent(): Promise<CurrentEvent | null> {
 export async function updateCurrentEvent(
   event: { id: string; name: string } | null,
 ) {
-  console.log("updateCurrentEvent", event);
   if (!event) {
     return kv.set("currentEvent", null);
   }
@@ -54,13 +76,13 @@ export async function updateCurrentEventState({
   if (!currentEvent) {
     throw new Error("No current event");
   }
-  if (phase) {
+  if (phase !== undefined) {
     currentEvent.phase = phase;
   }
-  if (currentDemoId) {
+  if (currentDemoId !== undefined) {
     currentEvent.currentDemoId = currentDemoId;
   }
-  if (currentAwardId) {
+  if (currentAwardId !== undefined) {
     currentEvent.currentAwardId = currentAwardId;
   }
   return kv.set("currentEvent", currentEvent);

@@ -1,107 +1,70 @@
 "use client";
 
-import {
-  type Attendee,
-  type Award,
-  type Demo,
-  type Event,
-} from "@prisma/client";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-import { type CurrentEvent, EventPhase } from "~/lib/currentEvent";
+import { EventPhase, allPhases, displayName } from "~/lib/currentEvent";
 import { api } from "~/trpc/react";
 
 import AttendeeList from "./components/AttendeeList";
-import DemoDashboard from "./components/DemoDashboard";
+import DemosDashboard from "./components/DemosDashboard";
 import EventSelectionHeader from "./components/EventSelectionHeader";
 import PreDashboard from "./components/PreDashboard";
+import RecapDashboard from "./components/RecapDashboard";
 import ResultsDashboard from "./components/ResultsDashboard";
 import VotingDashboard from "./components/VotingDashboard";
 
+import {
+  DashboardContext,
+  useDashboardContext,
+} from "./contexts/DashboardContext";
 import { useEventAdmin } from "./hooks/useEventAdmin";
 
-type CompleteEvent = Event & {
-  demos: Demo[];
-  attendees: Attendee[];
-  awards: Award[];
-};
-
 export default function AdminPage() {
-  const { currentEvent, event, refetch, selectedEventId, setSelectedEventId } =
-    useEventAdmin();
+  const {
+    currentEvent,
+    event,
+    refetch: refetchEvent,
+    selectedEventId,
+    setSelectedEventId,
+  } = useEventAdmin();
 
   return (
     <main className="flex min-h-screen w-full flex-col text-black">
-      <EventSelectionHeader
-        selectedEventId={selectedEventId}
-        setSelectedEventId={setSelectedEventId}
-        currentEvent={currentEvent}
-        refetch={refetch}
-      />
-      {event ? (
-        <EventDashboard
-          currentEvent={currentEvent}
-          event={event}
-          refetch={refetch}
+      <DashboardContext.Provider value={{ currentEvent, event, refetchEvent }}>
+        <EventSelectionHeader
+          selectedEventId={selectedEventId}
+          setSelectedEventId={setSelectedEventId}
         />
-      ) : (
-        <div className="w-full p-2 text-center text-2xl font-semibold">
-          No event selected
-        </div>
-      )}
+        {event ? (
+          <EventDashboard />
+        ) : (
+          <div className="w-full p-2 text-center text-2xl font-semibold">
+            No event selected
+          </div>
+        )}
+      </DashboardContext.Provider>
     </main>
   );
 }
 
-function EventDashboard({
-  currentEvent,
-  event,
-  refetch,
-}: {
-  currentEvent: CurrentEvent | null | undefined;
-  event: CompleteEvent;
-  refetch: () => void;
-}) {
+function EventDashboard() {
+  const { currentEvent, event } = useDashboardContext();
   const [phase, setPhase] = useState(currentEvent?.phase ?? EventPhase.Pre);
 
   function dashboard() {
     switch (phase) {
       case EventPhase.Pre:
-        return (
-          <PreDashboard
-            eventId={event.id}
-            demos={event.demos}
-            awards={event.awards}
-            refetchEvent={refetch}
-          />
-        );
+        return <PreDashboard />;
       case EventPhase.Demos:
-        return (
-          <DemoDashboard
-            demos={event.demos}
-            currentDemoId={currentEvent?.currentDemoId}
-            refetchEvent={refetch}
-          />
-        );
+        return <DemosDashboard />;
       case EventPhase.Voting:
-        return (
-          <VotingDashboard
-            awards={event.awards}
-            demos={event.demos}
-            refetchEvent={refetch}
-          />
-        );
+        return <VotingDashboard />;
       case EventPhase.Results:
-        return (
-          <ResultsDashboard
-            currentAwardId={currentEvent?.currentAwardId}
-            awards={event.awards}
-            demos={event.demos}
-            refetchEvent={refetch}
-          />
-        );
+        return <ResultsDashboard />;
+      case EventPhase.Recap:
+        return <RecapDashboard />;
     }
   }
 
@@ -122,15 +85,10 @@ function EventDashboard({
         />
       </Link>
       <div className="flex w-full flex-1 flex-col justify-between gap-2">
-        <PhaseSelector
-          phase={phase}
-          setPhase={setPhase}
-          currentEvent={currentEvent}
-          refetch={refetch}
-        />
+        <PhaseSelector phase={phase} setPhase={setPhase} />
         <div className="flex size-full flex-1 flex-row gap-2">
           <div className="min-h-full flex-1">{dashboard()}</div>
-          <AttendeeList attendees={event.attendees} refetchEvent={refetch} />
+          <AttendeeList />
         </div>
       </div>
     </div>
@@ -140,14 +98,11 @@ function EventDashboard({
 function PhaseSelector({
   phase,
   setPhase,
-  currentEvent,
-  refetch,
 }: {
   phase: EventPhase;
   setPhase: (phase: EventPhase) => void;
-  currentEvent: CurrentEvent | null | undefined;
-  refetch: () => void;
 }) {
+  const { currentEvent, refetchEvent } = useDashboardContext();
   const updateCurrentStateMutation = api.event.updateCurrentState.useMutation();
 
   return (
@@ -157,13 +112,18 @@ function PhaseSelector({
         <select
           className="ml-2 w-[120px] rounded-xl border border-gray-200 p-2 font-medium"
           value={phase}
-          onChange={(e) => setPhase(e.target.value as EventPhase)}
+          onChange={(e) => {
+            const selectedPhase = parseInt(e.target.value, 10);
+            if (!isNaN(selectedPhase)) {
+              setPhase(selectedPhase as EventPhase);
+            }
+          }}
         >
-          <option value="pre">Pre-demos</option>
-          <option value="demos">Demos</option>
-          <option value="voting">Voting</option>
-          <option value="results">Results</option>
-          <option value="recap">Recap</option>
+          {allPhases.map((value) => (
+            <option key={value} value={value}>
+              {displayName(value)}
+            </option>
+          ))}
         </select>
         <button
           className="ml-2 rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
@@ -171,7 +131,7 @@ function PhaseSelector({
           onClick={() =>
             updateCurrentStateMutation
               .mutateAsync({ phase: phase })
-              .then(() => refetch())
+              .then(refetchEvent)
           }
         >
           Select Phase

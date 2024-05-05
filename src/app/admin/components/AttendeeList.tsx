@@ -1,5 +1,6 @@
 "use client";
 
+import { useDashboardContext } from "../contexts/DashboardContext";
 import { type Attendee } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
@@ -8,24 +9,19 @@ import { api } from "~/trpc/react";
 
 import AttendeeTypeBadge from "~/components/AttendeeTypeBadge";
 
-export default function AttendeeList({
-  attendees,
-  refetchEvent,
-}: {
-  attendees: Attendee[];
-  refetchEvent: () => void;
-}) {
+export default function AttendeeList() {
+  const { event, refetchEvent } = useDashboardContext();
   return (
     <div className="flex min-w-[300px] max-w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
       <div className="flex flex-col">
         <h2 className="text-2xl font-bold">Attendees</h2>
         <p className="-mt-1 text-sm font-semibold text-gray-400">
-          Total attendees: {attendees.length}
+          Total attendees: {event?.attendees.length ?? 0}
         </p>
       </div>
       <ul className="flex flex-col gap-2 overflow-auto">
         <AnimatePresence>
-          {attendees.map((attendee) => (
+          {event?.attendees.map((attendee) => (
             <AttendeeItem
               key={attendee.id}
               attendee={attendee}

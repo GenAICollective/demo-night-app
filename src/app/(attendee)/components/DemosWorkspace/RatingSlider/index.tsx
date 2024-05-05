@@ -1,4 +1,4 @@
-import { type Feedback } from "@prisma/client";
+import { type LocalFeedback } from "../hooks/useFeedback";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
@@ -8,8 +8,8 @@ export default function RatingSlider({
   feedback,
   setFeedback,
 }: {
-  feedback: Feedback;
-  setFeedback: (feedback: Feedback) => void;
+  feedback: LocalFeedback;
+  setFeedback: (feedback: LocalFeedback) => void;
 }) {
   return (
     <Slider

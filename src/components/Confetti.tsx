@@ -1,18 +1,20 @@
-import { type Feedback } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 
 import useWindowSize from "~/lib/hooks/useWindowSize";
 
-export function StarConfetti({ feedback }: { feedback: Feedback }) {
+import { type LocalFeedback } from "~/app/(attendee)/components/DemosWorkspace/hooks/useFeedback";
+
+export function StarConfetti({ feedback }: { feedback: LocalFeedback }) {
   const { windowSize } = useWindowSize();
   const [_active, _setActive] = useState(false);
-  const [previousFeedbackId, setPreviousFeedbackId] = useState<string>("");
+  const [previousFeedbackDemoId, setPreviousFeedbackDemoId] =
+    useState<string>("");
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (feedback.id !== previousFeedbackId) {
-      setPreviousFeedbackId(feedback.id);
+    if (feedback.demoId !== previousFeedbackDemoId) {
+      setPreviousFeedbackDemoId(feedback.demoId);
       _setActive(false);
       return;
     }
@@ -29,7 +31,7 @@ export function StarConfetti({ feedback }: { feedback: Feedback }) {
         clearTimeout(timeoutId.current);
       }
     };
-  }, [feedback.id, feedback.star]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [feedback.demoId, feedback.star]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const drawShape = (ctx: CanvasRenderingContext2D) => {
     ctx.font = "30px sans-serif";
@@ -49,16 +51,17 @@ export function StarConfetti({ feedback }: { feedback: Feedback }) {
   );
 }
 
-export function ClapsConfetti({ feedback }: { feedback: Feedback }) {
+export function ClapsConfetti({ feedback }: { feedback: LocalFeedback }) {
   const { windowSize } = useWindowSize();
   const [_active, _setActive] = useState(false);
-  const [previousFeedbackId, setPreviousFeedbackId] = useState<string>("");
+  const [previousFeedbackDemoId, setPreviousFeedbackDemoId] =
+    useState<string>("");
   const [previousClaps, setPreviousClaps] = useState(0);
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (feedback.id !== previousFeedbackId) {
-      setPreviousFeedbackId(feedback.id);
+    if (feedback.demoId !== previousFeedbackDemoId) {
+      setPreviousFeedbackDemoId(feedback.demoId);
       setPreviousClaps(feedback.claps);
       _setActive(false);
       return;
@@ -81,7 +84,7 @@ export function ClapsConfetti({ feedback }: { feedback: Feedback }) {
         clearTimeout(timeoutId.current);
       }
     };
-  }, [feedback.id, feedback.claps]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [feedback.demoId, feedback.claps]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const drawShape = (ctx: CanvasRenderingContext2D) => {
     ctx.font = "40px sans-serif";

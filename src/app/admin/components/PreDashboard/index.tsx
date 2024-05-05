@@ -1,3 +1,4 @@
+import { useDashboardContext } from "../../contexts/DashboardContext";
 import { type Award, type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -9,29 +10,26 @@ import { DemoQRModal } from "./DemoQRModal";
 import { UpsertAwardModal } from "./UpsertAwardModal";
 import { UpsertDemoModal } from "./UpsertDemoModal";
 
-export default function PreDashboard({
-  eventId,
-  demos,
-  awards,
-  refetchEvent,
-}: {
-  eventId: string;
-  demos: Demo[];
-  awards: Award[];
-  refetchEvent: () => void;
-}) {
+export default function PreDashboard() {
+  const { event, refetchEvent } = useDashboardContext();
   const modal = useModal();
+
+  if (!event) return null;
 
   const showUpsertDemoModal = (demo?: Demo) => {
     modal?.show(
-      <UpsertDemoModal eventId={eventId} demo={demo} onSubmit={refetchEvent} />,
+      <UpsertDemoModal
+        eventId={event.id}
+        demo={demo}
+        onSubmit={refetchEvent}
+      />,
     );
   };
 
   const showUpsertAwardModal = (award?: Award) => {
     modal?.show(
       <UpsertAwardModal
-        eventId={eventId}
+        eventId={event.id}
         award={award}
         onSubmit={refetchEvent}
       />,
@@ -39,7 +37,7 @@ export default function PreDashboard({
   };
 
   const showDemoQRModal = (demo: Demo) => {
-    modal?.show(<DemoQRModal eventId={eventId} demoId={demo.id} />);
+    modal?.show(<DemoQRModal eventId={event.id} demoId={demo.id} />);
   };
 
   return (
@@ -48,11 +46,11 @@ export default function PreDashboard({
         <h2 className="text-2xl font-bold">Demos</h2>
         <ul className="flex flex-col gap-2 overflow-y-auto overflow-x-clip">
           <AnimatePresence>
-            {demos.map((demo) => (
+            {event.demos.map((demo) => (
               <DemoItem
                 key={demo.id}
                 demo={demo}
-                eventId={eventId}
+                eventId={event.id}
                 onClick={() => showUpsertDemoModal(demo)}
                 onClickQR={() => showDemoQRModal(demo)}
                 refetchEvent={refetchEvent}
@@ -78,7 +76,7 @@ export default function PreDashboard({
         <h2 className="text-2xl font-bold">Awards</h2>
         <ul className="flex flex-col gap-2 overflow-y-auto overflow-x-clip">
           <AnimatePresence>
-            {awards.map((award) => (
+            {event.awards.map((award) => (
               <AwardItem
                 key={award.id}
                 award={award}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { type FeedbackAndAttendee } from "~/app/admin/components/DemoDashboard";
+import { type FeedbackAndAttendee } from "~/app/admin/components/DemosDashboard";
 
 export const useMockFeedback = () => {
   const [feedback, setFeedback] = useState<FeedbackAndAttendee[]>([]);

@@ -1,24 +1,25 @@
 "use client";
 
-import { type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import ConfettiExplosion from "react-dom-confetti";
 
 import { cn } from "~/lib/utils";
 
+import { type LocalFeedback } from "./hooks/useFeedback";
+
 export function ActionButtons({
   feedback,
   setFeedback,
 }: {
-  feedback: Feedback | null;
-  setFeedback: (feedback: Feedback) => void;
+  feedback: LocalFeedback | null;
+  setFeedback: (feedback: LocalFeedback) => void;
 }) {
   const [isExploding, setIsExploding] = useState(false);
 
   useEffect(() => {
     setIsExploding(false);
-  }, [feedback?.id]);
+  }, [feedback?.demoId]);
 
   return (
     <div className="fixed bottom-3 z-10 flex w-full max-w-xl select-none items-center justify-evenly px-4 ">
@@ -80,12 +81,13 @@ export function ActionButtons({
     </div>
   );
 }
+
 function WantToButton({
   feedback,
   setFeedback,
 }: {
-  feedback: Feedback | null;
-  setFeedback: (feedback: Feedback) => void;
+  feedback: LocalFeedback | null;
+  setFeedback: (feedback: LocalFeedback) => void;
 }) {
   const [showActionButtons, setShowActionButtons] = useState(false);
 

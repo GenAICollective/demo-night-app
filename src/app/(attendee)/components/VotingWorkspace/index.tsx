@@ -1,8 +1,8 @@
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
-import { type Award, type Demo, type Vote } from "@prisma/client";
+import { type Award, type Demo } from "@prisma/client";
 
 import AwardVoteSelect from "./AwardVoteSelect";
-import { useVotes } from "./hooks/useVotes";
+import { type LocalVote, useVotes } from "./hooks/useVotes";
 
 export default function VotingWorkspace({
   awards,
@@ -44,7 +44,7 @@ function AwardVoteItem({
 }: {
   award: Award;
   demos: Demo[];
-  vote?: Vote;
+  vote?: LocalVote;
   setVote: (awardId: string, demoId: string) => void;
 }) {
   return (

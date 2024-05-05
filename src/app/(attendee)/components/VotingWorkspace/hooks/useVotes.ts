@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 
 import { api } from "~/trpc/react";
 
+export type LocalVote = Omit<Vote, "id" | "createdAt" | "updatedAt">;
+export type VoteByAwardId = Record<string, LocalVote>;
+
 export function useVotes(eventId: string, attendee: Attendee) {
-  // [awardId: string]: Vote
-  const [votes, setVotes] = useState<Record<string, Vote>>(getLocalVotes());
+  const [votes, setVotes] = useState<VoteByAwardId>(getLocalVotes());
   const { data: votesData } = api.vote.all.useQuery({
     eventId,
     attendeeId: attendee.id,
@@ -32,19 +34,20 @@ export function useVotes(eventId: string, attendee: Attendee) {
   return { votes, setVote };
 }
 
-function emptyVote(eventId: string, attendeeId: string, awardId: string): Vote {
+function emptyVote(
+  eventId: string,
+  attendeeId: string,
+  awardId: string,
+): LocalVote {
   return {
-    id: crypto.randomUUID(),
     eventId,
     attendeeId,
     awardId,
     demoId: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
   };
 }
 
-function getLocalVotes(): Record<string, Vote> {
+function getLocalVotes(): VoteByAwardId {
   if (typeof window !== "undefined") {
     const votes = localStorage.getItem("votes");
     if (votes) return JSON.parse(votes);
@@ -54,7 +57,7 @@ function getLocalVotes(): Record<string, Vote> {
   return votes;
 }
 
-function setLocalVotes(votes: Record<string, Vote>) {
+function setLocalVotes(votes: VoteByAwardId) {
   if (typeof window === "undefined") return; // SSR guard
   localStorage.setItem("votes", JSON.stringify(votes));
 }

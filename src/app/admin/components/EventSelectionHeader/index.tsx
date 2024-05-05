@@ -1,10 +1,10 @@
 "use client";
 
+import { useDashboardContext } from "../../contexts/DashboardContext";
 import { type Event } from "@prisma/client";
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
 
-import { type CurrentEvent } from "~/lib/currentEvent";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
@@ -16,20 +16,17 @@ import { UpsertEventModal } from "./UpsertEventModal";
 export default function EventSelectionHeader({
   selectedEventId,
   setSelectedEventId,
-  currentEvent,
-  refetch: _refetch,
 }: {
   selectedEventId?: string;
   setSelectedEventId: (eventId?: string) => void;
-  currentEvent: CurrentEvent | null | undefined;
-  refetch: () => void;
 }) {
+  const { currentEvent, refetchEvent } = useDashboardContext();
   const modal = useModal();
   const { data: events, refetch: _refetchEvents } = api.event.all.useQuery();
   const updateCurrentMutation = api.event.updateCurrent.useMutation();
 
   const refetch = () => {
-    _refetch();
+    refetchEvent();
     _refetchEvents();
   };
 

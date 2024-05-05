@@ -27,7 +27,6 @@ export const voteRouter = createTRPCRouter({
   upsert: publicProcedure
     .input(
       z.object({
-        id: z.string(),
         eventId: z.string(),
         attendeeId: z.string(),
         awardId: z.string(),
@@ -37,7 +36,13 @@ export const voteRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       try {
         return db.vote.upsert({
-          where: { id: input.id },
+          where: {
+            eventId_attendeeId_awardId: {
+              eventId: input.eventId,
+              attendeeId: input.attendeeId,
+              awardId: input.awardId,
+            },
+          },
           create: { ...input },
           update: { ...input },
         });

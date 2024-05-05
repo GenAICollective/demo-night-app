@@ -9,9 +9,10 @@ import { type CurrentEvent, EventPhase } from "~/lib/currentEvent";
 
 import LoadingDots from "~/components/loading/loading-dots";
 
-import DemoWorkspace from "./DemoWorkspace";
+import DemosWorkspace from "./DemosWorkspace";
 import EventHeader from "./EventHeader";
 import PreWorkspace from "./PreWorkspace";
+import RecapWorkspace from "./RecapWorkspace";
 import ResultsWorkspace from "./ResultsWorkspace";
 import VotingWorkspace from "./VotingWorkspace";
 
@@ -29,7 +30,7 @@ export default function Workspaces({
         return <PreWorkspace />;
       case EventPhase.Demos:
         if (!event || event.demos.length === 0) return <LoadingScreen />;
-        return <DemoWorkspace demos={event.demos} />;
+        return <DemosWorkspace demos={event.demos} />;
       case EventPhase.Voting:
         if (!event || event.demos.length === 0) return <LoadingScreen />;
         return <VotingWorkspace awards={event.awards} demos={event.demos} />;
@@ -37,6 +38,8 @@ export default function Workspaces({
         if (!event || event.awards.length === 0 || event.demos.length === 0)
           return <LoadingScreen />;
         return <ResultsWorkspace awards={event.awards} demos={event.demos} />;
+      case EventPhase.Recap:
+        return <RecapWorkspace />;
     }
   }
 

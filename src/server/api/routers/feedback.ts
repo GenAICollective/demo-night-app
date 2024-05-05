@@ -27,7 +27,6 @@ export const feedbackRouter = createTRPCRouter({
   upsert: publicProcedure
     .input(
       z.object({
-        id: z.string(),
         eventId: z.string(),
         attendeeId: z.string(),
         demoId: z.string(),
@@ -45,7 +44,7 @@ export const feedbackRouter = createTRPCRouter({
       if (input.star === true) {
         await db.feedback.updateMany({
           where: {
-            id: { not: input.id },
+            demoId: { not: input.demoId },
             eventId: input.eventId,
             attendeeId: input.attendeeId,
             star: true,
@@ -55,7 +54,13 @@ export const feedbackRouter = createTRPCRouter({
       }
       try {
         return db.feedback.upsert({
-          where: { id: input.id },
+          where: {
+            eventId_attendeeId_demoId: {
+              eventId: input.eventId,
+              attendeeId: input.attendeeId,
+              demoId: input.demoId,
+            },
+          },
           create: { ...input },
           update: { ...input },
         });
