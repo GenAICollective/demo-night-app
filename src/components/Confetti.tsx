@@ -32,7 +32,7 @@ export function StarConfetti({ feedback }: { feedback: Feedback }) {
   }, [feedback.id, feedback.star]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const drawShape = (ctx: CanvasRenderingContext2D) => {
-    ctx.font = "20px sans-serif";
+    ctx.font = "30px sans-serif";
     ctx.fillText("⭐", 0, 0);
   };
 
@@ -44,7 +44,7 @@ export function StarConfetti({ feedback }: { feedback: Feedback }) {
       drawShape={drawShape}
       tweenDuration={1000}
       gravity={0.05}
-      numberOfPieces={_active ? 500 : 0}
+      numberOfPieces={_active ? 300 : 0}
     />
   );
 }
@@ -140,6 +140,7 @@ export function ResultsConfetti({
       height={windowSize.height}
       tweenDuration={3000}
       gravity={0.05}
+      colors={["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]}
       numberOfPieces={_active ? 500 : 0}
     />
   );

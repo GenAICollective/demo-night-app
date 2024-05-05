@@ -3,6 +3,8 @@ import { type Award, type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import ConfettiExplosion from "react-dom-confetti";
 
 import { ResultsConfetti } from "~/components/Confetti";
 
@@ -50,6 +52,17 @@ function AwardWinnerItem({
     currentAwardIndex !== null && currentAwardIndex >= award.index
       ? demos.find((demo) => demo.id === award.winnerId)
       : null;
+  const [isExploding, setIsExploding] = useState(false);
+
+  useEffect(() => {
+    if (winner !== null) {
+      setTimeout(() => {
+        setIsExploding(true);
+      }, 2000);
+    } else {
+      setIsExploding(false);
+    }
+  }, [winner]);
 
   return (
     <div className="flex flex-col font-medium">
@@ -57,6 +70,16 @@ function AwardWinnerItem({
       <p className="text-md pb-2 pl-[2px] text-lg font-semibold italic leading-6 text-gray-500">
         {award.description}
       </p>
+      <div className="m-auto w-1 translate-y-20">
+        <ConfettiExplosion
+          active={isExploding}
+          config={{
+            elementCount: 500,
+            duration: 5000,
+            stagger: 2,
+          }}
+        />
+      </div>
       <AnimatePresence initial={false} mode="popLayout">
         {winner ? (
           <motion.div
