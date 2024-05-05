@@ -1,7 +1,7 @@
-import { type Event, EventPhase } from "@prisma/client";
-import { kv } from "@vercel/kv";
+import { type Event } from "@prisma/client";
 import { z } from "zod";
 
+import * as kv from "~/lib/currentEvent";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -9,31 +9,8 @@ import {
 } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
-export type CurrentEvent = {
-  id: string;
-  name: string;
-  phase: EventPhase;
-  currentDemoId: string | null;
-  currentAwardIndex: number | null;
-};
-
-function getCurrentEvent(): Promise<CurrentEvent | null> {
-  return kv.get("currentEvent");
-}
-
-function updateCurrentEvent(event: Event) {
-  const currentEvent: CurrentEvent = {
-    id: event.id,
-    name: event.name,
-    phase: event.phase,
-    currentDemoId: event.currentDemoId,
-    currentAwardIndex: event.currentAwardIndex,
-  };
-  return kv.set("currentEvent", currentEvent);
-}
-
 export const eventRouter = createTRPCRouter({
-  getCurrent: publicProcedure.query(() => getCurrentEvent()),
+  getCurrent: publicProcedure.query(() => kv.getCurrentEvent()),
   get: publicProcedure.input(z.string()).query(async ({ input }) => {
     return db.event.findUnique({
       where: { id: input },
@@ -55,15 +32,23 @@ export const eventRouter = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       if (input.originalId) {
-        return db.event.update({
-          where: { id: input.originalId },
-          data: {
-            id: input.id,
-            name: input.name,
-            date: new Date(input.date),
-            url: input.url,
-          },
-        });
+        return db.event
+          .update({
+            where: { id: input.originalId },
+            data: {
+              id: input.id,
+              name: input.name,
+              date: new Date(input.date),
+              url: input.url,
+            },
+          })
+          .then(async (res: Event) => {
+            const currentEvent = await kv.getCurrentEvent();
+            if (currentEvent?.id === input.originalId) {
+              kv.updateCurrentEvent(res);
+            }
+            return res;
+          });
       }
       return db.event.create({
         data: { ...input },
@@ -87,63 +72,29 @@ export const eventRouter = createTRPCRouter({
     });
   }),
   updateCurrent: protectedProcedure
-    .input(z.string())
+    .input(z.string().nullable())
     .mutation(async ({ input }) => {
-      return db
-        .$transaction(async (prisma) => {
-          await prisma.event.updateMany({
-            where: { isCurrent: true },
-            data: { isCurrent: false },
-          });
-          return prisma.event.update({
-            where: { id: input },
-            data: { isCurrent: true },
-          });
-        })
-        .then(updateCurrentEvent);
+      if (!input) {
+        return kv.updateCurrentEvent(null);
+      }
+      const event = await db.event.findUnique({
+        where: { id: input },
+      });
+      if (!event) {
+        throw new Error("Event not found");
+      }
+      return kv.updateCurrentEvent(event);
     }),
-  removeCurrent: protectedProcedure.mutation(async () => {
-    return db.event
-      .updateMany({
-        where: { isCurrent: true },
-        data: { isCurrent: false },
-      })
-      .then(() => kv.del("currentEvent"));
-  }),
-  updatePhase: protectedProcedure
+  updateCurrentState: protectedProcedure
     .input(
       z.object({
-        id: z.string(),
-        phase: z.enum(["PRE", "DEMO", "VOTING", "RESULTS"]),
+        phase: z.nativeEnum(kv.EventPhase).optional(),
+        currentDemoId: z.string().optional().nullable(),
+        currentAwardId: z.string().optional().nullable(),
       }),
     )
     .mutation(async ({ input }) => {
-      return db.event
-        .update({
-          where: { id: input.id },
-          data: { phase: EventPhase[input.phase] },
-        })
-        .then(updateCurrentEvent);
-    }),
-  updateCurrentDemo: protectedProcedure
-    .input(z.object({ id: z.string(), demoId: z.string().nullable() }))
-    .mutation(async ({ input }) => {
-      return db.event
-        .update({
-          where: { id: input.id },
-          data: { currentDemoId: input.demoId },
-        })
-        .then(updateCurrentEvent);
-    }),
-  updateCurrentAwardIndex: protectedProcedure
-    .input(z.object({ id: z.string(), index: z.number().nullable() }))
-    .mutation(async ({ input }) => {
-      return db.event
-        .update({
-          where: { id: input.id },
-          data: { currentAwardIndex: input.index },
-        })
-        .then(updateCurrentEvent);
+      return kv.updateCurrentEventState(input);
     }),
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
     return db.event
@@ -151,9 +102,9 @@ export const eventRouter = createTRPCRouter({
         where: { id: input },
       })
       .then(async () => {
-        const currentEvent = await getCurrentEvent();
+        const currentEvent = await kv.getCurrentEvent();
         if (input === currentEvent?.id) {
-          return kv.del("currentEvent");
+          return kv.updateCurrentEvent(null);
         }
       });
   }),

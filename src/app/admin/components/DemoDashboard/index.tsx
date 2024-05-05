@@ -24,7 +24,7 @@ export default function DemoDashboard({
   refetchEvent,
 }: {
   demos: Demo[];
-  currentDemoId: string | null;
+  currentDemoId: string | null | undefined;
   refetchEvent: () => void;
 }) {
   const [selectedDemo, setSelectedDemo] = useState<Demo | undefined>(

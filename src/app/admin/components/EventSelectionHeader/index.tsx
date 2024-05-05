@@ -4,6 +4,7 @@ import { type Event } from "@prisma/client";
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
 
+import { type CurrentEvent } from "~/lib/currentEvent";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
@@ -15,14 +16,22 @@ import { UpsertEventModal } from "./UpsertEventModal";
 export default function EventSelectionHeader({
   selectedEventId,
   setSelectedEventId,
+  currentEvent,
+  refetch: _refetch,
 }: {
   selectedEventId?: string;
   setSelectedEventId: (eventId?: string) => void;
+  currentEvent: CurrentEvent | null | undefined;
+  refetch: () => void;
 }) {
   const modal = useModal();
-  const { data: events, refetch: refetchEvents } = api.event.all.useQuery();
-  const makeCurrentMutation = api.event.updateCurrent.useMutation();
-  const removeCurrentMutation = api.event.removeCurrent.useMutation();
+  const { data: events, refetch: _refetchEvents } = api.event.all.useQuery();
+  const updateCurrentMutation = api.event.updateCurrent.useMutation();
+
+  const refetch = () => {
+    _refetch();
+    _refetchEvents();
+  };
 
   useEffect(() => {
     if (events && events.length > 0 && !selectedEventId) {
@@ -31,14 +40,12 @@ export default function EventSelectionHeader({
   }, [events, selectedEventId, setSelectedEventId]);
 
   const isCurrent = useMemo(
-    () => events?.filter((e) => e.id === selectedEventId)[0]?.isCurrent,
-    [events, selectedEventId],
+    () => events?.filter((e) => e.id === currentEvent?.id)[0],
+    [events, currentEvent],
   );
 
   const showUpsertEventModal = (event?: Event) => {
-    modal?.show(
-      <UpsertEventModal event={event} onSubmit={() => refetchEvents()} />,
-    );
+    modal?.show(<UpsertEventModal event={event} onSubmit={() => refetch()} />);
   };
 
   return (
@@ -81,15 +88,9 @@ export default function EventSelectionHeader({
                   : "bg-green-200 hover:bg-green-300",
               )}
               onClick={() => {
-                if (isCurrent) {
-                  removeCurrentMutation
-                    .mutateAsync()
-                    .then(() => refetchEvents());
-                } else {
-                  makeCurrentMutation
-                    .mutateAsync(selectedEventId)
-                    .then(() => refetchEvents());
-                }
+                updateCurrentMutation
+                  .mutateAsync(isCurrent ? null : selectedEventId)
+                  .then(() => refetch());
               }}
             >
               {isCurrent ? "Stop" : "Start"} Event
@@ -103,7 +104,7 @@ export default function EventSelectionHeader({
             eventId={selectedEventId}
             onDeleted={() => {
               setSelectedEventId(undefined);
-              refetchEvents();
+              refetch();
             }}
           />
         )}

@@ -1,7 +1,7 @@
 import { type Attendee } from "@prisma/client";
 import { createContext, useContext } from "react";
 
-import { type CurrentEvent } from "~/server/api/routers/event";
+import { type CurrentEvent } from "~/lib/currentEvent";
 
 export type IWorkspaceContext = {
   currentEvent: CurrentEvent;

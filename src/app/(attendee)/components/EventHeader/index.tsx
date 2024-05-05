@@ -1,7 +1,8 @@
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
 import { UpdateAttendeeButton } from "../UpdateAttendee";
-import { EventPhase } from "@prisma/client";
 import Image from "next/image";
+
+import { EventPhase } from "~/lib/currentEvent";
 
 export default function EventHeader() {
   const { currentEvent, attendee, setAttendee } = useWorkspaceContext();
@@ -21,7 +22,7 @@ export default function EventHeader() {
             {currentEvent.name}
           </h1>
           <div className="flex aspect-square w-9 items-center justify-center">
-            {currentEvent.phase !== EventPhase.PRE && (
+            {currentEvent.phase !== EventPhase.Pre && (
               <UpdateAttendeeButton
                 attendee={attendee}
                 setAttendee={setAttendee}
@@ -37,10 +38,11 @@ export default function EventHeader() {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function PhasePills({ phase }: { phase: EventPhase }) {
   const phaseNames = {
-    [EventPhase.PRE]: "Pre-Demos",
-    [EventPhase.DEMO]: "Demos",
-    [EventPhase.VOTING]: "Voting",
-    [EventPhase.RESULTS]: "Results",
+    [EventPhase.Pre]: "Pre-Demos",
+    [EventPhase.Demos]: "Demos",
+    [EventPhase.Voting]: "Voting",
+    [EventPhase.Results]: "Results",
+    [EventPhase.Recap]: "Recap",
   };
 
   const selectedPhaseIndex = Object.keys(phaseNames).indexOf(phase);

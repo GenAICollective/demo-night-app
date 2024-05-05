@@ -18,7 +18,8 @@ export function DemoItem({
   isCurrent: boolean;
   refetchEvent: () => void;
 }) {
-  const updateCurrentDemoMutation = api.event.updateCurrentDemo.useMutation();
+  const updateCurrentEventStateMutation =
+    api.event.updateCurrentState.useMutation();
   const updateIndexMutation = api.demo.updateIndex.useMutation();
 
   return (
@@ -50,8 +51,8 @@ export function DemoItem({
           title="Set as Current"
           onClick={() => {
             setSelectedDemo(demo);
-            updateCurrentDemoMutation
-              .mutateAsync({ id: demo.eventId, demoId: demo.id })
+            updateCurrentEventStateMutation
+              .mutateAsync({ currentDemoId: demo.id })
               .then(() => refetchEvent());
           }}
           className="focus:outline-none"

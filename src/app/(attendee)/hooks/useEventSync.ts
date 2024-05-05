@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { type CurrentEvent } from "~/server/api/routers/event";
+import { type CurrentEvent } from "~/lib/currentEvent";
 import { api } from "~/trpc/react";
 
 import { env } from "~/env";
@@ -25,10 +25,8 @@ export default function useEventSync(initialCurrentEvent: CurrentEvent) {
   );
 
   useEffect(() => {
-    if (currentEvent?.phase !== event?.phase) {
-      refetchEvent();
-    }
-  }, [currentEvent, event, refetchEvent]);
+    refetchEvent();
+  }, [currentEvent.phase]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { currentEvent, event, refetchEvent };
 }

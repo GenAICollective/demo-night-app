@@ -2,7 +2,7 @@
 
 import { type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ConfettiExplosion from "react-dom-confetti";
 
 import { cn } from "~/lib/utils";
@@ -14,6 +14,12 @@ export function ActionButtons({
   feedback: Feedback | null;
   setFeedback: (feedback: Feedback) => void;
 }) {
+  const [isExploding, setIsExploding] = useState(false);
+
+  useEffect(() => {
+    setIsExploding(false);
+  }, [feedback?.id]);
+
   return (
     <div className="fixed bottom-3 z-10 flex w-full max-w-xl select-none items-center justify-evenly px-4 ">
       <motion.button
@@ -30,12 +36,13 @@ export function ActionButtons({
               star: !(feedback.star || false),
             };
             setFeedback(updatedFeedback);
+            setIsExploding(updatedFeedback.star);
           }
         }}
       >
         <div className="pl-10">
           <ConfettiExplosion
-            active={feedback?.star ?? false}
+            active={isExploding}
             config={{
               colors: ["#FFFF00", "#FFD700", "#FFEA00"],
               elementCount: 200,

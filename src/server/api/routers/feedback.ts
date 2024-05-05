@@ -53,11 +53,18 @@ export const feedbackRouter = createTRPCRouter({
           data: { star: false },
         });
       }
-      return db.feedback.upsert({
-        where: { id: input.id },
-        create: { ...input },
-        update: { ...input },
-      });
+      try {
+        return db.feedback.upsert({
+          where: { id: input.id },
+          create: { ...input },
+          update: { ...input },
+        });
+      } catch (error: any) {
+        if (error.code === "P2002") {
+          throw new Error("Cannot give feedback for the same demo twice");
+        }
+        throw error;
+      }
     }),
   delete: publicProcedure.input(z.string()).mutation(async ({ input }) => {
     return db.feedback.delete({

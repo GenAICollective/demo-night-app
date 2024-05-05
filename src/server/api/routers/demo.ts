@@ -10,9 +10,7 @@ import { db } from "~/server/db";
 export const demoRouter = createTRPCRouter({
   get: publicProcedure.input(z.string()).query(async ({ input }) => {
     return db.demo.findUnique({
-      where: {
-        id: input,
-      },
+      where: { id: input },
       include: {
         feedback: true,
         votes: true,

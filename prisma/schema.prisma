@@ -65,23 +65,11 @@ model Event {
     date DateTime
     url  String
 
-    phase             EventPhase @default(PRE)
-    isCurrent         Boolean    @default(false)
-    currentDemoId     String?
-    currentAwardIndex Int?
-
     demos     Demo[]
     attendees Attendee[]
     awards    Award[]
     feedback  Feedback[]
     votes     Vote[]
-}
-
-enum EventPhase {
-    PRE
-    DEMO
-    VOTING
-    RESULTS
 }
 
 model Demo {
@@ -146,6 +134,7 @@ model Feedback {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    @@unique([eventId, attendeeId, demoId])
     @@index([eventId, attendeeId])
 }
 
@@ -163,5 +152,6 @@ model Vote {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    @@unique([eventId, attendeeId, awardId])
     @@index(awardId)
 }

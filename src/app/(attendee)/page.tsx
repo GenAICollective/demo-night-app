@@ -18,7 +18,7 @@ export default async function AttendeePage() {
         <h1 className="pt-4 text-center text-2xl font-semibold">
           No active demo night 🥲
         </h1>
-        <p className="text-lg font-medium italic">(hold tight!)</p>
+        <p className="text-lg font-semibold italic">(hold tight!)</p>
       </main>
     );
   }

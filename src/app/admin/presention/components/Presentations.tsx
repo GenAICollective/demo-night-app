@@ -2,7 +2,7 @@
 
 import QRCode from "react-qr-code";
 
-import { type CurrentEvent } from "~/server/api/routers/event";
+import { type CurrentEvent } from "~/lib/currentEvent";
 
 import useEventSync from "~/app/(attendee)/hooks/useEventSync";
 
@@ -11,7 +11,7 @@ export default function Presentations({
 }: {
   currentEvent: CurrentEvent;
 }) {
-  const { currentEvent, event } = useEventSync(initialCurrentEvent);
+  const { currentEvent } = useEventSync(initialCurrentEvent);
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 font-kallisto font-bold tracking-tight">

@@ -5,12 +5,12 @@ import {
   type Award,
   type Demo,
   type Event,
-  EventPhase,
 } from "@prisma/client";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+import { type CurrentEvent, EventPhase } from "~/lib/currentEvent";
 import { api } from "~/trpc/react";
 
 import AttendeeList from "./components/AttendeeList";
@@ -29,7 +29,7 @@ type CompleteEvent = Event & {
 };
 
 export default function AdminPage() {
-  const { event, refetchEvent, selectedEventId, setSelectedEventId } =
+  const { currentEvent, event, refetch, selectedEventId, setSelectedEventId } =
     useEventAdmin();
 
   return (
@@ -37,9 +37,15 @@ export default function AdminPage() {
       <EventSelectionHeader
         selectedEventId={selectedEventId}
         setSelectedEventId={setSelectedEventId}
+        currentEvent={currentEvent}
+        refetch={refetch}
       />
       {event ? (
-        <EventDashboard event={event} refetchEvent={refetchEvent} />
+        <EventDashboard
+          currentEvent={currentEvent}
+          event={event}
+          refetch={refetch}
+        />
       ) : (
         <div className="w-full p-2 text-center text-2xl font-semibold">
           No event selected
@@ -50,49 +56,50 @@ export default function AdminPage() {
 }
 
 function EventDashboard({
+  currentEvent,
   event,
-  refetchEvent,
+  refetch,
 }: {
+  currentEvent: CurrentEvent | null | undefined;
   event: CompleteEvent;
-  refetchEvent: () => void;
+  refetch: () => void;
 }) {
-  const [phase, setPhase] = useState(event.phase);
+  const [phase, setPhase] = useState(currentEvent?.phase ?? EventPhase.Pre);
 
   function dashboard() {
     switch (phase) {
-      case EventPhase.PRE:
+      case EventPhase.Pre:
         return (
           <PreDashboard
             eventId={event.id}
             demos={event.demos}
             awards={event.awards}
-            refetchEvent={refetchEvent}
+            refetchEvent={refetch}
           />
         );
-      case EventPhase.DEMO:
+      case EventPhase.Demos:
         return (
           <DemoDashboard
             demos={event.demos}
-            currentDemoId={event.currentDemoId}
-            refetchEvent={refetchEvent}
+            currentDemoId={currentEvent?.currentDemoId}
+            refetchEvent={refetch}
           />
         );
-      case EventPhase.VOTING:
+      case EventPhase.Voting:
         return (
           <VotingDashboard
             awards={event.awards}
             demos={event.demos}
-            refetchEvent={refetchEvent}
+            refetchEvent={refetch}
           />
         );
-      case EventPhase.RESULTS:
+      case EventPhase.Results:
         return (
           <ResultsDashboard
-            eventId={event.id}
-            currentAwardIndex={event.currentAwardIndex}
+            currentAwardId={currentEvent?.currentAwardId}
             awards={event.awards}
             demos={event.demos}
-            refetchEvent={refetchEvent}
+            refetchEvent={refetch}
           />
         );
     }
@@ -118,15 +125,12 @@ function EventDashboard({
         <PhaseSelector
           phase={phase}
           setPhase={setPhase}
-          event={event}
-          refetchEvent={refetchEvent}
+          currentEvent={currentEvent}
+          refetch={refetch}
         />
         <div className="flex size-full flex-1 flex-row gap-2">
           <div className="min-h-full flex-1">{dashboard()}</div>
-          <AttendeeList
-            attendees={event.attendees}
-            refetchEvent={refetchEvent}
-          />
+          <AttendeeList attendees={event.attendees} refetchEvent={refetch} />
         </div>
       </div>
     </div>
@@ -136,15 +140,15 @@ function EventDashboard({
 function PhaseSelector({
   phase,
   setPhase,
-  event,
-  refetchEvent,
+  currentEvent,
+  refetch,
 }: {
   phase: EventPhase;
   setPhase: (phase: EventPhase) => void;
-  event: CompleteEvent;
-  refetchEvent: () => void;
+  currentEvent: CurrentEvent | null | undefined;
+  refetch: () => void;
 }) {
-  const updatePhaseMutation = api.event.updatePhase.useMutation();
+  const updateCurrentStateMutation = api.event.updateCurrentState.useMutation();
 
   return (
     <div className="flex flex-col">
@@ -153,20 +157,21 @@ function PhaseSelector({
         <select
           className="ml-2 w-[120px] rounded-xl border border-gray-200 p-2 font-medium"
           value={phase}
-          onChange={(e) => setPhase(EventPhase[e.target.value as EventPhase])}
+          onChange={(e) => setPhase(e.target.value as EventPhase)}
         >
-          <option value="PRE">Pre-demos</option>
-          <option value="DEMO">Demos</option>
-          <option value="VOTING">Voting</option>
-          <option value="RESULTS">Results</option>
+          <option value="pre">Pre-demos</option>
+          <option value="demos">Demos</option>
+          <option value="voting">Voting</option>
+          <option value="results">Results</option>
+          <option value="recap">Recap</option>
         </select>
         <button
           className="ml-2 rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
-          hidden={phase === event.phase}
+          hidden={phase === currentEvent?.phase}
           onClick={() =>
-            updatePhaseMutation
-              .mutateAsync({ id: event.id, phase: phase })
-              .then(() => refetchEvent())
+            updateCurrentStateMutation
+              .mutateAsync({ phase: phase })
+              .then(() => refetch())
           }
         >
           Select Phase

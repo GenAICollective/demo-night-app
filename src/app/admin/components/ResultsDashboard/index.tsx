@@ -5,20 +5,21 @@ import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 export default function ResultsDashboard({
-  eventId,
-  currentAwardIndex,
+  currentAwardId,
   awards,
   demos,
   refetchEvent,
 }: {
-  eventId: string;
-  currentAwardIndex: number | null;
+  currentAwardId: string | null | undefined;
   awards: Award[];
   demos: Demo[];
   refetchEvent: () => void;
 }) {
-  const updateCurrentAwardIndexMutation =
-    api.event.updateCurrentAwardIndex.useMutation();
+  const updateCurrentStateMutation = api.event.updateCurrentState.useMutation();
+
+  const currentAwardIndex = awards.findIndex(
+    (award) => award.id === currentAwardId,
+  );
 
   return (
     <div className="flex size-full flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
@@ -27,11 +28,8 @@ export default function ResultsDashboard({
         <button
           className="rounded-xl bg-red-200 px-4 font-semibold"
           onClick={() => {
-            updateCurrentAwardIndexMutation
-              .mutateAsync({
-                id: eventId,
-                index: null,
-              })
+            updateCurrentStateMutation
+              .mutateAsync({ currentAwardId: null })
               .then(refetchEvent);
           }}
         >
@@ -47,11 +45,8 @@ export default function ResultsDashboard({
               title="Reveal"
               className="flex flex-1 cursor-pointer items-center justify-between rounded-xl text-start font-medium focus:outline-none"
               onClick={() => {
-                updateCurrentAwardIndexMutation
-                  .mutateAsync({
-                    id: eventId,
-                    index: award.index,
-                  })
+                updateCurrentStateMutation
+                  .mutateAsync({ currentAwardId: award.id })
                   .then(refetchEvent);
               }}
             >

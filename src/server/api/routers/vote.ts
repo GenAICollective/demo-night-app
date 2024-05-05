@@ -35,11 +35,18 @@ export const voteRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
-      return db.vote.upsert({
-        where: { id: input.id },
-        create: { ...input },
-        update: { ...input },
-      });
+      try {
+        return db.vote.upsert({
+          where: { id: input.id },
+          create: { ...input },
+          update: { ...input },
+        });
+      } catch (error: any) {
+        if (error.code === "P2002") {
+          throw new Error("Cannot vote for the same award twice");
+        }
+        throw error;
+      }
     }),
   delete: publicProcedure.input(z.string()).mutation(async ({ input }) => {
     return db.vote.delete({

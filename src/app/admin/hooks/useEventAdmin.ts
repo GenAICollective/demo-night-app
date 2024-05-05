@@ -11,6 +11,8 @@ export function useEventAdmin() {
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>(
     undefined,
   );
+  const { data: currentEvent, refetch: refetchCurrentEvent } =
+    api.event.getCurrent.useQuery();
   const { data: event, refetch: refetchEvent } = api.event.getAdmin.useQuery(
     selectedEventId ?? "",
     {
@@ -19,11 +21,16 @@ export function useEventAdmin() {
     },
   );
 
+  const refetch = () => {
+    refetchCurrentEvent();
+    refetchEvent();
+  };
+
   useEffect(() => {
     if (selectedEventId) {
       refetchEvent();
     }
   }, [selectedEventId, refetchEvent]);
 
-  return { event, refetchEvent, selectedEventId, setSelectedEventId };
+  return { currentEvent, event, refetch, selectedEventId, setSelectedEventId };
 }

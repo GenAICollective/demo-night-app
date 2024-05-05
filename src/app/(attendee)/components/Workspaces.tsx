@@ -3,10 +3,9 @@
 import { WorkspaceContext } from "../contexts/WorkspaceContext";
 import { useAttendee } from "../hooks/useAttendee";
 import useEventSync from "../hooks/useEventSync";
-import { EventPhase } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { type CurrentEvent } from "~/server/api/routers/event";
+import { type CurrentEvent, EventPhase } from "~/lib/currentEvent";
 
 import LoadingDots from "~/components/loading/loading-dots";
 
@@ -26,15 +25,15 @@ export default function Workspaces({
 
   function workspace() {
     switch (currentEvent?.phase) {
-      case EventPhase.PRE:
+      case EventPhase.Pre:
         return <PreWorkspace />;
-      case EventPhase.DEMO:
+      case EventPhase.Demos:
         if (!event || event.demos.length === 0) return <LoadingScreen />;
         return <DemoWorkspace demos={event.demos} />;
-      case EventPhase.VOTING:
+      case EventPhase.Voting:
         if (!event || event.demos.length === 0) return <LoadingScreen />;
         return <VotingWorkspace awards={event.awards} demos={event.demos} />;
-      case EventPhase.RESULTS:
+      case EventPhase.Results:
         if (!event || event.awards.length === 0 || event.demos.length === 0)
           return <LoadingScreen />;
         return <ResultsWorkspace awards={event.awards} demos={event.demos} />;
