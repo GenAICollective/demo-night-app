@@ -5,9 +5,11 @@ import { CircleUserRoundIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { ATTENDEE_TYPES } from "~/lib/types/attendeeTypes";
+import { cn } from "~/lib/utils";
+
 import SubmitButton from "~/components/SubmitButton";
 import { useModal } from "~/components/modal/provider";
-import { cn } from "~/lib/utils";
 
 export function UpdateAttendeeButton({
   attendee,
@@ -97,7 +99,7 @@ export function UpdateAttendeeForm({
         </p>
       </div>
       <label className="flex w-full flex-col gap-1">
-        <span className="font-semibold text-lg">Name</span>
+        <span className="text-lg font-semibold">Name</span>
         <input
           type="text"
           placeholder="GenAI Collective"
@@ -106,7 +108,7 @@ export function UpdateAttendeeForm({
         />
       </label>
       <label className="flex w-full flex-col gap-1">
-        <span className="font-semibold text-lg">Email</span>
+        <span className="text-lg font-semibold">Email</span>
         <input
           type="email"
           placeholder="hello@genaicollective.ai"
@@ -115,7 +117,7 @@ export function UpdateAttendeeForm({
         />
       </label>
       <label className="flex w-full flex-col gap-1 pb-2">
-        <span className="font-semibold text-lg">I consider myself a...</span>
+        <span className="text-lg font-semibold">I consider myself a...</span>
         <select
           {...register("type")}
           className={cn(
@@ -124,7 +126,7 @@ export function UpdateAttendeeForm({
           )}
         >
           <option value="">Select one...</option>
-          {attendeePreselectTypes.map((type) => (
+          {ATTENDEE_TYPES.map((type) => (
             <option key={type} value={type}>
               {type}
             </option>
@@ -143,18 +145,7 @@ export function UpdateAttendeeForm({
   );
 }
 
-const attendeePreselectTypes = [
-  "Founder",
-  "Investor",
-  "Engineer",
-  "Product Manager",
-  "Designer",
-  "Other",
-];
-
 function selectedType(attendee: Attendee | null) {
   if (!attendee?.type) return "";
-  return attendeePreselectTypes.includes(attendee.type)
-    ? attendee.type
-    : "Other";
+  return ATTENDEE_TYPES.includes(attendee.type) ? attendee.type : "Other";
 }

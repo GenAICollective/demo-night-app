@@ -3,7 +3,7 @@ import { type Feedback } from "@prisma/client";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
 
-import { QUICK_ACTIONS } from "~/lib/quickActions";
+import { QUICK_ACTIONS } from "~/lib/types/quickActions";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 

@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import ConfettiExplosion from "react-dom-confetti";
 
-import { QUICK_ACTIONS } from "~/lib/quickActions";
+import { QUICK_ACTIONS } from "~/lib/types/quickActions";
 import { cn } from "~/lib/utils";
 
 import { type LocalFeedback } from "./hooks/useFeedback";

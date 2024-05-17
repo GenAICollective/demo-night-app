@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { EventPhase } from "~/lib/currentEvent";
+import { EventPhase } from "~/lib/types/currentEvent";
 import { api } from "~/trpc/server";
 
 import EventHeader from "./components/EventHeader";

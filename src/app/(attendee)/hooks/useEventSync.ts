@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { type CurrentEvent } from "~/lib/currentEvent";
+import { type CurrentEvent } from "~/lib/types/currentEvent";
 import { api } from "~/trpc/react";
 
 import { env } from "~/env";

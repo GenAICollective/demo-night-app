@@ -5,7 +5,7 @@ import { useAttendee } from "../hooks/useAttendee";
 import useEventSync from "../hooks/useEventSync";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { type CurrentEvent, EventPhase } from "~/lib/currentEvent";
+import { type CurrentEvent, EventPhase } from "~/lib/types/currentEvent";
 
 import LoadingScreen from "~/components/loading/LoadingScreen";
 

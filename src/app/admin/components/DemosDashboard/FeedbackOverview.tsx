@@ -1,7 +1,7 @@
 import { type Feedback } from "@prisma/client";
 import { useMemo } from "react";
 
-import { QUICK_ACTIONS } from "~/lib/quickActions";
+import { QUICK_ACTIONS } from "~/lib/types/quickActions";
 
 export default function FeedbackOverview({
   feedback,

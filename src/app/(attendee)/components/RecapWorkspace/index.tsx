@@ -6,7 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { QUICK_ACTIONS } from "~/lib/quickActions";
+import { QUICK_ACTIONS } from "~/lib/types/quickActions";
 import { api } from "~/trpc/react";
 
 import { GaicoConfetti } from "~/components/Confetti";

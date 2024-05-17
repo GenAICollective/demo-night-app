@@ -2,7 +2,7 @@
 
 import QRCode from "react-qr-code";
 
-import { type CurrentEvent } from "~/lib/currentEvent";
+import { type CurrentEvent } from "~/lib/types/currentEvent";
 
 import useEventSync from "~/app/(attendee)/hooks/useEventSync";
 

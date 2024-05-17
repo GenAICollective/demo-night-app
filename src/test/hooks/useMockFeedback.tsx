@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { QUICK_ACTIONS } from "~/lib/quickActions";
+import { ATTENDEE_TYPES } from "~/lib/types/attendeeTypes";
+import { QUICK_ACTIONS } from "~/lib/types/quickActions";
 
 import { type FeedbackAndAttendee } from "~/app/admin/components/DemosDashboard";
 
@@ -27,15 +28,7 @@ export const useMockFeedback = () => {
           updatedAt: new Date(),
           attendee: {
             name: "Anonymous",
-            type:
-              [
-                "Investor",
-                "Founder",
-                "Engineer",
-                "Product Manager",
-                "Designer",
-                "Other",
-              ].sort(() => Math.random() - 0.5)[0] ?? null,
+            type: ATTENDEE_TYPES.sort(() => Math.random() - 0.5)[0] ?? null,
           },
         },
       ]);

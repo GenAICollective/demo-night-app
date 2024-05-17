@@ -1,4 +1,4 @@
-import { QUICK_ACTIONS } from "~/lib/quickActions";
+import { QUICK_ACTIONS } from "~/lib/types/quickActions";
 import { cn } from "~/lib/utils";
 
 import SubmitButton from "~/components/SubmitButton";

@@ -2,7 +2,7 @@ import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
 import { UpdateAttendeeButton } from "../UpdateAttendee";
 import Image from "next/image";
 
-import { EventPhase, allPhases, displayName } from "~/lib/currentEvent";
+import { EventPhase, allPhases, displayName } from "~/lib/types/currentEvent";
 
 export default function EventHeader() {
   const { currentEvent, attendee, setAttendee } = useWorkspaceContext();

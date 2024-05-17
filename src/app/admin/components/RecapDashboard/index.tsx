@@ -1,6 +1,6 @@
 import { useDashboardContext } from "../../contexts/DashboardContext";
 
-import { EventPhase } from "~/lib/currentEvent";
+import { EventPhase } from "~/lib/types/currentEvent";
 
 export default function RecapDashboard() {
   const { currentEvent } = useDashboardContext();

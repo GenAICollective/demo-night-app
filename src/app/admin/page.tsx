@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-import { EventPhase, allPhases, displayName } from "~/lib/currentEvent";
+import { EventPhase, allPhases, displayName } from "~/lib/types/currentEvent";
 import { api } from "~/trpc/react";
 
 import AttendeeList from "./components/AttendeeList";

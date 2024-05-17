@@ -6,7 +6,7 @@ import {
 } from "@prisma/client";
 import { createContext, useContext } from "react";
 
-import { type CurrentEvent } from "~/lib/currentEvent";
+import { type CurrentEvent } from "~/lib/types/currentEvent";
 
 export type CompleteEvent = Event & {
   demos: Demo[];

@@ -1,7 +1,7 @@
 import { type Event } from "@prisma/client";
 import { z } from "zod";
 
-import * as kv from "~/lib/currentEvent";
+import * as kv from "~/lib/types/currentEvent";
 import {
   createTRPCRouter,
   protectedProcedure,
