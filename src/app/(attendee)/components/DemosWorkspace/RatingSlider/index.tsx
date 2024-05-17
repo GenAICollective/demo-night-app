@@ -14,15 +14,13 @@ export default function RatingSlider({
   return (
     <Slider
       min={1}
-      max={7}
+      max={5}
       marks={{
-        1: "🤮",
-        2: "😕",
-        3: "😐",
-        4: "🙂",
-        5: "😀",
-        6: "😁",
-        7: "🤩",
+        1: "😐",
+        2: "🙂",
+        3: "😀",
+        4: "😁",
+        5: "🤩",
       }}
       // @ts-ignore
       value={feedback?.rating}

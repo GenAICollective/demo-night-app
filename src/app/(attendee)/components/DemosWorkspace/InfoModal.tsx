@@ -25,8 +25,8 @@ export default function InfoModal() {
     },
     {
       icon: "📬",
-      title: "Sign up:",
-      description: "Get added to the waitlist!",
+      title: "Learn more:",
+      description: "Email me with more info!",
       indent: true,
     },
     {
@@ -37,7 +37,7 @@ export default function InfoModal() {
     },
     {
       icon: "🧑‍💻",
-      title: "Work for them:",
+      title: "Work:",
       description: "Show your interest in working for them!",
       indent: true,
     },

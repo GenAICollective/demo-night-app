@@ -1,7 +1,7 @@
 import { type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, CircleCheck } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { cn } from "~/lib/utils";
 
@@ -17,15 +17,26 @@ export function DemoSelectionHeader({
   currentDemoId: string | null;
 }) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
   const toggleExpand = () => setIsExpanded(!isExpanded);
+
+  const onKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setIsExpanded(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onKeyDown]);
+
   return (
     <>
       <div className="fixed z-20 w-full max-w-xl select-none px-4">
         <div
           onClick={toggleExpand}
           className={cn(
-            "flex w-full cursor-pointer flex-row items-center justify-between rounded-xl px-4 py-3 text-center text-lg font-semibold shadow-lg backdrop-blur backdrop-brightness-125 transition-all duration-300 ease-in-out",
+            "flex w-full cursor-pointer flex-row items-center justify-between rounded-xl px-4 py-3 text-center text-lg font-semibold shadow-lg backdrop-blur transition-all duration-300 ease-in-out",
             selectedDemo?.id === currentDemoId
               ? "bg-green-400/50"
               : "bg-red-400/50",
@@ -86,7 +97,7 @@ export function DemoSelectionHeader({
                     setIsExpanded(false);
                   }}
                   className={cn(
-                    "flex cursor-pointer flex-row items-center justify-between gap-2 rounded-xl px-4 py-3 text-lg font-semibold shadow-xl backdrop-blur backdrop-brightness-125 focus:outline-none",
+                    "flex cursor-pointer flex-row items-center justify-between gap-2 rounded-xl px-4 py-3 text-lg font-semibold shadow-xl backdrop-blur-lg backdrop-brightness-150 focus:outline-none",
                     demo.id === currentDemoId
                       ? "bg-green-300/80 hover:bg-green-400/80"
                       : "bg-white/60 hover:bg-red-200/60",

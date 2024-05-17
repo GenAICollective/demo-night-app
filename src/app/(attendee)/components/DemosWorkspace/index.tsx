@@ -100,7 +100,7 @@ export default function DemosWorkspace() {
             }}
             rows={3}
             className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
-            placeholder="Enter your feedback..."
+            placeholder={`• What did you like about the product?\n• How could it be even better?\n• Any other feedback?`}
           />
         </motion.div>
         <ActionButtons feedback={feedback} setFeedback={setFeedback} />

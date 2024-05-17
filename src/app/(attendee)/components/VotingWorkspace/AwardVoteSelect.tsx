@@ -1,7 +1,7 @@
 import { type Award, type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircleCheck, Expand } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { cn } from "~/lib/utils";
 
@@ -21,8 +21,19 @@ export default function AwardVoteSelect({
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const selectedDemo = demos.find((demo) => demo.id === vote?.demoId);
-
   const toggleExpand = () => setIsExpanded(!isExpanded);
+
+  const onKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setIsExpanded(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onKeyDown]);
+
   return (
     <>
       <div
@@ -50,7 +61,7 @@ export default function AwardVoteSelect({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[15] h-full w-full bg-black/30 backdrop-blur backdrop-brightness-125"
+            className="fixed inset-0 z-[15] h-full w-full bg-black/30 backdrop-blur"
             onClick={() => setIsExpanded(false)}
           >
             <motion.div
@@ -60,7 +71,7 @@ export default function AwardVoteSelect({
               className="m-auto flex max-w-xl flex-col"
             >
               <div className="p-4 pb-0">
-                <div className="left-0 z-20 m-auto flex w-full max-w-xl flex-col rounded-xl bg-black/60 px-4 pb-2 pt-3 shadow-xl backdrop-blur">
+                <div className="left-0 z-20 m-auto flex w-full max-w-xl flex-col rounded-xl bg-black/60 px-4 pb-2 pt-3 shadow-xl backdrop-blur-lg">
                   <h1 className="text-2xl font-bold text-white">
                     {award.name}
                   </h1>
@@ -81,7 +92,7 @@ export default function AwardVoteSelect({
                       setIsExpanded(false);
                     }}
                     className={cn(
-                      "flex cursor-pointer flex-row items-center justify-between gap-2 rounded-xl bg-white/80 px-4 py-3 text-lg font-semibold shadow-xl backdrop-blur backdrop-brightness-125 hover:bg-gray-100/80 focus:outline-none",
+                      "flex cursor-pointer flex-row items-center justify-between gap-2 rounded-xl bg-white/80 px-4 py-3 text-lg font-semibold shadow-xl backdrop-blur-lg backdrop-brightness-150 hover:bg-gray-100/80 focus:outline-none",
                       vote?.demoId === demo.id &&
                         "bg-green-300/80 hover:bg-green-400/80",
                     )}
