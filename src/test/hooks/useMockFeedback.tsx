@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { QUICK_ACTIONS } from "~/lib/quickActions";
+
 import { type FeedbackAndAttendee } from "~/app/admin/components/DemosDashboard";
 
 export const useMockFeedback = () => {
@@ -16,11 +18,11 @@ export const useMockFeedback = () => {
           demoId: "demoId",
           comment: "New automated feedback",
           rating: Math.floor(Math.random() * 6) + 1,
-          star: Math.random() > 0.5,
           claps: Math.floor(Math.random() * 6),
-          wantToAccess: Math.random() > 0.5,
-          wantToInvest: Math.random() > 0.5,
-          wantToWork: Math.random() > 0.5,
+          tellMeMore: Math.random() > 0.5,
+          quickActions: Object.keys(QUICK_ACTIONS).filter(
+            () => Math.random() > 0.5,
+          ),
           createdAt: new Date(),
           updatedAt: new Date(),
           attendee: {

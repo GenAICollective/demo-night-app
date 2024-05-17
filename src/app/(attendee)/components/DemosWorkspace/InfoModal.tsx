@@ -1,47 +1,38 @@
+import { QUICK_ACTIONS } from "~/lib/quickActions";
 import { cn } from "~/lib/utils";
 
 import SubmitButton from "~/components/SubmitButton";
 import { useModal } from "~/components/modal/provider";
 
+const actionItems: {
+  icon: string;
+  title?: string;
+  description?: string;
+  indent?: boolean;
+}[] = [
+  {
+    icon: "📬",
+    title: "Learn more:",
+    description: "Send me an email with more info!",
+  },
+  {
+    icon: "👏",
+    title: "Clap:",
+    description: "Clap as many times as your heart desires!",
+  },
+  {
+    icon: "🤝",
+    title: "I want to help by...",
+  },
+  ...Object.values(QUICK_ACTIONS).map((action) => ({
+    icon: action.icon,
+    description: action.description,
+    indent: true,
+  })),
+];
+
 export default function InfoModal() {
   const modal = useModal();
-
-  const actionItems = [
-    {
-      icon: "⭐️",
-      title: "Super star:",
-      description:
-        "Show special interest by giving it a super star! Beware: you can only star one demo!",
-    },
-    {
-      icon: "👏",
-      title: "Clap:",
-      description: "Clap as many times as your heart desires!",
-    },
-    {
-      icon: "🤝",
-      title: "I want to...",
-      description: "",
-    },
-    {
-      icon: "📬",
-      title: "Learn more:",
-      description: "Email me with more info!",
-      indent: true,
-    },
-    {
-      icon: "💰",
-      title: "Invest:",
-      description: "Show your interest in investing!",
-      indent: true,
-    },
-    {
-      icon: "🧑‍💻",
-      title: "Work:",
-      description: "Show your interest in working for them!",
-      indent: true,
-    },
-  ];
 
   return (
     <form

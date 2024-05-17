@@ -124,11 +124,9 @@ model Feedback {
     demoId     String
 
     rating       Int?
-    claps        Int     @default(0)
-    star         Boolean @default(false)
-    wantToAccess Boolean @default(false)
-    wantToInvest Boolean @default(false)
-    wantToWork   Boolean @default(false)
+    claps        Int      @default(0)
+    tellMeMore   Boolean  @default(false)
+    quickActions String[] @default([])
     comment      String?
 
     createdAt DateTime @default(now())

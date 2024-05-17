@@ -22,11 +22,7 @@ export const demoRouter = createTRPCRouter({
     return db.feedback.findMany({
       where: {
         demoId: input,
-        OR: [
-          { wantToAccess: true },
-          { wantToInvest: true },
-          { wantToInvest: true },
-        ],
+        tellMeMore: true,
       },
       include: {
         attendee: {

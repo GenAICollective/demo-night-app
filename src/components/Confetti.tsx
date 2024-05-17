@@ -5,7 +5,7 @@ import useWindowSize from "~/lib/hooks/useWindowSize";
 
 import { type LocalFeedback } from "~/app/(attendee)/components/DemosWorkspace/hooks/useFeedback";
 
-export function StarConfetti({ feedback }: { feedback: LocalFeedback }) {
+export function TellMeMoreConfetti({ feedback }: { feedback: LocalFeedback }) {
   const { windowSize } = useWindowSize();
   const [_active, _setActive] = useState(false);
   const [previousFeedbackDemoId, setPreviousFeedbackDemoId] =
@@ -18,7 +18,7 @@ export function StarConfetti({ feedback }: { feedback: LocalFeedback }) {
       _setActive(false);
       return;
     }
-    if (feedback.star) {
+    if (feedback.tellMeMore) {
       _setActive(true);
       timeoutId.current = setTimeout(() => {
         _setActive(false);
@@ -31,11 +31,11 @@ export function StarConfetti({ feedback }: { feedback: LocalFeedback }) {
         clearTimeout(timeoutId.current);
       }
     };
-  }, [feedback.demoId, feedback.star]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [feedback.demoId, feedback.tellMeMore]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const drawShape = (ctx: CanvasRenderingContext2D) => {
     ctx.font = "30px sans-serif";
-    ctx.fillText("⭐", 0, 0);
+    ctx.fillText("📧", 0, 0);
   };
 
   return (

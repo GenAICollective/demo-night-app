@@ -3,6 +3,7 @@ import { type Feedback } from "@prisma/client";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
 
+import { QUICK_ACTIONS } from "~/lib/quickActions";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
@@ -11,12 +12,10 @@ import AttendeeTypeBadge from "~/components/AttendeeTypeBadge";
 export function feedbackScore(feedback: Feedback) {
   let score = feedback.comment ? 1000 : 0;
   score += feedback.comment?.length ?? 0;
-  score += feedback.star ? 50 : 0;
   score += (feedback.rating ?? 0) * 5;
   score += feedback.claps ?? 0;
-  score += feedback.wantToAccess ? 10 : 0;
-  score += feedback.wantToInvest ? 10 : 0;
-  score += feedback.wantToWork ? 10 : 0;
+  score += feedback.tellMeMore ? 10 : 0;
+  score += feedback.quickActions.length * 20;
   return score;
 }
 
@@ -31,23 +30,19 @@ export function FeedbackItem({
 
   const summaryString = useMemo(() => {
     const summary: string[] = [];
-    if (feedback.star) {
-      summary.push("⭐");
-    }
     if (feedback.rating) {
       summary.push(String.fromCodePoint(48 + feedback.rating, 65039, 8419));
     }
     if (feedback.claps) {
       summary.push(`👏<span class="text-xs"> x${feedback.claps}</span>`);
     }
-    if (feedback.wantToAccess) {
+    if (feedback.tellMeMore) {
       summary.push("📬");
     }
-    if (feedback.wantToInvest) {
-      summary.push("💰");
-    }
-    if (feedback.wantToWork) {
-      summary.push("👩‍💻");
+    for (const [id, action] of Object.entries(QUICK_ACTIONS)) {
+      if (feedback.quickActions.includes(id)) {
+        summary.push(action.icon);
+      }
     }
     return summary.join(" • ");
   }, [feedback]);

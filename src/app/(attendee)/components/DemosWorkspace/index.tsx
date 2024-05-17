@@ -5,7 +5,7 @@ import { ArrowUpRight, BadgeInfo } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import { ClapsConfetti, StarConfetti } from "~/components/Confetti";
+import { ClapsConfetti, TellMeMoreConfetti } from "~/components/Confetti";
 import { useModal } from "~/components/modal/provider";
 
 import { ActionButtons } from "./ActionButtons";
@@ -112,7 +112,7 @@ export default function DemosWorkspace() {
         <BadgeInfo />
       </button>
       <div className="z-3 pointer-events-none fixed inset-0">
-        <StarConfetti feedback={feedback} />
+        <TellMeMoreConfetti feedback={feedback} />
         <ClapsConfetti feedback={feedback} />
       </div>
     </>

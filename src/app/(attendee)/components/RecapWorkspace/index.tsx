@@ -6,6 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { QUICK_ACTIONS } from "~/lib/quickActions";
 import { api } from "~/trpc/react";
 
 import { GaicoConfetti } from "~/components/Confetti";
@@ -158,9 +159,8 @@ function FeedbackItem({ feedback, demo }: { feedback: Feedback; demo?: Demo }) {
     feedback.claps
       ? `👏<span class="text-xs"> x${feedback.claps}</span>`
       : null,
-    feedback.wantToAccess ? "📬" : null,
-    feedback.wantToInvest ? "💰" : null,
-    feedback.wantToWork ? "👩‍💻" : null,
+    feedback.tellMeMore ? "📬" : null,
+    ...feedback.quickActions.map((id) => QUICK_ACTIONS[id]?.icon),
   ];
   const summaryString = summary.filter((s) => s).join(" • ");
   return (
@@ -179,7 +179,6 @@ function FeedbackItem({ feedback, demo }: { feedback: Feedback; demo?: Demo }) {
       >
         <div className="flex items-center gap-2">
           <h3 className="line-clamp-1 text-xl font-bold group-hover:underline">
-            {feedback.star ? "⭐ " : ""}
             {demo?.name}
           </h3>
           <ArrowUpRight

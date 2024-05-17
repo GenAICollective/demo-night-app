@@ -4,6 +4,8 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
+export const MAX_RATING = 5;
+
 export const feedbackRouter = createTRPCRouter({
   all: publicProcedure
     .input(
@@ -32,26 +34,12 @@ export const feedbackRouter = createTRPCRouter({
         demoId: z.string(),
         rating: z.number().min(1).max(10).optional().nullable(),
         claps: z.number().min(0).optional(),
-        star: z.boolean().optional(),
-        wantToAccess: z.boolean().optional(),
-        wantToInvest: z.boolean().optional(),
-        wantToWork: z.boolean().optional(),
+        tellMeMore: z.boolean().optional(),
+        quickActions: z.array(z.string()).optional(),
         comment: z.string().optional().nullable(),
       }),
     )
     .mutation(async ({ input }) => {
-      // Only allow a single feedback to have a star
-      if (input.star === true) {
-        await db.feedback.updateMany({
-          where: {
-            demoId: { not: input.demoId },
-            eventId: input.eventId,
-            attendeeId: input.attendeeId,
-            star: true,
-          },
-          data: { star: false },
-        });
-      }
       try {
         return db.feedback.upsert({
           where: {

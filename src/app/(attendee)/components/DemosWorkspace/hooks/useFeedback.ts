@@ -58,23 +58,6 @@ export function useFeedback(
       ...feedbackByDemoId,
       [selectedDemo.id]: feedback,
     });
-    // Only allow a single feedback to have a star
-    if (feedback.star) {
-      const feedbacksWithStar = Object.values(feedbackByDemoId).filter(
-        (f) =>
-          f.eventId === feedback.eventId &&
-          f.star &&
-          f.demoId !== feedback.demoId,
-      );
-      let updatedFeedbacks = feedbackByDemoId;
-      feedbacksWithStar.forEach((f) => {
-        updatedFeedbacks = {
-          ...updatedFeedbacks,
-          [f.demoId]: { ...f, star: false },
-        };
-      });
-      setFeedbackByDemoId(updatedFeedbacks);
-    }
   }, [feedback]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { feedbackByDemoId: feedbackByDemoId, feedback, setFeedback };
@@ -91,10 +74,8 @@ function emptyFeedback(
     demoId,
     rating: null,
     claps: 0,
-    star: false,
-    wantToAccess: false,
-    wantToInvest: false,
-    wantToWork: false,
+    tellMeMore: false,
+    quickActions: [],
     comment: null,
   };
 }
@@ -103,10 +84,8 @@ function feedbackIsEmpty(feedback: LocalFeedback): boolean {
   return (
     feedback.rating === null &&
     feedback.claps === 0 &&
-    feedback.star === false &&
-    feedback.wantToAccess === false &&
-    feedback.wantToInvest === false &&
-    feedback.wantToWork === false &&
+    feedback.tellMeMore === false &&
+    feedback.quickActions.length === 0 &&
     feedback.comment === null
   );
 }

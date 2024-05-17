@@ -1,9 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ConfettiExplosion from "react-dom-confetti";
 
+import { QUICK_ACTIONS } from "~/lib/quickActions";
 import { cn } from "~/lib/utils";
 
 import { type LocalFeedback } from "./hooks/useFeedback";
@@ -27,17 +28,17 @@ export function ActionButtons({
         whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
         whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
         className={cn(
-          "relative mb-10 aspect-square w-20 rounded-full border-4 from-yellow-500/40 from-50% to-yellow-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all bg-radient-ellipse-c hover:bg-yellow-500/20",
-          feedback?.star ? "border-yellow-500" : "border-transparent",
+          "relative mb-10 aspect-square w-20 rounded-full border-4 from-blue-400/40 from-50% to-blue-500/60 text-center text-[40px] shadow-[0_10px_40px_rgb(59,130,246,0.5)] backdrop-blur transition-all bg-radient-ellipse-c hover:bg-blue-500/20",
+          feedback?.tellMeMore ? "border-blue-500" : "border-transparent",
         )}
         onClick={() => {
           if (feedback) {
             const updatedFeedback = {
               ...feedback,
-              star: !(feedback.star || false),
+              tellMeMore: !(feedback.tellMeMore || false),
             };
             setFeedback(updatedFeedback);
-            setIsExploding(updatedFeedback.star);
+            setIsExploding(updatedFeedback.tellMeMore);
           }
         }}
       >
@@ -45,19 +46,19 @@ export function ActionButtons({
           <ConfettiExplosion
             active={isExploding}
             config={{
-              colors: ["#FFFF00", "#FFD700", "#FFEA00"],
+              colors: ["#809fff", "#99b3ff", "#b3c6ff"],
               elementCount: 200,
               duration: 5000,
             }}
           />
         </div>
-        <span>⭐</span>
+        <span>📬</span>
       </motion.button>
       <motion.button
         whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
         whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
         className={cn(
-          "relative aspect-square w-28 rounded-full border-4 from-orange-500/40 from-50% to-orange-500/60 text-center text-lg text-orange-600 shadow-2xl backdrop-blur transition-all bg-radient-ellipse-c hover:bg-orange-500/20",
+          "relative aspect-square w-28 rounded-full border-4 from-orange-400/40 from-50% to-orange-600/60 text-center text-lg text-orange-600 shadow-[0_15px_60px_rgb(234,88,12,0.5)] backdrop-blur transition-all bg-radient-ellipse-c hover:bg-orange-500/20",
           feedback?.claps ? "border-orange-500" : "border-transparent",
         )}
         onClick={() => {
@@ -77,27 +78,19 @@ export function ActionButtons({
           {feedback?.claps ?? 0}
         </p>
       </motion.button>
-      <WantToButton feedback={feedback} setFeedback={setFeedback} />
+      <QuickActionsButton feedback={feedback} setFeedback={setFeedback} />
     </div>
   );
 }
 
-function WantToButton({
+function QuickActionsButton({
   feedback,
   setFeedback,
 }: {
   feedback: LocalFeedback | null;
   setFeedback: (feedback: LocalFeedback) => void;
 }) {
-  const [showActionButtons, setShowActionButtons] = useState(false);
-
-  const hasActed = useMemo(() => {
-    return (
-      (feedback?.wantToAccess ?? false) ||
-      (feedback?.wantToInvest ?? false) ||
-      (feedback?.wantToWork ?? false)
-    );
-  }, [feedback]);
+  const [showButtons, setShowButtons] = useState(false);
 
   return (
     <div>
@@ -105,53 +98,50 @@ function WantToButton({
         whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
         whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
         className={cn(
-          "relative mb-10 aspect-square w-20 rounded-full border-4 border-transparent from-blue-500/40 from-50% to-blue-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all bg-radient-ellipse-c hover:bg-blue-500/20",
-          showActionButtons
-            ? "from-red-500/40 to-red-500/60 hover:bg-red-500/20"
-            : hasActed
-              ? "border-blue-500"
+          "relative mb-10 aspect-square w-20 rounded-full border-4 border-transparent from-yellow-300/40 from-50% to-yellow-500/60 text-center text-[40px] shadow-[0_10px_40px_rgb(234,179,8,0.5)] backdrop-blur transition-all bg-radient-ellipse-c hover:bg-yellow-500/20",
+          showButtons
+            ? "from-red-400/40 to-red-500/60 shadow-[0_10px_40px_rgb(239,68,68,0.5)] hover:bg-red-500/20"
+            : feedback?.quickActions.length
+              ? "border-yellow-500"
               : "",
         )}
-        onClick={() => setShowActionButtons(!showActionButtons)}
+        onClick={() => setShowButtons(!showButtons)}
       >
-        {showActionButtons ? "❌" : "🤝"}
+        {showButtons ? "❌" : "🤝"}
       </motion.button>
       <AnimatePresence>
-        {showActionButtons && (
+        {showButtons && (
           <motion.div
             className="absolute -top-[290px] flex flex-col gap-4"
             initial={{ opacity: 0, y: 100, scale: 0.5 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.5 }}
           >
-            {[
-              { label: "📬", key: "wantToAccess" },
-              { label: "💰", key: "wantToInvest" },
-              { label: "🧑‍💻", key: "wantToWork" },
-            ].map((action) => (
+            {Object.entries(QUICK_ACTIONS).map(([id, action]) => (
               <motion.button
-                key={action.key}
+                key={id}
                 whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                 whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
                 className={cn(
-                  "relative aspect-square w-20 rounded-full border-4 border-transparent from-blue-500/40 from-50% to-blue-500/60 text-center text-[40px] shadow-2xl backdrop-blur transition-all bg-radient-ellipse-c hover:bg-blue-500/20",
-                  feedback?.[action.key as keyof typeof feedback]
-                    ? "border-blue-500"
+                  "relative aspect-square w-20 rounded-full border-4 border-transparent from-yellow-300/40 from-50% to-yellow-500/60 text-center text-[40px] shadow-[0_10px_40px_rgb(234,179,8,0.5)] backdrop-blur transition-all bg-radient-ellipse-c hover:bg-yellow-500/20",
+                  feedback?.quickActions.includes(id)
+                    ? "border-yellow-500"
                     : "",
                 )}
                 onClick={() => {
                   if (feedback) {
                     const updatedFeedback = {
                       ...feedback,
-                      [action.key]:
-                        !feedback[action.key as keyof typeof feedback],
+                      quickActions: feedback.quickActions.includes(id)
+                        ? feedback.quickActions.filter((key) => key !== id)
+                        : [...feedback.quickActions, id],
                     };
                     setFeedback(updatedFeedback);
                   }
-                  setShowActionButtons(false);
+                  setShowButtons(false);
                 }}
               >
-                {action.label}
+                {action.icon}
               </motion.button>
             ))}
           </motion.div>
