@@ -24,10 +24,24 @@ export function useVotes(eventId: string, attendee: Attendee) {
     }
   }, [votesData]);
 
-  const setVote = (awardId: string, demoId: string) => {
-    const vote = votes[awardId] ?? emptyVote(eventId, attendee.id, awardId);
+  const setVote = (awardId: string, demoId: string | null) => {
+    const updatedVotes = { ...votes };
+    const vote =
+      updatedVotes[awardId] ?? emptyVote(eventId, attendee.id, awardId);
     vote.demoId = demoId;
-    setVotes({ ...votes, [awardId]: vote });
+
+    // Ensure no other award is voting for the same demoId
+    if (demoId !== null) {
+      Object.keys(updatedVotes).forEach((key) => {
+        if (key !== awardId && updatedVotes[key]?.demoId === demoId) {
+          updatedVotes[key]!.demoId = null;
+          upsertMutation.mutate(updatedVotes[key]!);
+        }
+      });
+    }
+
+    updatedVotes[awardId] = vote;
+    setVotes(updatedVotes);
     upsertMutation.mutate(vote);
   };
 

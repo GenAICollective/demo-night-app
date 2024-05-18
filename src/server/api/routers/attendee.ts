@@ -28,6 +28,7 @@ export const attendeeRouter = createTRPCRouter({
         id: z.string(),
         name: z.string().nullable(),
         email: z.string().nullable(),
+        linkedin: z.string().nullable(),
         type: z.string().nullable(),
       }),
     )

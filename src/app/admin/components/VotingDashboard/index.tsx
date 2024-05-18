@@ -28,19 +28,11 @@ export default function VotingDashboard() {
 
   const selectedAward = event.awards.find((a) => a.id === selectedAwardId);
 
-  const votesByDemoId = votes?.reduce(
-    (acc, vote) => {
-      if (!vote.demoId) {
-        return acc;
-      }
-      if (!acc[vote.demoId]) {
-        acc[vote.demoId] = 0;
-      }
-      acc[vote.demoId]++;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+  const votesByDemoId = new Map(event.demos.map((demo) => [demo.id, 0]));
+  votes?.forEach((vote) => {
+    if (!vote.demoId) return;
+    votesByDemoId.set(vote.demoId, (votesByDemoId.get(vote.demoId) ?? 0) + 1);
+  });
 
   return (
     <div className="flex size-full flex-row gap-2">
@@ -76,7 +68,7 @@ export default function VotingDashboard() {
         </div>
         <ul className="flex max-h-screen flex-col gap-2 overflow-auto">
           <AnimatePresence>
-            {Object.entries(votesByDemoId ?? {})
+            {Array.from(votesByDemoId.entries())
               .sort((a, b) => b[1] - a[1])
               .map(([demoId, votes]) => (
                 <motion.li

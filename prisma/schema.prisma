@@ -92,9 +92,10 @@ model Attendee {
     id     String  @id @default(cuid())
     events Event[]
 
-    name  String?
-    email String?
-    type  String?
+    name     String?
+    email    String?
+    linkedin String?
+    type     String?
 
     feedback Feedback[]
     votes    Vote[]

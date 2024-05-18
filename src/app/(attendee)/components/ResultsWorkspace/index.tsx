@@ -18,26 +18,28 @@ export default function ResultsWorkspace() {
   );
 
   return (
-    <div className="flex size-full flex-1 flex-col items-center justify-center gap-2 p-4">
-      <div className="absolute bottom-0 max-h-[calc(100dvh-80px)] w-full max-w-xl p-4">
-        <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
-          Voting Results! 🤩
-        </h1>
-        <div className="mt-4 grid grid-cols-1 gap-8">
-          {event?.awards.map((award) => (
-            <AwardWinnerItem
-              key={award.id}
-              award={award}
-              demos={event?.demos}
-              currentAwardIndex={currentAwardIndex}
-            />
-          ))}
+    <>
+      <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full max-w-xl">
+        <div className="flex size-full flex-col items-center justify-center gap-4 p-4">
+          <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
+            Voting Results! 🤩
+          </h1>
+          <div className="flex w-full flex-col gap-8">
+            {event?.awards.map((award) => (
+              <AwardWinnerItem
+                key={award.id}
+                award={award}
+                demos={event?.demos}
+                currentAwardIndex={currentAwardIndex}
+              />
+            ))}
+          </div>
         </div>
       </div>
       <div className="z-3 pointer-events-none fixed inset-0">
         <ResultsConfetti currentAwardIndex={currentAwardIndex} />
       </div>
-    </div>
+    </>
   );
 }
 

@@ -27,6 +27,7 @@ export function useAttendee(eventId: string) {
       id: attendee.id,
       name: attendee.name,
       email: attendee.email,
+      linkedin: attendee.linkedin,
       type: attendee.type,
     });
   }, [attendee]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -43,6 +44,7 @@ function getLocalAttendee(): Attendee {
     id: crypto.randomUUID(),
     name: null,
     email: null,
+    linkedin: null,
     type: null,
   };
   setLocalAttendee(attendee);

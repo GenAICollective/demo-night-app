@@ -5,22 +5,23 @@ import { useCallback, useEffect, useState } from "react";
 
 import { cn } from "~/lib/utils";
 
-import { type LocalVote } from "./hooks/useVotes";
+import { type VoteByAwardId } from "./hooks/useVotes";
 
 export default function AwardVoteSelect({
   award,
   demos,
-  vote,
+  votes,
   onSelect,
 }: {
   award: Award;
   demos: Demo[];
-  vote?: LocalVote;
-  onSelect: (awardId: string, demoId: string) => void;
+  votes: VoteByAwardId;
+  onSelect: (awardId: string, demoId: string | null) => void;
 }) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-  const selectedDemo = demos.find((demo) => demo.id === vote?.demoId);
+  const vote = votes[award.id];
+  const selectedDemo = demos.find((d) => d.id === vote?.demoId);
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
   const onKeyDown = useCallback((e: KeyboardEvent) => {
@@ -34,13 +35,15 @@ export default function AwardVoteSelect({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [onKeyDown]);
 
+  const voteDemoIds = Object.values(votes).map((v) => v.demoId);
+
   return (
     <>
       <div
         onClick={toggleExpand}
         className={cn(
           "flex w-full cursor-pointer flex-row items-center justify-between rounded-xl px-4 py-3 text-center text-lg font-semibold shadow-lg backdrop-blur transition-all duration-300 ease-in-out",
-          vote ? "bg-green-400/50" : "bg-red-400/50",
+          vote?.demoId ? "bg-green-400/50" : "bg-red-400/50",
         )}
       >
         <motion.div
@@ -71,7 +74,13 @@ export default function AwardVoteSelect({
               className="m-auto flex max-w-xl flex-col"
             >
               <div className="p-4 pb-0">
-                <div className="left-0 z-20 m-auto flex w-full max-w-xl flex-col rounded-xl bg-black/60 px-4 pb-2 pt-3 shadow-xl backdrop-blur-lg">
+                <div
+                  className="left-0 z-20 m-auto flex w-full max-w-xl flex-col rounded-xl bg-black/60 px-4 pb-2 pt-3 shadow-xl backdrop-blur-lg"
+                  onClick={() => {
+                    onSelect(award.id, null);
+                    setIsExpanded(false);
+                  }}
+                >
                   <h1 className="text-2xl font-bold text-white">
                     {award.name}
                   </h1>
@@ -93,6 +102,8 @@ export default function AwardVoteSelect({
                     }}
                     className={cn(
                       "flex cursor-pointer flex-row items-center justify-between gap-2 rounded-xl bg-white/80 px-4 py-3 text-lg font-semibold shadow-xl backdrop-blur-lg backdrop-brightness-150 hover:bg-gray-100/80 focus:outline-none",
+                      voteDemoIds.includes(demo.id) &&
+                        "bg-gray-200/60 hover:bg-red-200/60",
                       vote?.demoId === demo.id &&
                         "bg-green-300/80 hover:bg-green-400/80",
                     )}

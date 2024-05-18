@@ -5,7 +5,7 @@ import { CircleUserRoundIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { ATTENDEE_TYPES } from "~/lib/types/attendeeTypes";
+import { ATTENDEE_TYPES, type AttendeeType } from "~/lib/types/attendeeTypes";
 import { cn } from "~/lib/utils";
 
 import SubmitButton from "~/components/SubmitButton";
@@ -64,6 +64,7 @@ export function UpdateAttendeeForm({
     defaultValues: {
       name: attendee?.name ?? "",
       email: attendee?.email ?? "",
+      linkedin: attendee?.linkedin ?? "",
       type: selectedType(attendee),
       // customType: attendeePreselectTypes.includes(attendee?.type ?? "")
       //   ? ""
@@ -82,6 +83,7 @@ export function UpdateAttendeeForm({
           id: attendee.id,
           name: data.name,
           email: data.email,
+          linkedin: data.linkedin,
           type: data.type,
         });
         toast.success("Successfully updated profile!");
@@ -116,6 +118,15 @@ export function UpdateAttendeeForm({
           className="z-10 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
         />
       </label>
+      <label className="flex w-full flex-col gap-1">
+        <span className="text-lg font-semibold">LinkedIn</span>
+        <input
+          type="url"
+          placeholder="https://www.linkedin.com/in/genaicollective"
+          {...register("linkedin")}
+          className="z-10 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
+        />
+      </label>
       <label className="flex w-full flex-col gap-1 pb-2">
         <span className="text-lg font-semibold">I consider myself a...</span>
         <select
@@ -147,5 +158,7 @@ export function UpdateAttendeeForm({
 
 function selectedType(attendee: Attendee | null) {
   if (!attendee?.type) return "";
-  return ATTENDEE_TYPES.includes(attendee.type) ? attendee.type : "Other";
+  return ATTENDEE_TYPES.includes(attendee.type as AttendeeType)
+    ? attendee.type
+    : "Other";
 }
