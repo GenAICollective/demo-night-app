@@ -18,7 +18,12 @@ export function UpsertEventModal({
 }) {
   const upsertMutation = api.event.upsert.useMutation();
   const { register, handleSubmit } = useForm({
-    defaultValues: event,
+    defaultValues: {
+      name: event?.name ?? "",
+      id: event?.id ?? "",
+      date: (event?.date ?? new Date()).toISOString().substring(0, 10),
+      url: event?.url ?? "",
+    },
   });
   const modal = useModal();
 
@@ -28,10 +33,10 @@ export function UpsertEventModal({
         upsertMutation
           .mutateAsync({
             originalId: event?.id,
-            id: data.id as string,
-            name: data.name as string,
-            date: new Date(data.date).toISOString(),
-            url: data.url as string,
+            id: data.id,
+            name: data.name,
+            date: new Date(data.date),
+            url: data.url,
           })
           .then((result) => {
             modal?.hide();
@@ -67,9 +72,10 @@ export function UpsertEventModal({
           <span className="font-semibold">ID</span>
           <input
             type="text"
-            {...register("id", { required: true })}
+            {...register("id")}
             className="rounded-xl border border-gray-200 p-2"
             autoComplete="off"
+            required
           />
         </label>
       )}
@@ -77,18 +83,20 @@ export function UpsertEventModal({
         <span className="font-semibold">Date</span>
         <input
           type="date"
-          {...register("date", { required: true })}
+          {...register("date", { valueAsDate: true })}
           className="rounded-xl border border-gray-200 p-2"
+          required
         />
       </label>
       <label className="flex flex-col gap-1">
         <span className="font-semibold">URL</span>
         <input
           type="url"
-          {...register("url", { required: true })}
+          {...register("url")}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
           placeholder="https://lu.ma/sf-demo"
+          required
         />
       </label>
       <SubmitButton

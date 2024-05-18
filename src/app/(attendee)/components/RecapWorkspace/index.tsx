@@ -1,12 +1,13 @@
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
 import RatingSlider from "../DemosWorkspace/RatingSlider";
-import { type Award, type Demo, type Feedback } from "@prisma/client";
+import { type Award, type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { QUICK_ACTIONS } from "~/lib/types/quickActions";
+import { type PublicDemo } from "~/server/api/routers/event";
 import { api } from "~/trpc/react";
 
 import { GaicoConfetti } from "~/components/Confetti";
@@ -92,7 +93,7 @@ function AwardWinnerItem({
   winner,
 }: {
   award: Award;
-  winner: Demo | undefined;
+  winner: PublicDemo | undefined;
 }) {
   return (
     <motion.div
@@ -123,7 +124,7 @@ function AwardWinnerItem({
   );
 }
 
-function DemoItem({ demo }: { demo: Demo }) {
+function DemoItem({ demo }: { demo: PublicDemo }) {
   return (
     <motion.div
       key={demo.id}
@@ -154,7 +155,13 @@ function DemoItem({ demo }: { demo: Demo }) {
   );
 }
 
-function FeedbackItem({ feedback, demo }: { feedback: Feedback; demo?: Demo }) {
+function FeedbackItem({
+  feedback,
+  demo,
+}: {
+  feedback: Feedback;
+  demo?: PublicDemo;
+}) {
   const summary = [
     feedback.claps
       ? `👏<span class="text-xs"> x${feedback.claps}</span>`

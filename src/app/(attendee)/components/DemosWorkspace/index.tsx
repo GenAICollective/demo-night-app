@@ -1,9 +1,10 @@
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
-import { type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, BadgeInfo } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+
+import { type PublicDemo } from "~/server/api/routers/event";
 
 import { ClapsConfetti, TellMeMoreConfetti } from "~/components/Confetti";
 import { useModal } from "~/components/modal/provider";
@@ -17,7 +18,9 @@ import { useFeedback } from "./hooks/useFeedback";
 export default function DemosWorkspace() {
   const { currentEvent, event, attendee } = useWorkspaceContext();
   const { id: eventId, currentDemoId } = currentEvent;
-  const [selectedDemo, setSelectedDemo] = useState<Demo>(event!.demos[0]!);
+  const [selectedDemo, setSelectedDemo] = useState<PublicDemo>(
+    event!.demos[0]!,
+  );
   const { feedback, setFeedback } = useFeedback(
     eventId,
     attendee,

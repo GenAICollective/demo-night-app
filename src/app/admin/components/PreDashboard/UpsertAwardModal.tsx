@@ -57,10 +57,11 @@ export function UpsertAwardModal({
         <span className="font-semibold">Name</span>
         <input
           type="text"
-          {...register("name", { required: true, minLength: 3 })}
+          {...register("name")}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
           autoFocus
+          required
         />
       </label>
       {award && (
@@ -71,15 +72,17 @@ export function UpsertAwardModal({
             {...register("id")}
             className="rounded-xl border border-gray-200 p-2"
             autoComplete="off"
+            required
           />
         </label>
       )}
       <label className="flex flex-col gap-1">
         <span className="font-semibold">Description</span>
         <textarea
-          {...register("description", { required: true, minLength: 3 })}
+          {...register("description")}
           className="rounded-xl border border-gray-200 p-2"
           rows={2}
+          required
         />
       </label>
       <SubmitButton

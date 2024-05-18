@@ -1,9 +1,9 @@
-import { type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, CircleCheck } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { cn } from "~/lib/utils";
+import { type PublicDemo } from "~/server/api/routers/event";
 
 export function DemoSelectionHeader({
   demos,
@@ -11,9 +11,9 @@ export function DemoSelectionHeader({
   setSelectedDemo,
   currentDemoId,
 }: {
-  demos: Demo[];
-  selectedDemo: Demo | undefined;
-  setSelectedDemo: (demo: Demo) => void;
+  demos: PublicDemo[];
+  selectedDemo: PublicDemo | undefined;
+  setSelectedDemo: (demo: PublicDemo) => void;
   currentDemoId: string | null;
 }) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);

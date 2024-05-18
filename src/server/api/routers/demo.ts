@@ -8,33 +8,33 @@ import {
 import { db } from "~/server/db";
 
 export const demoRouter = createTRPCRouter({
-  get: publicProcedure.input(z.string()).query(async ({ input }) => {
-    return db.demo.findUnique({
-      where: { id: input },
-      include: {
-        feedback: true,
-        votes: true,
-        awards: true,
-      },
-    });
-  }),
-  getWaitlist: publicProcedure.input(z.string()).query(async ({ input }) => {
-    return db.feedback.findMany({
-      where: {
-        demoId: input,
-        tellMeMore: true,
-      },
-      include: {
-        attendee: {
-          select: {
-            name: true,
-            email: true,
-            type: true,
-          },
+  get: publicProcedure
+    .input(z.object({ id: z.string(), secret: z.string() }))
+    .query(async ({ input }) => {
+      return db.demo.findUnique({
+        where: { id: input.id, secret: input.secret },
+        include: {
+          feedback: true,
         },
-      },
-    });
-  }),
+      });
+    }),
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        secret: z.string(),
+        name: z.string(),
+        description: z.string(),
+        email: z.string().email(),
+        url: z.string().url(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return db.demo.update({
+        where: { id: input.id, secret: input.secret },
+        data: input,
+      });
+    }),
   getFeedback: protectedProcedure
     .input(z.string().nullable())
     .query(async ({ input }) => {

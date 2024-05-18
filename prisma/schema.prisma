@@ -77,6 +77,7 @@ model Demo {
     event   Event  @relation(fields: [eventId], references: [id])
     eventId String
     index   Int
+    secret  String @default(cuid())
 
     name        String
     description String

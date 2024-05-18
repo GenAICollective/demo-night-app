@@ -4,22 +4,30 @@ import { EventPhase } from "~/lib/types/currentEvent";
 import { api } from "~/trpc/server";
 
 import EventHeader from "./components/EventHeader";
+import { UpdateDemoPage } from "./components/UpdateDemo";
 
 export default async function DemoistPage({
   params: { eventId, demoId },
+  searchParams: { secret },
 }: {
   params: { eventId: string; demoId: string };
+  searchParams: { secret: string };
 }) {
-  const event = await api.event.get(eventId);
-  const currentEvent = await api.event.getCurrent();
+  if (!secret) {
+    redirect("/404?type=invalid-secret");
+  }
 
-  if (event === null) {
+  const currentEvent = await api.event.getCurrent();
+  const event = await api.event.get(eventId);
+  const demo = await api.demo.get({ id: demoId, secret });
+
+  if (!event || !demo) {
     redirect("/404");
   }
 
   let showRecap = true;
 
-  // Redirect to edit page if event is in the future or it's pre-demo phase
+  // Only show the recap page if the demo has already happened
   if (!currentEvent) {
     const date = new Date();
     date.setHours(0, 0, 0, 0);
@@ -36,9 +44,7 @@ export default async function DemoistPage({
     return (
       <>
         <EventHeader eventName={event.name} />
-        <div className="p-4 pt-14">
-          <h1>Live!</h1>
-        </div>
+        <UpdateDemoPage demo={demo} secret={secret} />
       </>
     );
   }

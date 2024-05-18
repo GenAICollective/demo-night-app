@@ -1,4 +1,4 @@
-import { type Event } from "@prisma/client";
+import { type Demo, type Event } from "@prisma/client";
 import { z } from "zod";
 
 import * as kv from "~/lib/types/currentEvent";
@@ -9,13 +9,27 @@ import {
 } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
+export type PublicDemo = Omit<
+  Demo,
+  "eventId" | "secret" | "email" | "createdAt" | "updatedAt"
+>;
+
 export const eventRouter = createTRPCRouter({
   getCurrent: publicProcedure.query(() => kv.getCurrentEvent()),
   get: publicProcedure.input(z.string()).query(async ({ input }) => {
     return db.event.findUnique({
       where: { id: input },
       include: {
-        demos: { orderBy: { index: "asc" } },
+        demos: {
+          orderBy: { index: "asc" },
+          select: {
+            id: true,
+            index: true,
+            name: true,
+            description: true,
+            url: true,
+          },
+        },
         awards: { orderBy: { index: "asc" } },
       },
     });
@@ -26,7 +40,7 @@ export const eventRouter = createTRPCRouter({
         originalId: z.string().optional(),
         id: z.string().optional(),
         name: z.string(),
-        date: z.string().datetime(),
+        date: z.date(),
         url: z.string().url(),
       }),
     )
@@ -38,7 +52,7 @@ export const eventRouter = createTRPCRouter({
             data: {
               id: input.id,
               name: input.name,
-              date: new Date(input.date),
+              date: input.date,
               url: input.url,
             },
           })

@@ -1,6 +1,7 @@
-import { type Attendee, type Demo, type Feedback } from "@prisma/client";
+import { type Attendee, type Feedback } from "@prisma/client";
 import { useEffect, useState } from "react";
 
+import { type PublicDemo } from "~/server/api/routers/event";
 import { api } from "~/trpc/react";
 
 export type LocalFeedback = Omit<Feedback, "id" | "createdAt" | "updatedAt">;
@@ -9,7 +10,7 @@ export type FeedbackByDemoId = Record<string, LocalFeedback>;
 export function useFeedback(
   eventId: string,
   attendee: Attendee,
-  selectedDemo: Demo,
+  selectedDemo: PublicDemo,
 ) {
   const [feedbackByDemoId, setFeedbackByDemoId] = useState<FeedbackByDemoId>(
     getLocalFeedbackByDemoId(),

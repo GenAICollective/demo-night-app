@@ -59,10 +59,11 @@ export function UpsertDemoModal({
         <span className="font-semibold">Name</span>
         <input
           type="text"
-          {...register("name", { required: true, minLength: 1 })}
+          {...register("name")}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
           autoFocus
+          required
         />
       </label>
       {demo && (
@@ -73,6 +74,7 @@ export function UpsertDemoModal({
             {...register("id")}
             className="rounded-xl border border-gray-200 p-2"
             autoComplete="off"
+            required
           />
         </label>
       )}
@@ -86,32 +88,31 @@ export function UpsertDemoModal({
             : ""}
         </span>
         <textarea
-          {...register("description", {
-            required: true,
-            minLength: 1,
-            maxLength: DESCRIPTION_MAX_LENGTH,
-          })}
+          {...register("description")}
           className="rounded-xl border border-gray-200 p-2"
           rows={2}
           maxLength={DESCRIPTION_MAX_LENGTH}
+          required
         />
       </label>
       <label className="flex flex-col gap-1">
         <span className="font-semibold">Email</span>
         <input
           type="email"
-          {...register("email", { required: true })}
+          {...register("email")}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
+          required
         />
       </label>
       <label className="flex flex-col gap-1">
         <span className="font-semibold">URL</span>
         <input
           type="url"
-          {...register("url", { required: true })}
+          {...register("url")}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
+          required
         />
       </label>
       <SubmitButton

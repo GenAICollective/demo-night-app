@@ -40,7 +40,7 @@ export function DemoItem({
         <button
           title="Copy URL"
           onClick={() => {
-            const url = `${window.location.origin}/${eventId}/${demo.id}`;
+            const url = `${window.location.origin}/${eventId}/${demo.id}?secret=${demo.secret}`;
             navigator.clipboard.writeText(url).then(
               () => {
                 toast.success("URL copied to clipboard!");

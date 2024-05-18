@@ -1,10 +1,12 @@
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
-import { type Award, type Demo } from "@prisma/client";
+import { type Award } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import ConfettiExplosion from "react-dom-confetti";
+
+import { type PublicDemo } from "~/server/api/routers/event";
 
 import { ResultsConfetti } from "~/components/Confetti";
 
@@ -49,7 +51,7 @@ function AwardWinnerItem({
   currentAwardIndex,
 }: {
   award: Award;
-  demos: Demo[];
+  demos: PublicDemo[];
   currentAwardIndex: number | null;
 }) {
   const winner =

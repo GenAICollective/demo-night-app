@@ -1,15 +1,11 @@
-import {
-  type Attendee,
-  type Award,
-  type Demo,
-  type Event,
-} from "@prisma/client";
+import { type Attendee, type Award, type Event } from "@prisma/client";
 import { createContext, useContext } from "react";
 
 import { type CurrentEvent } from "~/lib/types/currentEvent";
+import { type PublicDemo } from "~/server/api/routers/event";
 
 export type CompleteEvent = Event & {
-  demos: Demo[];
+  demos: PublicDemo[];
   awards: Award[];
 };
 

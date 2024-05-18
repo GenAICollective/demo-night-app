@@ -37,7 +37,7 @@ export default function PreDashboard() {
   };
 
   const showDemoQRModal = (demo: Demo) => {
-    modal?.show(<DemoQRModal eventId={event.id} demoId={demo.id} />);
+    modal?.show(<DemoQRModal demo={demo} />);
   };
 
   return (
