@@ -7,12 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import { type PublicDemo } from "~/server/api/routers/event";
 
 import { ClapsConfetti, TellMeMoreConfetti } from "~/components/Confetti";
+import RatingSlider from "~/components/RatingSlider";
 import { useModal } from "~/components/modal/provider";
 
 import { ActionButtons } from "./ActionButtons";
 import { DemoSelectionHeader } from "./DemoSelectionHeader";
 import InfoModal from "./InfoModal";
-import RatingSlider from "./RatingSlider";
 import { useFeedback } from "./hooks/useFeedback";
 
 export default function DemosWorkspace() {

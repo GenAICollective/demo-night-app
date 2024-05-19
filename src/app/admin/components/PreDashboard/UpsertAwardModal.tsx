@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
 
-import SubmitButton from "~/components/SubmitButton";
+import Button from "~/components/Button";
 import { useModal } from "~/components/modal/provider";
 
 export function UpsertAwardModal({
@@ -85,10 +85,9 @@ export function UpsertAwardModal({
           required
         />
       </label>
-      <SubmitButton
-        title={`${award ? "Update" : "Create"} Award`}
-        pending={upsertMutation.isPending}
-      />
+      <Button pending={upsertMutation.isPending}>
+        {`${award ? "Update" : "Create"} Award`}
+      </Button>
     </form>
   );
 }

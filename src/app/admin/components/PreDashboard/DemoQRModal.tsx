@@ -3,7 +3,7 @@
 import { type Demo } from "@prisma/client";
 import QRCode from "react-qr-code";
 
-import SubmitButton from "~/components/SubmitButton";
+import Button from "~/components/Button";
 import { useModal } from "~/components/modal/provider";
 
 export function DemoQRModal({ demo }: { demo: Demo }) {
@@ -22,7 +22,7 @@ export function DemoQRModal({ demo }: { demo: Demo }) {
         size={150}
         value={`${window.location.origin}/${demo.eventId}/${demo.id}?secret=${demo.secret}`}
       />
-      <SubmitButton title="Done" pending={false} />
+      <Button pending={false}>Done</Button>
     </form>
   );
 }

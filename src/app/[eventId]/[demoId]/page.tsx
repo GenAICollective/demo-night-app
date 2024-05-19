@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { EventPhase } from "~/lib/types/currentEvent";
 import { api } from "~/trpc/server";
 
+import DemoRecap from "./components/DemoRecap";
 import EventHeader from "./components/EventHeader";
 import { UpdateDemoPage } from "./components/UpdateDemo";
 
@@ -42,19 +43,17 @@ export default async function DemoistPage({
 
   if (!showRecap) {
     return (
-      <>
+      <main className="m-auto flex size-full max-w-xl flex-col text-black">
         <EventHeader eventName={event.name} />
         <UpdateDemoPage demo={demo} secret={secret} />
-      </>
+      </main>
     );
   }
 
   return (
-    <>
-      <EventHeader eventName={event.name} />
-      <div className="p-4 pt-14">
-        <h1>Recap!</h1>
-      </div>
-    </>
+    <main className="m-auto flex size-full max-w-xl flex-col text-black">
+      <EventHeader eventName={event.name} demoName={demo.name} />
+      <DemoRecap demo={demo} />
+    </main>
   );
 }

@@ -1,7 +1,7 @@
 import { QUICK_ACTIONS } from "~/lib/types/quickActions";
 import { cn } from "~/lib/utils";
 
-import SubmitButton from "~/components/SubmitButton";
+import Button from "~/components/Button";
 import { useModal } from "~/components/modal/provider";
 
 const actionItems: {
@@ -65,7 +65,7 @@ export default function InfoModal() {
           </li>
         ))}
       </ul>
-      <SubmitButton title="Got it!" pending={false} />
+      <Button pending={false}>Got it!</Button>
     </form>
   );
 }

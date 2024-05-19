@@ -6,8 +6,8 @@ import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
 
+import Button from "~/components/Button";
 import { GaicoConfetti } from "~/components/Confetti";
-import SubmitButton from "~/components/SubmitButton";
 
 const DESCRIPTION_MAX_LENGTH = 120;
 
@@ -115,7 +115,7 @@ export function UpdateDemoForm({
           required
         />
       </label>
-      <SubmitButton title="Update Profile" pending={false} />
+      <Button pending={updateDemoMutation.isPending}>Update Profile</Button>
     </form>
   );
 }

@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { ATTENDEE_TYPES, type AttendeeType } from "~/lib/types/attendeeTypes";
 import { cn } from "~/lib/utils";
 
-import SubmitButton from "~/components/SubmitButton";
+import Button from "~/components/Button";
 import { useModal } from "~/components/modal/provider";
 
 export function UpdateAttendeeButton({
@@ -151,7 +151,7 @@ export function UpdateAttendeeForm({
           />
         )} */}
       </label>
-      <SubmitButton title="Update Profile" pending={false} />
+      <Button>Update Profile</Button>
     </form>
   );
 }

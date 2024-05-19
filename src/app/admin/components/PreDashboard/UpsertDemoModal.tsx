@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
 
-import SubmitButton from "~/components/SubmitButton";
+import Button from "~/components/Button";
 import { useModal } from "~/components/modal/provider";
 
 const DESCRIPTION_MAX_LENGTH = 120;
@@ -115,10 +115,9 @@ export function UpsertDemoModal({
           required
         />
       </label>
-      <SubmitButton
-        title={`${demo ? "Update" : "Create"} Demo`}
-        pending={upsertMutation.isPending}
-      />
+      <Button pending={upsertMutation.isPending}>
+        {`${demo ? "Update" : "Create"} Demo`}
+      </Button>
     </form>
   );
 }

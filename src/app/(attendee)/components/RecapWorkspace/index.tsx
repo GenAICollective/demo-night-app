@@ -1,5 +1,5 @@
+import RatingSlider from "../../../../components/RatingSlider";
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
-import RatingSlider from "../DemosWorkspace/RatingSlider";
 import { type Award, type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";

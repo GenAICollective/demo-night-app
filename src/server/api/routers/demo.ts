@@ -1,3 +1,4 @@
+import { type Demo } from "@prisma/client";
 import { z } from "zod";
 
 import {
@@ -7,16 +8,74 @@ import {
 } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
+type BaseFeedback = {
+  id: string;
+  rating: number | null;
+  claps: number;
+  comment: string | null;
+};
+
+type FeedbackAttribution = {
+  tellMeMore: boolean;
+  quickActions: String[];
+  attendee: {
+    name: string | null;
+    email: string | null;
+    linkedin: string | null;
+    type: string | null;
+  };
+};
+
+export type DemoFeedback = BaseFeedback & Partial<FeedbackAttribution>;
+
+export type CompleteDemo = Demo & {
+  feedback: DemoFeedback[];
+};
+
 export const demoRouter = createTRPCRouter({
   get: publicProcedure
     .input(z.object({ id: z.string(), secret: z.string() }))
     .query(async ({ input }) => {
-      return db.demo.findUnique({
+      const demo = await db.demo.findUnique({
         where: { id: input.id, secret: input.secret },
         include: {
-          feedback: true,
+          feedback: {
+            include: {
+              attendee: true,
+            },
+          },
         },
       });
+      if (!demo) {
+        throw new Error("Demo not found");
+      }
+      const allFeedback: DemoFeedback[] = [];
+      for (const feedback of demo.feedback) {
+        if (feedback.tellMeMore || feedback.quickActions.length > 0) {
+          allFeedback.push({
+            id: feedback.id,
+            claps: feedback.claps,
+            comment: feedback.comment,
+            rating: feedback.rating,
+            tellMeMore: feedback.tellMeMore,
+            quickActions: feedback.quickActions,
+            attendee: {
+              name: feedback.attendee?.name,
+              email: feedback.attendee?.email,
+              linkedin: feedback.attendee?.linkedin,
+              type: feedback.attendee.type,
+            },
+          });
+        } else {
+          allFeedback.push({
+            id: feedback.id,
+            claps: feedback.claps,
+            comment: feedback.comment,
+            rating: feedback.rating,
+          });
+        }
+      }
+      return { ...demo, feedback: allFeedback };
     }),
   update: publicProcedure
     .input(
