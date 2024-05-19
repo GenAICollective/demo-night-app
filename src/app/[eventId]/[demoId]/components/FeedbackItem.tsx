@@ -15,8 +15,8 @@ export function FeedbackItem({ feedback }: { feedback: DemoFeedback }) {
   ].filter((s) => s) as string[];
   const summaryString = summary.join(" • ");
   return (
-    <div key={feedback.id} className="w-full font-medium leading-6">
-      <div className="group z-10 flex w-full flex-col gap-2 rounded-xl bg-gray-300/50 p-4 shadow-xl backdrop-blur">
+    <div key={feedback.id} className="z-10 w-full font-medium leading-6">
+      <div className="group flex w-full flex-col gap-2 rounded-xl bg-gray-300/50 p-4 shadow-xl backdrop-blur">
         <div className="flex items-center gap-2">
           <h3 className="line-clamp-1 text-xl font-bold group-hover:underline">
             {feedback.comment}

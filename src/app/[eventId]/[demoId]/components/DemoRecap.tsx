@@ -1,9 +1,9 @@
 "use client";
 
 import { Download, Link } from "lucide-react";
+import { CSVLink } from "react-csv";
 import { toast } from "sonner";
 
-import { QUICK_ACTIONS } from "~/lib/types/quickActions";
 import { type CompleteDemo } from "~/server/api/routers/demo";
 
 import Button from "~/components/Button";
@@ -46,28 +46,17 @@ function ActionButtons({ demo }: { demo: CompleteDemo }) {
     toast.success("URL copied to clipboard!");
   };
 
-  const downloadCSV = () => {
-    const csv = [
-      ["Comment", "Rating", "Claps", "Tell me more", "Quick actions"],
-      ...demo.feedback.map((feedback) => [
-        feedback.comment,
-        feedback.rating,
-        feedback.claps,
-        feedback.tellMeMore,
-        feedback.quickActions?.map((id) => QUICK_ACTIONS[id]?.name).join(", "),
-      ]),
-    ]
-      .map((row) => row.map((cell) => (cell ?? "").toString()).join(","))
-      .join("\n");
-
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${demo.name}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const headers = [
+    { label: "Rating", key: "rating" },
+    { label: "Claps", key: "claps" },
+    { label: "Comment", key: "comment" },
+    { label: "Tell me more?", key: "tellMeMore" },
+    { label: "Quick actions?", key: "quickActions" },
+    { label: "Attendee name", key: "attendee.name" },
+    { label: "Attendee email", key: "attendee.email" },
+    { label: "Attendee linkedin", key: "attendee.linkedin" },
+    { label: "Attendee type", key: "attendee.type" },
+  ];
 
   return (
     <div className="flex w-full flex-row gap-4">
@@ -75,9 +64,16 @@ function ActionButtons({ demo }: { demo: CompleteDemo }) {
         Link
         <Link className="-mt-1" size={20} strokeWidth={3.5} />
       </Button>
-      <Button className="basis-1/2" onClick={() => window.location.reload()}>
-        CSV <Download className="-mt-1" size={20} strokeWidth={3.5} />
-      </Button>
+      <CSVLink
+        className="z-30 basis-1/2"
+        data={demo.feedback}
+        headers={headers}
+        filename={`${demo.name} feedback.csv`}
+      >
+        <Button>
+          CSV <Download className="-mt-1" size={20} strokeWidth={3.5} />
+        </Button>
+      </CSVLink>
     </div>
   );
 }
@@ -94,7 +90,7 @@ function RatingSummary({ demo }: { demo: CompleteDemo }) {
   );
 
   return (
-    <div className="flex w-full flex-row gap-2 rounded-xl bg-gray-300/50 p-2 shadow-xl backdrop-blur">
+    <div className="z-10 flex w-full flex-row gap-2 rounded-xl bg-gray-300/50 p-2 shadow-xl backdrop-blur">
       {Object.entries(numByRating).map(([rating, count]) => (
         <div
           key={rating}

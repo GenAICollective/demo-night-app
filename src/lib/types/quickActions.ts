@@ -4,7 +4,7 @@ type QuickAction = {
 };
 
 export const QUICK_ACTIONS: Record<string, QuickAction> = {
-  betaTest: {
+  testProduct: {
     icon: "🧑‍💻",
     description: "Testing the product!",
   },
