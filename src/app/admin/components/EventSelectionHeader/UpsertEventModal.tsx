@@ -20,7 +20,7 @@ export function UpsertEventModal({
   const { register, handleSubmit } = useForm({
     defaultValues: {
       name: event?.name ?? "",
-      id: event?.id ?? "",
+      id: event?.id,
       date: (event?.date ?? new Date()).toISOString().substring(0, 10),
       url: event?.url ?? "",
     },
