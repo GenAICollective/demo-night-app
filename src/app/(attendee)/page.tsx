@@ -20,7 +20,7 @@ export default async function AttendeePage() {
   );
 }
 
-export async function DemoNightHomePage() {
+async function DemoNightHomePage() {
   return (
     <main className="flex min-h-screen w-full flex-col items-center justify-center pb-16 font-kallisto text-black">
       <Image src="/images/logo.png" alt="logo" width={160} height={160} />

@@ -59,6 +59,7 @@ export function UpsertDemoModal({
         <span className="font-semibold">Name</span>
         <input
           type="text"
+          placeholder="Cofactory"
           {...register("name")}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
@@ -88,6 +89,7 @@ export function UpsertDemoModal({
             : ""}
         </span>
         <textarea
+          placeholder="The future of value creation in an AI-based economy."
           {...register("description")}
           className="rounded-xl border border-gray-200 p-2"
           rows={2}
@@ -99,6 +101,7 @@ export function UpsertDemoModal({
         <span className="font-semibold">Email</span>
         <input
           type="email"
+          placeholder="hello@cofactory.ai"
           {...register("email")}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"

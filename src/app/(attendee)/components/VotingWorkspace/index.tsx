@@ -1,5 +1,7 @@
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
-import { type Award, type Demo } from "@prisma/client";
+import { type Award } from "@prisma/client";
+
+import { type PublicDemo } from "~/server/api/routers/event";
 
 import AwardVoteSelect from "./AwardVoteSelect";
 import { type VoteByAwardId, useVotes } from "./hooks/useVotes";
@@ -45,7 +47,7 @@ function AwardVoteItem({
   setVote,
 }: {
   award: Award;
-  demos: Demo[];
+  demos: PublicDemo[];
   votes: VoteByAwardId;
   setVote: (awardId: string, demoId: string | null) => void;
 }) {

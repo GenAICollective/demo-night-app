@@ -12,6 +12,7 @@ datasource db {
 }
 
 // ############# Next auth #############
+
 model Account {
     id                String  @id @default(cuid())
     userId            String
@@ -74,7 +75,7 @@ model Event {
 
 model Demo {
     id      String @id @default(cuid())
-    event   Event  @relation(fields: [eventId], references: [id])
+    event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId String
     index   Int
     secret  String @default(cuid())
@@ -104,10 +105,10 @@ model Attendee {
 
 model Award {
     id       String  @id @default(cuid())
-    event    Event   @relation(fields: [eventId], references: [id])
+    event    Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId  String
     index    Int
-    winner   Demo?   @relation(fields: [winnerId], references: [id])
+    winner   Demo?   @relation(fields: [winnerId], references: [id], onDelete: Restrict)
     winnerId String?
 
     name        String
@@ -118,11 +119,11 @@ model Award {
 
 model Feedback {
     id         String   @id @default(cuid())
-    event      Event    @relation(fields: [eventId], references: [id])
+    event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId    String
-    attendee   Attendee @relation(fields: [attendeeId], references: [id])
+    attendee   Attendee @relation(fields: [attendeeId], references: [id], onDelete: Restrict)
     attendeeId String
-    demo       Demo     @relation(fields: [demoId], references: [id])
+    demo       Demo     @relation(fields: [demoId], references: [id], onDelete: Restrict)
     demoId     String
 
     rating       Int?
@@ -140,13 +141,13 @@ model Feedback {
 
 model Vote {
     id         String   @id @default(cuid())
-    event      Event    @relation(fields: [eventId], references: [id])
+    event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId    String
-    attendee   Attendee @relation(fields: [attendeeId], references: [id])
+    attendee   Attendee @relation(fields: [attendeeId], references: [id], onDelete: Restrict)
     attendeeId String
-    award      Award    @relation(fields: [awardId], references: [id])
+    award      Award    @relation(fields: [awardId], references: [id], onDelete: Cascade)
     awardId    String
-    demo       Demo?    @relation(fields: [demoId], references: [id])
+    demo       Demo?    @relation(fields: [demoId], references: [id], onDelete: Restrict)
     demoId     String?
 
     createdAt DateTime @default(now())

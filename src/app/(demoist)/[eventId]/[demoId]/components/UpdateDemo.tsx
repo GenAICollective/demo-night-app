@@ -67,11 +67,11 @@ export function UpdateDemoForm({
     >
       <div>
         <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
-          Hey There! 👋
+          Get Ready! 🧑‍💻
         </h1>
         <p className="text-md max-w-[330px] pt-2 text-center font-medium leading-5 text-gray-500">
-          Put on your best smile! Don&apos;t worry, your contact info will only
-          be shared with demoists you choose to connect with!
+          It&apos;s almost time to demo! Let&apos;s make sure everything is in
+          order so the audience can leave feedback and connect with you!
         </p>
       </div>
       <label className="flex w-full flex-col gap-1">

@@ -17,7 +17,7 @@ type BaseFeedback = {
 
 type FeedbackAttribution = {
   tellMeMore: boolean;
-  quickActions: String[];
+  quickActions: string[];
   attendee: {
     name: string | null;
     email: string | null;

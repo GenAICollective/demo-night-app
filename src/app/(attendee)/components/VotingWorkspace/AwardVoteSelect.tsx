@@ -1,9 +1,10 @@
-import { type Award, type Demo } from "@prisma/client";
+import { type Award } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircleCheck, Expand } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { cn } from "~/lib/utils";
+import { type PublicDemo } from "~/server/api/routers/event";
 
 import { type VoteByAwardId } from "./hooks/useVotes";
 
@@ -14,7 +15,7 @@ export default function AwardVoteSelect({
   onSelect,
 }: {
   award: Award;
-  demos: Demo[];
+  demos: PublicDemo[];
   votes: VoteByAwardId;
   onSelect: (awardId: string, demoId: string | null) => void;
 }) {

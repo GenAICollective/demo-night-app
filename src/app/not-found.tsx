@@ -2,13 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function NotFoundPage({
-  searchParams: { type },
+  searchParams,
 }: {
-  searchParams: { type?: string };
+  searchParams?: { type?: string };
 }) {
   let title = "URL not found 🥲";
   let message = "(hang with us!) ";
-  if (type === "invalid-secret") {
+  if (searchParams?.type === "invalid-secret") {
     title = "Invalid secret 😬";
     message = "You need a valid secret to access this page";
   }

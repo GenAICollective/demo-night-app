@@ -57,6 +57,7 @@ export function UpsertAwardModal({
         <span className="font-semibold">Name</span>
         <input
           type="text"
+          placeholder="🏆 Best Overall"
           {...register("name")}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
@@ -79,6 +80,7 @@ export function UpsertAwardModal({
       <label className="flex flex-col gap-1">
         <span className="font-semibold">Description</span>
         <textarea
+          placeholder="Award for the best overall demo!"
           {...register("description")}
           className="rounded-xl border border-gray-200 p-2"
           rows={2}
