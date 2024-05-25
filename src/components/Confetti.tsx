@@ -1,5 +1,8 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
+import tweens from "tween-functions";
 
 import useWindowSize from "~/lib/hooks/useWindowSize";
 
@@ -161,9 +164,10 @@ export function GaicoConfetti() {
       height={windowSize.height}
       drawShape={drawShape}
       basicFloat={true}
-      tweenDuration={20000}
+      tweenDuration={30000}
+      tweenFunction={tweens.linear}
       gravity={0.01}
-      numberOfPieces={10}
+      numberOfPieces={20}
     />
   );
 }

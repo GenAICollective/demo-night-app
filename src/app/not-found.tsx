@@ -1,5 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
+
+import { LinkButton } from "~/components/Button";
+import { GaicoConfetti } from "~/components/Confetti";
 
 export default async function NotFoundPage({
   searchParams,
@@ -18,12 +20,10 @@ export default async function NotFoundPage({
       <Image src="/images/logo.png" alt="logo" width={160} height={160} />
       <h1 className="pt-4 text-center text-2xl font-semibold">{title}</h1>
       <p className="text-lg font-semibold italic">{message}</p>
-      <Link
-        className="mt-4 rounded-xl bg-orange-500 px-4 py-3 font-semibold text-white shadow-xl hover:bg-orange-600"
-        href="/"
-      >
-        Back to home
-      </Link>
+      <LinkButton href="/">Back to home</LinkButton>
+      <div className="z-3 pointer-events-none fixed inset-0">
+        <GaicoConfetti />
+      </div>
     </main>
   );
 }

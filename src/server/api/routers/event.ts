@@ -1,4 +1,4 @@
-import { type Demo, type Event } from "@prisma/client";
+import { type Award, type Demo, type Event, type Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import * as kv from "~/lib/types/currentEvent";
@@ -9,31 +9,44 @@ import {
 } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
+export type CompleteEvent = Event & {
+  demos: PublicDemo[];
+  awards: Award[];
+};
+
 export type PublicDemo = Omit<
   Demo,
-  "eventId" | "secret" | "email" | "createdAt" | "updatedAt"
+  "eventId" | "secret" | "createdAt" | "updatedAt"
 >;
 
 export const eventRouter = createTRPCRouter({
+  all: publicProcedure
+    .input(
+      z
+        .object({
+          limit: z.number().optional(),
+          offset: z.number().optional(),
+        })
+        .optional(),
+    )
+    .query(async ({ input }): Promise<CompleteEvent[]> => {
+      return db.event.findMany({
+        where: { date: { lte: new Date() } },
+        include: completeEventInclude,
+        orderBy: { date: "desc" },
+        take: input?.limit,
+        skip: input?.offset,
+      });
+    }),
   getCurrent: publicProcedure.query(() => kv.getCurrentEvent()),
-  get: publicProcedure.input(z.string()).query(async ({ input }) => {
-    return db.event.findUnique({
-      where: { id: input },
-      include: {
-        demos: {
-          orderBy: { index: "asc" },
-          select: {
-            id: true,
-            index: true,
-            name: true,
-            description: true,
-            url: true,
-          },
-        },
-        awards: { orderBy: { index: "asc" } },
-      },
-    });
-  }),
+  get: publicProcedure
+    .input(z.string())
+    .query(async ({ input }): Promise<CompleteEvent | null> => {
+      return db.event.findUnique({
+        where: { id: input },
+        include: completeEventInclude,
+      });
+    }),
   upsert: protectedProcedure
     .input(
       z.object({
@@ -68,7 +81,7 @@ export const eventRouter = createTRPCRouter({
         data: { ...input },
       });
     }),
-  all: protectedProcedure.query(() => {
+  allAdmin: protectedProcedure.query(() => {
     return db.event.findMany({
       orderBy: { date: "desc" },
     });
@@ -123,3 +136,18 @@ export const eventRouter = createTRPCRouter({
       });
   }),
 });
+
+const completeEventInclude: Prisma.EventInclude = {
+  demos: {
+    orderBy: { index: "asc" },
+    select: {
+      id: true,
+      index: true,
+      name: true,
+      description: true,
+      email: true,
+      url: true,
+    },
+  },
+  awards: { orderBy: { index: "asc" } },
+};

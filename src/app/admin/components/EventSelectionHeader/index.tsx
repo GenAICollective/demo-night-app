@@ -22,7 +22,8 @@ export default function EventSelectionHeader({
 }) {
   const { currentEvent, refetchEvent } = useDashboardContext();
   const modal = useModal();
-  const { data: events, refetch: _refetchEvents } = api.event.all.useQuery();
+  const { data: events, refetch: _refetchEvents } =
+    api.event.allAdmin.useQuery();
   const updateCurrentMutation = api.event.updateCurrent.useMutation();
 
   const refetch = () => {

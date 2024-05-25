@@ -114,7 +114,7 @@ function AwardWinnerItem({
                   className="h-5 w-5 flex-none rounded-md bg-green-400/50 p-[2px] text-green-500 group-hover:bg-green-500/50 group-hover:text-green-700"
                 />
               </div>
-              <p className="font-medium italic text-gray-700">
+              <p className="italic leading-5 text-gray-700">
                 {winner.description}
               </p>
             </Link>

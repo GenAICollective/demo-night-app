@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { cn } from "~/lib/utils";
 
 import LoadingDots from "./loading/LoadingDots";
@@ -26,5 +28,27 @@ export default function Button({
     >
       {pending ? <LoadingDots color="#fff" /> : children}
     </button>
+  );
+}
+
+export function LinkButton({
+  children,
+  href,
+  className,
+}: {
+  children: React.ReactNode;
+  href: string;
+  className?: string;
+}) {
+  return (
+    <Link
+      className={cn(
+        `z-10 mt-4 rounded-xl bg-orange-500/80 px-4 py-3 font-semibold tracking-wide text-white shadow-lg backdrop-blur transition-all hover:bg-orange-600/80 focus:outline-none active:scale-95 active:shadow-md`,
+        className,
+      )}
+      href={href}
+    >
+      {children}
+    </Link>
   );
 }

@@ -111,7 +111,7 @@ export default function AwardVoteSelect({
                   >
                     <div className="flex flex-col leading-6">
                       <p>{demo.name}</p>
-                      <p className="text-sm font-medium italic text-gray-700">
+                      <p className="text-sm font-medium italic leading-5 text-gray-700">
                         {demo.description}
                       </p>
                     </div>
