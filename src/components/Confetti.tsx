@@ -164,7 +164,7 @@ export function GaicoConfetti() {
       height={windowSize.height}
       drawShape={drawShape}
       basicFloat={true}
-      tweenDuration={30000}
+      tweenDuration={300_000}
       tweenFunction={tweens.linear}
       gravity={0.01}
       numberOfPieces={20}
