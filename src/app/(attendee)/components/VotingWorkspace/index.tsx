@@ -10,8 +10,6 @@ export default function VotingWorkspace() {
   const { currentEvent, event, attendee } = useWorkspaceContext();
   const { votes, setVote } = useVotes(currentEvent.id, attendee);
 
-  if (!event) return null;
-
   return (
     <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full max-w-xl">
       <div className="flex size-full flex-col items-center justify-center gap-4 p-4">

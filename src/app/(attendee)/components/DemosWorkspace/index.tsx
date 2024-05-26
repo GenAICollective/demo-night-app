@@ -18,9 +18,7 @@ import { useFeedback } from "./hooks/useFeedback";
 export default function DemosWorkspace() {
   const { currentEvent, event, attendee } = useWorkspaceContext();
   const { id: eventId, currentDemoId } = currentEvent;
-  const [selectedDemo, setSelectedDemo] = useState<PublicDemo>(
-    event!.demos[0]!,
-  );
+  const [selectedDemo, setSelectedDemo] = useState<PublicDemo>(event.demos[0]!);
   const { feedback, setFeedback } = useFeedback(
     eventId,
     attendee,
@@ -37,7 +35,7 @@ export default function DemosWorkspace() {
       currentDemoId &&
       (!lastCommentChange || Date.now() - lastCommentChange >= 3000)
     ) {
-      const demo = event?.demos.find((d) => d.id === currentDemoId);
+      const demo = event.demos.find((d) => d.id === currentDemoId);
       if (demo) {
         setSelectedDemo(demo);
         setLastCommentChange(null);
@@ -50,8 +48,6 @@ export default function DemosWorkspace() {
       lastDemoIndex.current = selectedDemo.index;
     }
   }, [selectedDemo]);
-
-  if (!event || event.demos.length === 0) return null;
 
   return (
     <>

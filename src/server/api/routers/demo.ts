@@ -1,4 +1,4 @@
-import { type Demo } from "@prisma/client";
+import { type Demo, type Feedback } from "@prisma/client";
 import { z } from "zod";
 
 import {
@@ -30,6 +30,10 @@ export type DemoFeedback = BaseFeedback & Partial<FeedbackAttribution>;
 
 export type CompleteDemo = Demo & {
   feedback: DemoFeedback[];
+};
+
+export type FeedbackAndAttendee = Feedback & {
+  attendee: { name: string | null; type: string | null };
 };
 
 export const demoRouter = createTRPCRouter({
@@ -96,7 +100,7 @@ export const demoRouter = createTRPCRouter({
     }),
   getFeedback: protectedProcedure
     .input(z.string().nullable())
-    .query(async ({ input }) => {
+    .query(async ({ input }): Promise<FeedbackAndAttendee[]> => {
       if (!input) {
         return [];
       }

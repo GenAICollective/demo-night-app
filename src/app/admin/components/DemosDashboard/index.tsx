@@ -1,12 +1,13 @@
 import { useDashboardContext } from "../../contexts/DashboardContext";
-import { type Demo, type Feedback } from "@prisma/client";
+import { type Demo } from "@prisma/client";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
+import { feedbackScore } from "~/lib/feedback";
 import { api } from "~/trpc/react";
 
 import { DemoItem } from "./DemoItem";
-import { FeedbackItem, feedbackScore } from "./FeedbackItem";
+import { FeedbackItem } from "./FeedbackItem";
 import FeedbackOverview from "./FeedbackOverview";
 import { env } from "~/env";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,10 +15,6 @@ import { useMockFeedback } from "~/test/hooks/useMockFeedback";
 
 const REFRESH_INTERVAL =
   env.NEXT_PUBLIC_NODE_ENV === "development" ? 1_000 : 5_000;
-
-export type FeedbackAndAttendee = Feedback & {
-  attendee: { name: string | null; type: string | null };
-};
 
 export default function DemosDashboard() {
   const { currentEvent, event, refetchEvent } = useDashboardContext();

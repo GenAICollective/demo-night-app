@@ -1,10 +1,10 @@
-import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
-import { UpdateAttendeeButton } from "../UpdateAttendee";
+import { useWorkspaceContext } from "../contexts/WorkspaceContext";
 import Image from "next/image";
 import Link from "next/link";
 
 import { EventPhase, allPhases, displayName } from "~/lib/types/currentEvent";
 
+import { UpdateAttendeeButton } from "./UpdateAttendee";
 import { env } from "~/env";
 
 export default function EventHeader() {

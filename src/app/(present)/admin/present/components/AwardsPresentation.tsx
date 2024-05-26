@@ -1,41 +1,66 @@
-import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
+import { usePresentationContext } from "../contexts/PresentationContext";
 import { type Award } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ConfettiExplosion from "react-dom-confetti";
 
+import { EventPhase } from "~/lib/types/currentEvent";
 import { type PublicDemo } from "~/server/api/routers/event";
 
-import { ResultsConfetti } from "~/components/Confetti";
+import { GaicoConfetti, ResultsConfetti } from "~/components/Confetti";
 
-export default function ResultsWorkspace() {
-  const { currentEvent, event } = useWorkspaceContext();
+export default function AwardsPresentation() {
+  const { currentEvent, event } = usePresentationContext();
+  const [runGaicoConfetti, setRunGaicoConfetti] = useState(false);
 
   const currentAwardIndex = event.awards.findIndex(
     (a) => a.id === currentEvent.currentAwardId,
   );
 
+  const title = useMemo(() => {
+    switch (currentEvent.phase) {
+      case EventPhase.Voting:
+        return "Voting Time! 🗳️";
+      case EventPhase.Results:
+        return "Voting Results! 🤩";
+      case EventPhase.Recap:
+        return "Event Recap! 🎉";
+      default:
+        return "Awards Presentation";
+    }
+  }, [currentEvent.phase]);
+
+  useEffect(() => {
+    setRunGaicoConfetti(currentEvent.phase === EventPhase.Recap);
+  }, [currentEvent.phase]);
+
   return (
     <>
-      <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full">
-        <div className="flex size-full flex-col items-center justify-center gap-4 p-4">
-          <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
-            Voting Results! 🤩
-          </h1>
-          <div className="flex w-full flex-col gap-8">
-            {event?.awards.map((award) => (
-              <AwardWinnerItem
-                key={award.id}
-                award={award}
-                demos={event?.demos}
-                currentAwardIndex={currentAwardIndex}
-              />
-            ))}
-          </div>
+      <div className="flex size-full min-h-[calc(100dvh-80px)] flex-col items-center justify-center gap-4 p-4 pb-20">
+        <motion.h1
+          key={title}
+          initial={{ opacity: 0, scale: 0.75, x: 100 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          exit={{ opacity: 0, scale: 0.75, x: -100 }}
+          transition={{ duration: 0.5, type: "spring" }}
+          className="text-center font-kallisto text-4xl font-bold tracking-tight"
+        >
+          {title}
+        </motion.h1>
+        <div className="flex w-full flex-col gap-8">
+          {event?.awards.map((award) => (
+            <AwardWinnerItem
+              key={award.id}
+              award={award}
+              demos={event?.demos}
+              currentAwardIndex={currentAwardIndex}
+            />
+          ))}
         </div>
       </div>
       <div className="z-3 pointer-events-none fixed inset-0">
         <ResultsConfetti currentAwardIndex={currentAwardIndex} />
+        <GaicoConfetti run={currentEvent.phase === EventPhase.Recap} />
       </div>
     </>
   );

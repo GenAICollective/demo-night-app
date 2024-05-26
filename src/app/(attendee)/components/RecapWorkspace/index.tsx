@@ -15,7 +15,6 @@ import { GaicoConfetti } from "~/components/Confetti";
 
 export default function RecapWorkspace() {
   const [awardIndex, setAwardIndex] = useState(0);
-  const [demoIndex, setDemoIndex] = useState(0);
   const { currentEvent, event, attendee } = useWorkspaceContext();
   const { data: feedback } = api.feedback.all.useQuery({
     eventId: currentEvent.id,
@@ -25,16 +24,12 @@ export default function RecapWorkspace() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setAwardIndex((i) => (i + 1) % (event?.awards.length ?? 1));
-      setDemoIndex((i) => (i + 1) % (event?.demos.length ?? 1));
     }, 5000);
 
     return () => clearInterval(intervalId);
-  }, [event?.awards.length, event?.demos.length]);
-
-  if (!event || !event.awards.length || !event.demos.length) return null;
+  }, [event?.awards.length]);
 
   const award = event.awards[awardIndex]!;
-  const demo = event.demos[demoIndex]!;
 
   return (
     <div className="flex size-full flex-1 flex-col items-center justify-center gap-8 p-4">

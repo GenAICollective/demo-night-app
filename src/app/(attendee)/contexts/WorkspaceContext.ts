@@ -6,7 +6,7 @@ import { type CompleteEvent } from "~/server/api/routers/event";
 
 export type IWorkspaceContext = {
   currentEvent: CurrentEvent;
-  event: CompleteEvent | null | undefined;
+  event: CompleteEvent;
   attendee: Attendee;
   setAttendee: (attendee: Attendee) => void;
 };

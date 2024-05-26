@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 
 import { ATTENDEE_TYPES } from "~/lib/types/attendeeTypes";
 import { QUICK_ACTIONS } from "~/lib/types/quickActions";
-
-import { type FeedbackAndAttendee } from "~/app/admin/components/DemosDashboard";
+import { type FeedbackAndAttendee } from "~/server/api/routers/demo";
 
 export const useMockFeedback = () => {
   const [feedback, setFeedback] = useState<FeedbackAndAttendee[]>([]);

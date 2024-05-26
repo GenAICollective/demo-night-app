@@ -8,7 +8,7 @@ import { createContext, useContext } from "react";
 
 import { type CurrentEvent } from "~/lib/types/currentEvent";
 
-export type CompleteEvent = Event & {
+export type AdminEvent = Event & {
   demos: Demo[];
   attendees: Attendee[];
   awards: Award[];
@@ -16,7 +16,7 @@ export type CompleteEvent = Event & {
 
 export type IDashboardContext = {
   currentEvent: CurrentEvent | null | undefined;
-  event: CompleteEvent | null | undefined;
+  event: AdminEvent | null | undefined;
   refetchEvent: () => void;
 };
 

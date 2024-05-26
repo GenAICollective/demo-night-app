@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
-import tweens from "tween-functions";
 
 import useWindowSize from "~/lib/hooks/useWindowSize";
 
@@ -149,7 +148,7 @@ export function ResultsConfetti({
   );
 }
 
-export function GaicoConfetti() {
+export function GaicoConfetti({ run = true }: { run?: boolean }) {
   const { windowSize } = useWindowSize();
 
   const drawShape = (ctx: CanvasRenderingContext2D) => {
@@ -164,10 +163,11 @@ export function GaicoConfetti() {
       height={windowSize.height}
       drawShape={drawShape}
       basicFloat={true}
-      tweenDuration={300_000}
-      tweenFunction={tweens.linear}
+      initialVelocityY={{ min: -10, max: 0 }}
+      tweenDuration={30_000}
       gravity={0.01}
       numberOfPieces={20}
+      run={run}
     />
   );
 }
