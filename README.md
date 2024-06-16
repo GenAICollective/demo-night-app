@@ -2,12 +2,19 @@
 
 This is the live feedback app we use during all our GenAI Collective demo night events! [Example event](https://lu.ma/sf-demo)
 
+[LinkedIn post + demo video!](https://www.linkedin.com/posts/chappyasel_yes-i-actually-built-an-entire-app-for-the-activity-7199495003709034496-dstA)
+
+## Contributing
+
+Please reach out to Chappy (<chappy@genaicollective.ai>) if you'd like to contribute to this community project!
+
 ## Getting Started
 
 ### 1. Install the packages
 
 ```bash
 yarn install
+yarn global add dotenv-cli
 ```
 
 ### 2. Set up environment variables
@@ -23,8 +30,8 @@ For `.env` key/value pairs, see `.env.example`.
 ### 4. Push the schema and seed the local DB with a "<test@example.com>" example account and test event
 
 ```bash
-yarn db:push:dev
-yarn db:seed:dev
+yarn db:push
+yarn db:seed
 ```
 
 ### 5. Start the development server
@@ -43,7 +50,7 @@ yarn dev
 To manipulate the data and relations directly via Prisma during local development:
 
 ```bash
-yarn db:studio:dev
+yarn db:studio
 ```
 
 ### Migration
@@ -51,7 +58,7 @@ yarn db:studio:dev
 To alter the data schema (adding/removing/editing columns, changing unique/compound/primary keys, etc.), make changes in `schema.prisma` file, save, and run:
 
 ```bash
-yarn migrate
+yarn db:migrate
 ```
 
 - Fixing failed migrations:
