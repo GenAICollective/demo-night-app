@@ -1,4 +1,8 @@
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
+import {
+  type FeedbackByDemoId,
+  useFeedback,
+} from "../DemosWorkspace/hooks/useFeedback";
 import { type Award } from "@prisma/client";
 
 import { type PublicDemo } from "~/server/api/routers/event";
@@ -8,6 +12,11 @@ import { type VoteByAwardId, useVotes } from "./hooks/useVotes";
 
 export default function VotingWorkspace() {
   const { currentEvent, event, attendee } = useWorkspaceContext();
+  const { feedbackByDemoId } = useFeedback(
+    currentEvent.id,
+    attendee,
+    event.demos[0]!,
+  );
   const { votes, setVote } = useVotes(currentEvent.id, attendee);
 
   return (
@@ -18,8 +27,8 @@ export default function VotingWorkspace() {
             Voting Time! 🗳️
           </h1>
           <p className="text-md max-w-[330px] pt-2 text-center font-medium leading-5 text-gray-500">
-            Who gets immortalized in the hall of fame? You decide! Note that you
-            can only vote for each demoist once so choose wisely!
+            Who gets immortalized in the Demo Night Hall of Fame? You decide!
+            Note that you can only vote for each demoist once so choose wisely!
           </p>
         </div>
         <div className="flex w-full flex-col gap-8">
@@ -30,6 +39,7 @@ export default function VotingWorkspace() {
               demos={event.demos}
               votes={votes}
               setVote={setVote}
+              feedbackByDemoId={feedbackByDemoId}
             />
           ))}
         </div>
@@ -43,11 +53,13 @@ function AwardVoteItem({
   demos,
   votes,
   setVote,
+  feedbackByDemoId,
 }: {
   award: Award;
   demos: PublicDemo[];
   votes: VoteByAwardId;
   setVote: (awardId: string, demoId: string | null) => void;
+  feedbackByDemoId: FeedbackByDemoId;
 }) {
   return (
     <div className="flex flex-col font-medium">
@@ -60,6 +72,7 @@ function AwardVoteItem({
         demos={demos}
         votes={votes}
         onSelect={setVote}
+        feedbackByDemoId={feedbackByDemoId}
       />
     </div>
   );
