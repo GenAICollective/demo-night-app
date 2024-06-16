@@ -11,14 +11,15 @@ const actionItems: {
   indent?: boolean;
 }[] = [
   {
+    icon: "👏",
+    title: "Clap:",
+    description:
+      "Show your appreciation by clapping as many times as you'd like! The more, the merrier!",
+  },
+  {
     icon: "📬",
     title: "Learn more:",
     description: "Send me an email with more info!",
-  },
-  {
-    icon: "👏",
-    title: "Clap:",
-    description: "Clap as many times as your heart desires!",
   },
   {
     icon: "🤝",
@@ -47,8 +48,8 @@ export default function InfoModal() {
           About Actions
         </h1>
         <p className="text-md max-w-[330px] pt-2 text-center font-medium leading-5 text-gray-500">
-          Now&apos;s your chance to show some love to the demoists! Here are the
-          actions you can take to show your appreciation and follow up:
+          Now&apos;s your chance to engage with the demos! Demoists will receive
+          a summary of all feedback after the event and will follow up!
         </p>
       </div>
       <ul className="text-md flex w-full flex-col gap-2 font-semibold leading-6 text-gray-700">

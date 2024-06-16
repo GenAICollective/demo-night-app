@@ -92,16 +92,19 @@ export default function DemosWorkspace() {
           <div className="w-full px-4 pt-4">
             <RatingSlider feedback={feedback} setFeedback={setFeedback} />
           </div>
-          <textarea
-            value={feedback?.comment ?? ""}
-            onChange={(e) => {
-              setFeedback({ ...feedback, comment: e.target.value });
-              setLastCommentChange(Date.now());
-            }}
-            rows={3}
-            className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
-            placeholder={`• What'd you like about the business or product?\n• Any constructive criticism?\n• Any other feedback?`}
-          />
+          <div className="flex w-full flex-col items-end gap-1">
+            <textarea
+              value={feedback?.comment ?? ""}
+              onChange={(e) => {
+                setFeedback({ ...feedback, comment: e.target.value });
+                setLastCommentChange(Date.now());
+              }}
+              rows={3}
+              className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
+              placeholder={`• Any questions for the demoist?\n• What was your favorite part?\n• What's one thing they could do better?`}
+            />
+            <SaveStatusIndicator status={saveStatus} />
+          </div>
         </motion.div>
         <ActionButtons feedback={feedback} setFeedback={setFeedback} />
       </AnimatePresence>
@@ -111,7 +114,6 @@ export default function DemosWorkspace() {
       >
         <BadgeInfo />
       </button>
-      <SaveStatusIndicator status={saveStatus} />
       <div className="z-3 pointer-events-none fixed inset-0">
         <TellMeMoreConfetti feedback={feedback} />
         <ClapsConfetti feedback={feedback} />
@@ -124,7 +126,7 @@ function SaveStatusIndicator({ status }: { status: FeedbackSaveStatus }) {
   return (
     <p
       className={cn(
-        "fixed bottom-2 right-2 font-medium italic text-gray-400",
+        "pr-3 text-sm font-semibold italic text-gray-300",
         status !== FeedbackSaveStatus.SAVED && "animate-pulse",
       )}
     >
