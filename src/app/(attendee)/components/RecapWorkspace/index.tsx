@@ -13,9 +13,15 @@ import { api } from "~/trpc/react";
 
 import { GaicoConfetti } from "~/components/Confetti";
 
+import { useEventFeedback } from "./hooks/useEventFeedback";
+
 export default function RecapWorkspace() {
-  const [awardIndex, setAwardIndex] = useState(0);
   const { currentEvent, event, attendee } = useWorkspaceContext();
+  const { eventFeedback, setEventFeedback } = useEventFeedback(
+    currentEvent.id,
+    attendee.id,
+  );
+  const [awardIndex, setAwardIndex] = useState(0);
   const { data: feedback } = api.feedback.all.useQuery({
     eventId: currentEvent.id,
     attendeeId: attendee.id,
@@ -33,9 +39,20 @@ export default function RecapWorkspace() {
 
   return (
     <div className="flex size-full flex-1 flex-col items-center justify-center gap-8 p-4">
-      <h1 className="-mb-2 text-center font-kallisto text-4xl font-bold tracking-tight">
-        Event Recap 🎉
-      </h1>
+      <div className="flex w-full flex-col gap-2">
+        <h1 className="-mb-2 text-center font-kallisto text-4xl font-bold tracking-tight">
+          Event Recap 🎉
+        </h1>
+        <textarea
+          rows={3}
+          value={eventFeedback?.comment ?? ""}
+          onChange={(e) =>
+            setEventFeedback({ ...eventFeedback, comment: e.target.value })
+          }
+          className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
+          placeholder={`How can we make these community demo nights even better?!`}
+        />
+      </div>
       <div className="flex w-full flex-col gap-2">
         <h2 className="w-full font-kallisto text-2xl font-bold">
           Winning Demos 🏆

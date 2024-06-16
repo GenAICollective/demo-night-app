@@ -122,7 +122,6 @@ function getLocalFeedbackByDemoId(): FeedbackByDemoId {
 }
 
 function setLocalFeedbackByDemoId(feedbackByDemoId: FeedbackByDemoId) {
-  console.log("setLocalFeedbackByDemoId", feedbackByDemoId);
   if (typeof window === "undefined") return; // SSR guard
   localStorage.setItem("feedback", JSON.stringify(feedbackByDemoId));
 }

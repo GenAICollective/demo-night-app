@@ -1,4 +1,4 @@
-import { type Feedback } from "@prisma/client";
+import { type EventFeedback } from "@prisma/client";
 import { z } from "zod";
 
 import {
@@ -8,10 +8,15 @@ import {
 } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
-export const MAX_RATING = 5;
+export type EventFeedbackAndAttendee = EventFeedback & {
+  attendee: {
+    name: string | null;
+    type: string | null;
+  };
+};
 
-export const feedbackRouter = createTRPCRouter({
-  all: publicProcedure
+export const eventFeedbackRouter = createTRPCRouter({
+  get: publicProcedure
     .input(
       z.object({
         eventId: z.string(),
@@ -19,38 +24,41 @@ export const feedbackRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      const feedbacks = await db.feedback.findMany({
-        where: { eventId: input.eventId, attendeeId: input.attendeeId },
-      });
-      return feedbacks.reduce(
-        (acc, feedback) => {
-          acc[feedback.demoId] = feedback;
-          return acc;
+      const feedbacks = await db.eventFeedback.findUnique({
+        where: {
+          eventId_attendeeId: {
+            eventId: input.eventId,
+            attendeeId: input.attendeeId,
+          },
         },
-        {} as Record<string, Feedback>,
-      );
+      });
+      return feedbacks;
+    }),
+  getAdmin: protectedProcedure
+    .input(z.string())
+    .query(async ({ input }): Promise<EventFeedbackAndAttendee[]> => {
+      return db.eventFeedback.findMany({
+        where: { eventId: input },
+        include: {
+          attendee: { select: { name: true, type: true } },
+        },
+      });
     }),
   upsert: publicProcedure
     .input(
       z.object({
         eventId: z.string(),
         attendeeId: z.string(),
-        demoId: z.string(),
-        rating: z.number().min(1).max(10).optional().nullable(),
-        claps: z.number().min(0).optional(),
-        tellMeMore: z.boolean().optional(),
-        quickActions: z.array(z.string()).optional(),
         comment: z.string().optional().nullable(),
       }),
     )
     .mutation(async ({ input }) => {
       try {
-        return db.feedback.upsert({
+        return db.eventFeedback.upsert({
           where: {
-            eventId_attendeeId_demoId: {
+            eventId_attendeeId: {
               eventId: input.eventId,
               attendeeId: input.attendeeId,
-              demoId: input.demoId,
             },
           },
           create: { ...input },
@@ -58,13 +66,13 @@ export const feedbackRouter = createTRPCRouter({
         });
       } catch (error: any) {
         if (error.code === "P2002") {
-          throw new Error("Cannot give feedback for the same demo twice");
+          throw new Error("Cannot give feedback for the same event twice");
         }
         throw error;
       }
     }),
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
-    return db.feedback.delete({
+    return db.eventFeedback.delete({
       where: { id: input },
     });
   }),
