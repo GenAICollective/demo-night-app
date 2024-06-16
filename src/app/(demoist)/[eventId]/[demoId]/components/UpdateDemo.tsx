@@ -85,14 +85,13 @@ export function UpdateDemoForm({
         />
       </label>
       <label className="flex w-full flex-col gap-1">
-        <span className="text-lg font-semibold">Description</span>
-        <textarea
-          placeholder="Building a community of the brightest minds in AI to discuss, exchange, and innovate."
-          {...register("description")}
-          className="z-30 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
+        <span className="text-lg font-semibold">URL</span>
+        <input
+          type="url"
+          placeholder="https://genaicollective.ai"
+          {...register("url")}
+          className="z-10 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
           required
-          maxLength={DESCRIPTION_MAX_LENGTH}
-          rows={3}
         />
       </label>
       <label className="flex w-full flex-col gap-1">
@@ -106,13 +105,19 @@ export function UpdateDemoForm({
         />
       </label>
       <label className="flex w-full flex-col gap-1">
-        <span className="text-lg font-semibold">URL</span>
-        <input
-          type="url"
-          placeholder="https://genaicollective.ai"
-          {...register("url")}
-          className="z-10 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
+        <div className="flex w-full flex-row items-center justify-start gap-1">
+          <span className="text-lg font-semibold">Description</span>
+          <span className="text-sm italic text-gray-400">
+            (max {DESCRIPTION_MAX_LENGTH} chars)
+          </span>
+        </div>
+        <textarea
+          placeholder="Building a community of the brightest minds in AI to discuss, exchange, and innovate."
+          {...register("description")}
+          className="z-30 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
           required
+          maxLength={DESCRIPTION_MAX_LENGTH}
+          rows={3}
         />
       </label>
       <Button pending={updateDemoMutation.isPending}>Update Profile</Button>

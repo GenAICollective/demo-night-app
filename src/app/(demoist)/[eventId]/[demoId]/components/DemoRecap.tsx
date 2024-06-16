@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Link } from "lucide-react";
+import { CircleHelp, Download, Link } from "lucide-react";
 import { CSVLink } from "react-csv";
 import { toast } from "sonner";
 
@@ -9,8 +9,10 @@ import { type CompleteDemo } from "~/server/api/routers/demo";
 import Button from "~/components/Button";
 import { GaicoConfetti } from "~/components/Confetti";
 import { RATING_EMOJIS } from "~/components/RatingSlider";
+import { useModal } from "~/components/modal/provider";
 
 import { FeedbackItem } from "./FeedbackItem";
+import InfoModal from "./InfoModal";
 
 export default function DemoRecap({ demo }: { demo: CompleteDemo }) {
   return (
@@ -41,9 +43,14 @@ export default function DemoRecap({ demo }: { demo: CompleteDemo }) {
 }
 
 function ActionButtons({ demo }: { demo: CompleteDemo }) {
+  const modal = useModal();
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     toast.success("URL to view demo recap copied to clipboard!");
+  };
+
+  const showInfoModal = () => {
+    modal?.show(<InfoModal />);
   };
 
   const headers = [
@@ -60,12 +67,16 @@ function ActionButtons({ demo }: { demo: CompleteDemo }) {
 
   return (
     <div className="flex w-full flex-row gap-4">
-      <Button className="basis-1/2" onClick={copyLink}>
+      <Button className="basis-1/3" onClick={copyLink}>
         Link
         <Link className="-mt-1" size={20} strokeWidth={3.5} />
       </Button>
+      <Button className="basis-1/3" onClick={showInfoModal}>
+        Help
+        <CircleHelp className="-mt-1" size={20} strokeWidth={3.5} />
+      </Button>
       <CSVLink
-        className="z-30 basis-1/2"
+        className="z-30 basis-1/3"
         data={demo.feedback}
         headers={headers}
         filename={`${demo.name} feedback.csv`}
@@ -94,7 +105,7 @@ function RatingSummary({ demo }: { demo: CompleteDemo }) {
       {Object.entries(numByRating).map(([rating, count]) => (
         <div
           key={rating}
-          className="flex basis-1/5 flex-col items-center justify-center rounded-xl py-2 backdrop-brightness-150"
+          className="flex basis-1/5 flex-col items-center justify-center rounded-xl bg-white/50 py-2"
         >
           <p className="line-clamp-1">{RATING_EMOJIS[Number(rating)]}</p>
           <p className="line-clamp-1 text-xl font-bold">{count}</p>
