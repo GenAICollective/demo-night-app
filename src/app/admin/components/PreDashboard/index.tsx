@@ -1,4 +1,5 @@
 import { useDashboardContext } from "../../contexts/DashboardContext";
+import InfoButton from "../InfoButton";
 import { type Award, type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -43,7 +44,13 @@ export default function PreDashboard() {
   return (
     <div className="flex size-full flex-row gap-2">
       <div className="flex flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
-        <h2 className="text-2xl font-bold">Demos</h2>
+        <div className="flex flex-row items-center justify-between">
+          <h2 className="text-2xl font-bold">Demos</h2>
+          <InfoButton
+            title="Demos"
+            message="Send the demoists their URL or have them scan the QR code to edit their information before the demo phase starts!"
+          />
+        </div>
         <ul className="flex flex-col gap-2 overflow-y-auto overflow-x-clip">
           <AnimatePresence>
             {event.demos.map((demo) => (
@@ -73,7 +80,13 @@ export default function PreDashboard() {
         </ul>
       </div>
       <div className="flex w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
-        <h2 className="text-2xl font-bold">Awards</h2>
+        <div className="flex flex-row items-center justify-between">
+          <h2 className="text-2xl font-bold">Awards</h2>
+          <InfoButton
+            title="Awards"
+            message="Attendees will be able to vote for these awards during the voting phase!"
+          />
+        </div>
         <ul className="flex flex-col gap-2 overflow-y-auto overflow-x-clip">
           <AnimatePresence>
             {event.awards.map((award) => (

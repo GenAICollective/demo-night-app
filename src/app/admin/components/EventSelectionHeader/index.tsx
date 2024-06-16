@@ -43,7 +43,16 @@ export default function EventSelectionHeader({
   );
 
   const showUpsertEventModal = (event?: Event) => {
-    modal?.show(<UpsertEventModal event={event} onSubmit={() => refetch()} />);
+    modal?.show(
+      <UpsertEventModal
+        event={event}
+        onSubmit={() => refetch()}
+        onDeleted={() => {
+          setSelectedEventId(undefined);
+          refetch();
+        }}
+      />,
+    );
   };
 
   return (
@@ -97,15 +106,6 @@ export default function EventSelectionHeader({
         )}
       </div>
       <div className="flex flex-row items-center gap-2">
-        {selectedEventId && (
-          <DeleteEventButton
-            eventId={selectedEventId}
-            onDeleted={() => {
-              setSelectedEventId(undefined);
-              refetch();
-            }}
-          />
-        )}
         <button
           className="w-28 rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
           onClick={() => showUpsertEventModal()}

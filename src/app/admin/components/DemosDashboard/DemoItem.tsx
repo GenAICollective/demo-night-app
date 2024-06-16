@@ -39,6 +39,9 @@ export function DemoItem({
         )}
         onClick={() => {
           setSelectedDemo(demo);
+          updateCurrentEventStateMutation
+            .mutateAsync({ currentDemoId: demo.id })
+            .then(() => refetchEvent());
         }}
       >
         <p className="line-clamp-1">{demo.name}</p>
@@ -47,18 +50,6 @@ export function DemoItem({
         )}
       </button>
       <div className="flex flex-row gap-2 font-semibold">
-        <button
-          title="Set as Current"
-          onClick={() => {
-            setSelectedDemo(demo);
-            updateCurrentEventStateMutation
-              .mutateAsync({ currentDemoId: demo.id })
-              .then(() => refetchEvent());
-          }}
-          className="focus:outline-none"
-        >
-          ⊕
-        </button>
         <button
           title="Move Up"
           onClick={() => {

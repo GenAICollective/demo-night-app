@@ -16,14 +16,14 @@ export function DeleteEventButton({
   const modal = useModal();
   return (
     <button
-      className="w-28 rounded-xl bg-red-200 p-2 font-semibold transition-all hover:bg-red-300 focus:outline-none"
+      className="w-16 rounded-xl bg-red-500 p-2 font-semibold text-white transition-all hover:bg-red-600 focus:outline-none"
       onClick={() =>
         modal?.show(
           <DeleteEventModal eventId={eventId} onDeleted={onDeleted} />,
         )
       }
     >
-      Delete Event
+      Delete
     </button>
   );
 }

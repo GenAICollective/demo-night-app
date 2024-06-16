@@ -43,7 +43,7 @@ export default function DemoRecap({ demo }: { demo: CompleteDemo }) {
 function ActionButtons({ demo }: { demo: CompleteDemo }) {
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success("URL copied to clipboard!");
+    toast.success("URL to view demo recap copied to clipboard!");
   };
 
   const headers = [
