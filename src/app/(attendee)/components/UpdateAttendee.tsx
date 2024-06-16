@@ -86,18 +86,18 @@ export function UpdateAttendeeForm({
           linkedin: data.linkedin,
           type: data.type,
         });
-        toast.success("Successfully updated profile!");
+        toast.success("Profile updated! Hang tight 😎");
         onSubmit?.();
       })}
       className="flex w-full flex-col items-center gap-4 font-medium"
     >
       <div>
         <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
-          Hey There! 👋
+          Welcome! 😄
         </h1>
         <p className="text-md max-w-[330px] pt-2 text-center font-medium leading-5 text-gray-500">
-          Put on your best smile! Don&apos;t worry, your contact info will only
-          be shared with demoists you choose to connect with!
+          We&apos;re glad you&apos;re here! Don&apos;t worry, your contact info
+          will only be shared with demoists you choose to connect with!
         </p>
       </div>
       <label className="flex w-full flex-col gap-1">
