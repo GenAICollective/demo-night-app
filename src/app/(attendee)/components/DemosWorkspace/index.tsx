@@ -4,6 +4,7 @@ import { ArrowUpRight, BadgeInfo } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { cn } from "~/lib/utils";
 import { type PublicDemo } from "~/server/api/routers/event";
 
 import { ClapsConfetti, TellMeMoreConfetti } from "~/components/Confetti";
@@ -13,13 +14,13 @@ import { useModal } from "~/components/modal/provider";
 import { ActionButtons } from "./ActionButtons";
 import { DemoSelectionHeader } from "./DemoSelectionHeader";
 import InfoModal from "./InfoModal";
-import { useFeedback } from "./hooks/useFeedback";
+import { FeedbackSaveStatus, useFeedback } from "./hooks/useFeedback";
 
 export default function DemosWorkspace() {
   const { currentEvent, event, attendee } = useWorkspaceContext();
   const { id: eventId, currentDemoId } = currentEvent;
   const [selectedDemo, setSelectedDemo] = useState<PublicDemo>(event.demos[0]!);
-  const { feedback, setFeedback } = useFeedback(
+  const { feedback, setFeedback, saveStatus } = useFeedback(
     eventId,
     attendee,
     selectedDemo,
@@ -110,11 +111,27 @@ export default function DemosWorkspace() {
       >
         <BadgeInfo />
       </button>
+      <SaveStatusIndicator status={saveStatus} />
       <div className="z-3 pointer-events-none fixed inset-0">
         <TellMeMoreConfetti feedback={feedback} />
         <ClapsConfetti feedback={feedback} />
       </div>
     </>
+  );
+}
+
+function SaveStatusIndicator({ status }: { status: FeedbackSaveStatus }) {
+  return (
+    <p
+      className={cn(
+        "fixed bottom-2 right-2 font-medium italic text-gray-400",
+        status !== FeedbackSaveStatus.SAVED && "animate-pulse",
+      )}
+    >
+      {status === FeedbackSaveStatus.UNSAVED && "..."}
+      {status === FeedbackSaveStatus.SAVING && "Saving..."}
+      {status === FeedbackSaveStatus.SAVED && "Saved!"}
+    </p>
   );
 }
 
