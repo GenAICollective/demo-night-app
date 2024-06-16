@@ -47,6 +47,7 @@ export function UpdateAttendeeModal({
       attendee={attendee}
       setAttendee={setAttendee}
       onSubmit={() => modal?.hide()}
+      isPreDemo={false}
     />
   );
 }
@@ -55,10 +56,12 @@ export function UpdateAttendeeForm({
   attendee,
   setAttendee,
   onSubmit,
+  isPreDemo = true,
 }: {
   attendee: Attendee | null;
   setAttendee: (attendee: Attendee) => void;
   onSubmit?: () => void;
+  isPreDemo?: boolean;
 }) {
   const { register, handleSubmit, watch } = useForm({
     defaultValues: {
@@ -86,18 +89,22 @@ export function UpdateAttendeeForm({
           linkedin: data.linkedin,
           type: data.type,
         });
-        toast.success("Successfully updated profile!");
+        const message = isPreDemo
+          ? "Profile updated! Hang tight – demos starting soon 😎"
+          : "Sweet! Demoists will see your updated profile 😎";
+        toast.success(message);
         onSubmit?.();
       })}
       className="flex w-full flex-col items-center gap-4 font-medium"
     >
       <div>
         <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
-          Hey There! 👋
+          {isPreDemo ? "Welcome! 😄" : "Update Profile 😎"}
         </h1>
         <p className="text-md max-w-[330px] pt-2 text-center font-medium leading-5 text-gray-500">
-          Put on your best smile! Don&apos;t worry, your contact info will only
-          be shared with demoists you choose to connect with!
+          {isPreDemo
+            ? "We're glad you're here! Tell us more about yourself – don't worry, we'll only share your contact info with demoists you choose to connect with!"
+            : "Tell us more about yourself! Don't worry, we'll only share your contact info with demoists you choose to connect with!"}
         </p>
       </div>
       <label className="flex w-full flex-col gap-1">

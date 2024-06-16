@@ -1,8 +1,12 @@
 import { type Demo } from "@prisma/client";
 import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
+
+import Button from "~/components/Button";
+import { useModal } from "~/components/modal/provider";
 
 export function DemoItem({
   demo,
@@ -17,8 +21,12 @@ export function DemoItem({
   onClickQR: () => void;
   refetchEvent: () => void;
 }) {
-  const updateIndexMutation = api.demo.updateIndex.useMutation();
+  const modal = useModal();
   const deleteMutation = api.demo.delete.useMutation();
+
+  const showUpdateIndexModal = () => {
+    modal?.show(<UpdateIndexModal demo={demo} />);
+  };
 
   return (
     <motion.li
@@ -62,34 +70,12 @@ export function DemoItem({
           🔳
         </button>
         <button
-          title="Move Up"
-          onClick={() => {
-            updateIndexMutation
-              .mutateAsync({
-                id: demo.id,
-                index: demo.index - 1,
-              })
-              .then(() => refetchEvent());
-          }}
+          title="Move"
+          onClick={showUpdateIndexModal}
           className="focus:outline-none"
         >
-          ↑
+          ↕
         </button>
-        <button
-          title="Move Down"
-          onClick={() => {
-            updateIndexMutation
-              .mutateAsync({
-                id: demo.id,
-                index: demo.index + 1,
-              })
-              .then(() => refetchEvent());
-          }}
-          className="focus:outline-none"
-        >
-          ↓
-        </button>
-
         <button
           title="Delete"
           onClick={() => {
@@ -101,5 +87,51 @@ export function DemoItem({
         </button>
       </div>
     </motion.li>
+  );
+}
+
+export function UpdateIndexModal({ demo }: { demo: Demo }) {
+  const updateIndexMutation = api.demo.updateIndex.useMutation();
+  const { register, handleSubmit } = useForm({
+    defaultValues: { order: demo.index + 1 },
+  });
+  const modal = useModal();
+
+  return (
+    <form
+      onSubmit={handleSubmit((data) => {
+        updateIndexMutation
+          .mutateAsync({
+            id: demo.id,
+            index: data.order - 1,
+          })
+          .then(() => {
+            modal?.hide();
+            toast.success(`Successfully updated index!`);
+          })
+          .catch((error) => {
+            toast.error(`Failed to update index: ${error.message}`);
+          });
+      })}
+      className="flex flex-col gap-4"
+    >
+      <h1 className="text-center text-xl font-bold">Update Order</h1>
+      <label className="flex flex-col gap-1">
+        <span className="font-semibold">Order</span>
+        <input
+          type="number"
+          placeholder="1"
+          {...register("order", {
+            valueAsNumber: true,
+            min: 1,
+          })}
+          className="rounded-xl border border-gray-200 p-2"
+          autoComplete="off"
+          autoFocus
+          required
+        />
+      </label>
+      <Button pending={updateIndexMutation.isPending}>Update Order</Button>
+    </form>
   );
 }

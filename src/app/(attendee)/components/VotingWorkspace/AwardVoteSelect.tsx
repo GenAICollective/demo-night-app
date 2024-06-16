@@ -1,3 +1,4 @@
+import { type FeedbackByDemoId } from "../DemosWorkspace/hooks/useFeedback";
 import { type Award } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircleCheck, Expand } from "lucide-react";
@@ -6,6 +7,8 @@ import { useCallback, useEffect, useState } from "react";
 import { cn } from "~/lib/utils";
 import { type PublicDemo } from "~/server/api/routers/event";
 
+import RatingSlider from "~/components/RatingSlider";
+
 import { type VoteByAwardId } from "./hooks/useVotes";
 
 export default function AwardVoteSelect({
@@ -13,11 +16,13 @@ export default function AwardVoteSelect({
   demos,
   votes,
   onSelect,
+  feedbackByDemoId,
 }: {
   award: Award;
   demos: PublicDemo[];
   votes: VoteByAwardId;
   onSelect: (awardId: string, demoId: string | null) => void;
+  feedbackByDemoId: FeedbackByDemoId;
 }) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
@@ -114,6 +119,11 @@ export default function AwardVoteSelect({
                       <p className="text-sm font-medium italic leading-5 text-gray-700">
                         {demo.description}
                       </p>
+                      {feedbackByDemoId[demo.id]?.rating && (
+                        <div className="pointer-events-none h-11 w-full px-2 pt-1">
+                          <RatingSlider feedback={feedbackByDemoId[demo.id]!} />
+                        </div>
+                      )}
                     </div>
                     {vote?.demoId === demo.id && (
                       <CircleCheck size={23} strokeWidth={2.25} />

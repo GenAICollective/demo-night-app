@@ -7,6 +7,12 @@ import { api } from "~/trpc/react";
 export type LocalFeedback = Omit<Feedback, "id" | "createdAt" | "updatedAt">;
 export type FeedbackByDemoId = Record<string, LocalFeedback>;
 
+export enum FeedbackSaveStatus {
+  UNSAVED,
+  SAVING,
+  SAVED,
+}
+
 export function useFeedback(
   eventId: string,
   attendee: Attendee,
@@ -25,6 +31,9 @@ export function useFeedback(
   );
   const [debouncedFeedback, setDebouncedFeedback] = useState(feedback);
   const upsertMutation = api.feedback.upsert.useMutation();
+  const [saveStatus, setSaveStatus] = useState<FeedbackSaveStatus>(
+    FeedbackSaveStatus.UNSAVED,
+  );
 
   useEffect(() => {
     setLocalFeedbackByDemoId(feedbackByDemoId);
@@ -47,10 +56,21 @@ export function useFeedback(
   useEffect(() => {
     const handler = setTimeout(() => {
       if (feedbackIsEmpty(debouncedFeedback)) return;
-      upsertMutation.mutate(debouncedFeedback);
+      setSaveStatus(FeedbackSaveStatus.SAVING);
+      upsertMutation.mutate(debouncedFeedback, {
+        onSuccess: () => {
+          setSaveStatus(FeedbackSaveStatus.SAVED);
+        },
+        onError: () => {
+          setSaveStatus(FeedbackSaveStatus.UNSAVED);
+        },
+      });
     }, 3_000);
 
-    return () => clearTimeout(handler);
+    return () => {
+      clearTimeout(handler);
+      setSaveStatus(FeedbackSaveStatus.UNSAVED); // Reset status on cleanup
+    };
   }, [debouncedFeedback]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -61,7 +81,7 @@ export function useFeedback(
     });
   }, [feedback]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { feedbackByDemoId: feedbackByDemoId, feedback, setFeedback };
+  return { feedbackByDemoId, feedback, setFeedback, saveStatus };
 }
 
 function emptyFeedback(
@@ -102,7 +122,6 @@ function getLocalFeedbackByDemoId(): FeedbackByDemoId {
 }
 
 function setLocalFeedbackByDemoId(feedbackByDemoId: FeedbackByDemoId) {
-  console.log("setLocalFeedbackByDemoId", feedbackByDemoId);
   if (typeof window === "undefined") return; // SSR guard
   localStorage.setItem("feedback", JSON.stringify(feedbackByDemoId));
 }

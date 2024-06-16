@@ -1,4 +1,5 @@
 import { useDashboardContext } from "../../contexts/DashboardContext";
+import InfoButton from "../InfoButton";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircleCheck } from "lucide-react";
 import { useState } from "react";
@@ -37,7 +38,13 @@ export default function VotingDashboard() {
   return (
     <div className="flex size-full flex-row gap-2">
       <div className="flex w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
-        <h2 className="text-2xl font-bold">Awards</h2>
+        <div className="flex flex-row items-center justify-between">
+          <h2 className="text-2xl font-bold">Awards</h2>
+          <InfoButton
+            title="Award Voting"
+            message="Make sure you select a winner for each award before moving on to the results phase!"
+          />
+        </div>
         <ul className="flex flex-col gap-2 overflow-auto">
           {event.awards.map((award) => (
             <li
@@ -59,9 +66,17 @@ export default function VotingDashboard() {
       </div>
       <div className="flex flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
         <div className="flex flex-col">
-          <h2 className="line-clamp-1 text-2xl font-bold">
-            {selectedAward?.name ? `Votes for ${selectedAward.name}` : "Votes"}
-          </h2>
+          <div className="flex flex-row items-center justify-between">
+            <h2 className="line-clamp-1 text-2xl font-bold">
+              {selectedAward?.name
+                ? `Votes for ${selectedAward.name}`
+                : "Votes"}
+            </h2>
+            <InfoButton
+              title="Winner Selection"
+              message="Click on a demo to lock it in as the winner for this award!"
+            />
+          </div>
           <p className="-mt-1 text-sm font-semibold text-gray-400">
             Total votes: {votes?.length}
           </p>

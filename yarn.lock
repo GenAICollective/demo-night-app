@@ -630,11 +630,6 @@
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.5.8.tgz#8268a8c57a3e4abd25c165ecd36237db7948a55e"
   integrity sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==
 
-"@types/tween-functions@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@types/tween-functions/-/tween-functions-1.2.2.tgz#65fedcdfc691669cdd09913eaff9e49c0d511e80"
-  integrity sha512-R8MG9rSHoQOZ1kN0hl3ZmFMXrqvRL/594e0yF5iEfbgUOkYB418biyjlvqeCQTiyFcezj9o7n/b3ErhvpC+jZQ==
-
 "@typescript-eslint/eslint-plugin@^7.1.1":
   version "7.8.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-7.8.0.tgz#c78e309fe967cb4de05b85cdc876fb95f8e01b6f"

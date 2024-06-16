@@ -11,7 +11,9 @@ import { ResultsConfetti } from "~/components/Confetti";
 export default function ResultsWorkspace() {
   const { currentEvent, event } = useWorkspaceContext();
 
-  const currentAwardIndex = event.awards.findIndex(
+  const awards = [...event.awards].reverse();
+
+  const currentAwardIndex = awards.findIndex(
     (a) => a.id === currentEvent.currentAwardId,
   );
 
@@ -23,12 +25,12 @@ export default function ResultsWorkspace() {
             Voting Results! 🤩
           </h1>
           <div className="flex w-full flex-col gap-8">
-            {event?.awards.map((award) => (
+            {awards.map((award, index) => (
               <AwardWinnerItem
                 key={award.id}
                 award={award}
                 demos={event?.demos}
-                currentAwardIndex={currentAwardIndex}
+                show={index <= (currentAwardIndex ?? -1)}
               />
             ))}
           </div>
@@ -44,16 +46,13 @@ export default function ResultsWorkspace() {
 function AwardWinnerItem({
   award,
   demos,
-  currentAwardIndex,
+  show,
 }: {
   award: Award;
   demos: PublicDemo[];
-  currentAwardIndex: number | null;
+  show: boolean;
 }) {
-  const winner =
-    currentAwardIndex !== null && currentAwardIndex >= award.index
-      ? demos.find((demo) => demo.id === award.winnerId)
-      : null;
+  const winner = show ? demos.find((d) => d.id === award.winnerId) : null;
   const [isExploding, setIsExploding] = useState(false);
 
   useEffect(() => {

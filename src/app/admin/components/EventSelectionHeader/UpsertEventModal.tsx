@@ -9,12 +9,16 @@ import { api } from "~/trpc/react";
 import Button from "~/components/Button";
 import { useModal } from "~/components/modal/provider";
 
+import { DeleteEventButton } from "./DeleteEvent";
+
 export function UpsertEventModal({
   event,
   onSubmit,
+  onDeleted,
 }: {
   event?: Event;
   onSubmit: (event: Event) => void;
+  onDeleted: () => void;
 }) {
   const upsertMutation = api.event.upsert.useMutation();
   const { register, handleSubmit } = useForm({
@@ -54,8 +58,13 @@ export function UpsertEventModal({
       className="flex flex-col gap-4"
     >
       <h1 className="text-center text-xl font-bold">
-        {event ? "Update" : "Create New"} Event
+        {event ? "Edit" : "Create New"} Event
       </h1>
+      {event && (
+        <div className="fixed right-2 top-2">
+          <DeleteEventButton eventId={event.id} onDeleted={onDeleted} />
+        </div>
+      )}
       <label className="flex flex-col gap-1">
         <span className="font-semibold">Name</span>
         <input

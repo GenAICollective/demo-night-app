@@ -12,18 +12,18 @@ const actionItems: {
 }[] = [
   {
     icon: "👏",
-    title: "Clap:",
+    title: "Claps:",
     description:
-      "Show your appreciation by clapping as many times as you'd like! The more, the merrier!",
+      "Attendees were able to clap as many times as they liked! The more, the merrier!",
   },
   {
     icon: "📬",
-    title: "Learn more:",
-    description: "Send me an email with more info!",
+    title: "Email me:",
+    description: "Send them an email with more info!",
   },
   {
     icon: "🤝",
-    title: "I want to help by...",
+    title: "The attendee wants to help by...",
   },
   ...Object.values(QUICK_ACTIONS).map((action) => ({
     icon: action.icon,
@@ -45,11 +45,12 @@ export default function InfoModal() {
     >
       <div>
         <h1 className="line-clamp-1 text-center font-kallisto text-4xl font-bold tracking-tight">
-          About Actions
+          Time to Connect!
         </h1>
         <p className="text-md max-w-[330px] pt-2 text-center font-medium leading-5 text-gray-500">
-          Now&apos;s your chance to engage with the demos! Demoists will receive
-          a summary of all feedback after the event and will follow up!
+          Now&apos;s your chance to engage with the attendees! See more info
+          about the type of feedback attendees left and how to best connect with
+          them!
         </p>
       </div>
       <ul className="text-md flex w-full flex-col gap-2 font-semibold leading-6 text-gray-700">

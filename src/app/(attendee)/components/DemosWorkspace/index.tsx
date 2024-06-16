@@ -4,6 +4,7 @@ import { ArrowUpRight, BadgeInfo } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { cn } from "~/lib/utils";
 import { type PublicDemo } from "~/server/api/routers/event";
 
 import { ClapsConfetti, TellMeMoreConfetti } from "~/components/Confetti";
@@ -13,13 +14,13 @@ import { useModal } from "~/components/modal/provider";
 import { ActionButtons } from "./ActionButtons";
 import { DemoSelectionHeader } from "./DemoSelectionHeader";
 import InfoModal from "./InfoModal";
-import { useFeedback } from "./hooks/useFeedback";
+import { FeedbackSaveStatus, useFeedback } from "./hooks/useFeedback";
 
 export default function DemosWorkspace() {
   const { currentEvent, event, attendee } = useWorkspaceContext();
   const { id: eventId, currentDemoId } = currentEvent;
   const [selectedDemo, setSelectedDemo] = useState<PublicDemo>(event.demos[0]!);
-  const { feedback, setFeedback } = useFeedback(
+  const { feedback, setFeedback, saveStatus } = useFeedback(
     eventId,
     attendee,
     selectedDemo,
@@ -91,16 +92,19 @@ export default function DemosWorkspace() {
           <div className="w-full px-4 pt-4">
             <RatingSlider feedback={feedback} setFeedback={setFeedback} />
           </div>
-          <textarea
-            value={feedback?.comment ?? ""}
-            onChange={(e) => {
-              setFeedback({ ...feedback, comment: e.target.value });
-              setLastCommentChange(Date.now());
-            }}
-            rows={3}
-            className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
-            placeholder={`• What'd you like about the business or product?\n• Any constructive criticism?\n• Any other feedback?`}
-          />
+          <div className="flex w-full flex-col items-end gap-1">
+            <textarea
+              value={feedback?.comment ?? ""}
+              onChange={(e) => {
+                setFeedback({ ...feedback, comment: e.target.value });
+                setLastCommentChange(Date.now());
+              }}
+              rows={3}
+              className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
+              placeholder={`• Any questions for the demoist?\n• What was your favorite part?\n• What's one thing they could do better?`}
+            />
+            <SaveStatusIndicator status={saveStatus} />
+          </div>
         </motion.div>
         <ActionButtons feedback={feedback} setFeedback={setFeedback} />
       </AnimatePresence>
@@ -115,6 +119,21 @@ export default function DemosWorkspace() {
         <ClapsConfetti feedback={feedback} />
       </div>
     </>
+  );
+}
+
+function SaveStatusIndicator({ status }: { status: FeedbackSaveStatus }) {
+  return (
+    <p
+      className={cn(
+        "pr-3 text-sm font-semibold italic text-gray-300",
+        status !== FeedbackSaveStatus.SAVED && "animate-pulse",
+      )}
+    >
+      {status === FeedbackSaveStatus.UNSAVED && "..."}
+      {status === FeedbackSaveStatus.SAVING && "Saving..."}
+      {status === FeedbackSaveStatus.SAVED && "Saved!"}
+    </p>
   );
 }
 

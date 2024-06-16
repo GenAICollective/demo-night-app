@@ -95,6 +95,12 @@ export function FeedbackItem({ feedback }: { feedback: FeedbackAndAttendee }) {
     return summary.join(" • ");
   }, [feedback]);
 
+  // const name =
+  //   feedback.attendee.name?.length ?? 0 > 0
+  //     ? feedback.attendee.name
+  //     : "Anonymous";
+  const name = "Anonymous";
+
   return (
     <motion.li
       className="flex flex-1 flex-col gap-1 rounded-xl bg-gray-300/50 p-4 shadow-xl backdrop-blur"
@@ -107,11 +113,11 @@ export function FeedbackItem({ feedback }: { feedback: FeedbackAndAttendee }) {
         <p
           className={cn(
             "font-semibold",
-            feedback.attendee.name?.length ?? 0 > 0
-              ? "text-black"
-              : "italic text-gray-400",
+            name === "Anonymous" ? "italic text-gray-400" : "text-black",
           )}
-        >{`${feedback.attendee.name?.length ?? 0 > 0 ? feedback.attendee.name : "Anonymous"}`}</p>
+        >
+          {name}
+        </p>
         <AttendeeTypeBadge type={feedback.attendee.type} />
         <p
           className="font-semibold text-gray-400"

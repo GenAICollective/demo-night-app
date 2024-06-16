@@ -1,4 +1,5 @@
 import { useDashboardContext } from "../../contexts/DashboardContext";
+import InfoButton from "../InfoButton";
 import { ChevronRight } from "lucide-react";
 
 import { cn } from "~/lib/utils";
@@ -23,14 +24,23 @@ export default function ResultsDashboard() {
     );
   }
 
-  const currentAwardIndex = event.awards.findIndex(
+  const awards = [...event.awards].reverse();
+
+  const currentAwardIndex = awards.findIndex(
     (a) => a.id === currentEvent.currentAwardId,
   );
 
   return (
     <div className="flex size-full flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
       <div className="flex justify-between">
-        <h2 className="text-2xl font-bold">Award Results</h2>
+        <div className="flex flex-row items-center justify-between gap-2">
+          <h2 className="text-2xl font-bold">Voting Results</h2>
+          <InfoButton
+            variant="warning"
+            title="Voting Results"
+            message="Make sure you click on the rows in descending order!"
+          />
+        </div>
         <button
           className="rounded-xl bg-red-200 px-4 font-semibold"
           onClick={() => {
@@ -43,7 +53,7 @@ export default function ResultsDashboard() {
         </button>
       </div>
       <ul className="flex flex-col gap-2 overflow-auto">
-        {event.awards.map((award, index) => {
+        {awards.map((award, index) => {
           const demo = event.demos.find((demo) => demo.id === award.winnerId)!;
           return (
             <li
@@ -62,8 +72,10 @@ export default function ResultsDashboard() {
                   index <= (currentAwardIndex ?? -1) && "bg-green-200",
                 )}
               >
-                <p className="line-clamp-1 text-lg font-bold">{award.name}</p>
-                <p className="italic leading-5 text-gray-700">
+                <p className="line-clamp-1 text-lg font-bold">
+                  {index + 1}: {award.name}
+                </p>
+                <p className="text-gray-7000 italic leading-5">
                   {award.description}
                 </p>
               </div>

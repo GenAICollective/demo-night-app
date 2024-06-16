@@ -1,4 +1,5 @@
 import { useDashboardContext } from "../../contexts/DashboardContext";
+import InfoButton from "../InfoButton";
 import { type Demo } from "@prisma/client";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -34,7 +35,13 @@ export default function DemosDashboard() {
   return (
     <div className="flex size-full flex-row gap-2">
       <div className="flex w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
-        <h2 className="text-2xl font-bold">Demos</h2>
+        <div className="flex flex-row items-center justify-between">
+          <h2 className="text-2xl font-bold">Demos</h2>
+          <InfoButton
+            title="Demo Management"
+            message="Click on a demo when the presenter is about to begin to allow attendees to give feedback on it!"
+          />
+        </div>
         <ul className="flex flex-col gap-2  overflow-auto">
           <AnimatePresence>
             {event.demos.map((demo) => (
@@ -52,11 +59,17 @@ export default function DemosDashboard() {
       </div>
       <div className="flex flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
         <div className="flex flex-col gap-1">
-          <h2 className="line-clamp-1 text-2xl font-bold">
-            {selectedDemo?.name
-              ? `Feedback for ${selectedDemo.name}`
-              : "Feedback"}
-          </h2>
+          <div className="flex flex-row items-center justify-between">
+            <h2 className="line-clamp-1 text-2xl font-bold">
+              {selectedDemo?.name
+                ? `Feedback for ${selectedDemo.name}`
+                : "Feedback"}
+            </h2>
+            <InfoButton
+              title="Feedback"
+              message="Here is all feedback that attendees have given on this demo ranked by relevance!"
+            />
+          </div>
           <FeedbackOverview feedback={feedback ?? []} />
         </div>
         <ul className="flex max-h-screen flex-col gap-2 overflow-auto">

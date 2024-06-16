@@ -17,7 +17,7 @@ export function DemoQRModal({ demo }: { demo: Demo }) {
       }}
       className="flex flex-col items-center gap-4"
     >
-      <h1 className="text-center text-xl font-bold">Demo QR Code</h1>
+      <h1 className="text-center text-xl font-bold">Edit Demo</h1>
       <QRCode
         size={150}
         value={`${window.location.origin}/${demo.eventId}/${demo.id}?secret=${demo.secret}`}
