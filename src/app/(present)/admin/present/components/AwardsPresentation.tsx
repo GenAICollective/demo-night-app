@@ -11,9 +11,10 @@ import { GaicoConfetti, ResultsConfetti } from "~/components/Confetti";
 
 export default function AwardsPresentation() {
   const { currentEvent, event } = usePresentationContext();
-  const [runGaicoConfetti, setRunGaicoConfetti] = useState(false);
 
-  const currentAwardIndex = event.awards.findIndex(
+  const awards = [...event.awards].reverse();
+
+  const currentAwardIndex = awards.findIndex(
     (a) => a.id === currentEvent.currentAwardId,
   );
 
@@ -30,10 +31,6 @@ export default function AwardsPresentation() {
     }
   }, [currentEvent.phase]);
 
-  useEffect(() => {
-    setRunGaicoConfetti(currentEvent.phase === EventPhase.Recap);
-  }, [currentEvent.phase]);
-
   return (
     <>
       <div className="flex size-full min-h-[calc(100dvh-80px)] flex-col items-center justify-center gap-4 p-4 pb-20">
@@ -48,12 +45,12 @@ export default function AwardsPresentation() {
           {title}
         </motion.h1>
         <div className="flex w-full flex-col gap-8">
-          {event?.awards.map((award) => (
+          {awards.map((award, index) => (
             <AwardWinnerItem
               key={award.id}
               award={award}
               demos={event?.demos}
-              currentAwardIndex={currentAwardIndex}
+              show={index <= (currentAwardIndex ?? -1)}
             />
           ))}
         </div>
@@ -69,16 +66,13 @@ export default function AwardsPresentation() {
 function AwardWinnerItem({
   award,
   demos,
-  currentAwardIndex,
+  show,
 }: {
   award: Award;
   demos: PublicDemo[];
-  currentAwardIndex: number | null;
+  show: boolean;
 }) {
-  const winner =
-    currentAwardIndex !== null && currentAwardIndex >= award.index
-      ? demos.find((demo) => demo.id === award.winnerId)
-      : null;
+  const winner = show ? demos.find((demo) => demo.id === award.winnerId) : null;
   const [isExploding, setIsExploding] = useState(false);
 
   useEffect(() => {
