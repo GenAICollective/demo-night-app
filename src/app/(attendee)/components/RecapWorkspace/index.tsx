@@ -2,7 +2,7 @@ import RatingSlider from "../../../../components/RatingSlider";
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
 import { type Award, type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -52,6 +52,7 @@ export default function RecapWorkspace() {
           className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
           placeholder={`How can we make these community demo nights even better?!`}
         />
+        <ContributeButton />
       </div>
       <div className="flex w-full flex-col gap-2">
         <h2 className="w-full font-kallisto text-2xl font-bold">
@@ -96,6 +97,29 @@ export default function RecapWorkspace() {
       <div className="z-3 pointer-events-none fixed inset-0">
         <GaicoConfetti />
       </div>
+    </div>
+  );
+}
+
+function ContributeButton() {
+  return (
+    <div className="flex w-full flex-col font-medium leading-6">
+      <Link
+        href={"https://github.com/GenAICollective/demo-night-app"}
+        target="_blank"
+        className="group z-10 flex w-full flex-col gap-1 rounded-xl bg-blue-300/50 p-4 shadow-xl backdrop-blur"
+      >
+        <div className="flex items-center justify-between gap-2 text-blue-800">
+          <h3 className="line-clamp-1 text-lg font-semibold italic group-hover:underline">
+            Help us improve this community project!
+          </h3>
+          <Github
+            size={24}
+            strokeWidth={2.5}
+            className="h-7 w-7 flex-none rounded-full bg-blue-300/50 p-1 group-hover:bg-blue-400/50"
+          />
+        </div>
+      </Link>
     </div>
   );
 }

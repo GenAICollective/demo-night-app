@@ -6,7 +6,7 @@ This is the live feedback app we use during all our GenAI Collective demo night 
 
 ## Contributing
 
-Please reach out to Chappy (<chappy@genaicollective.ai>) if you'd like to contribute to this community project!
+Please reach out to [Aqeel Ali](https://www.linkedin.com/in/aliaqeel/) (<aqeel@genaicollective.ai>) if you'd like to contribute to this community project!
 
 ## Getting Started
 
