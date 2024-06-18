@@ -4,6 +4,8 @@ This is the live feedback app we use during all our GenAI Collective demo night 
 
 [LinkedIn post + demo video!](https://www.linkedin.com/posts/chappyasel_yes-i-actually-built-an-entire-app-for-the-activity-7199495003709034496-dstA)
 
+![Demo night app screens](https://github.com/GenAICollective/demo-night-app/assets/13221124/17248c6c-8e58-46d5-b941-e1f63387f620)
+
 ## Contributing
 
 Please reach out to [Aqeel Ali](https://www.linkedin.com/in/aliaqeel/) (<aqeel@genaicollective.ai>) if you'd like to contribute to this community project!
