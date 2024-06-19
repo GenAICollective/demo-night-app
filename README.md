@@ -2,13 +2,19 @@
 
 This is the live feedback app we use during all our GenAI Collective demo night events! [Example event](https://lu.ma/sf-demo)
 
-[LinkedIn post + demo video!](https://www.linkedin.com/posts/chappyasel_yes-i-actually-built-an-entire-app-for-the-activity-7199495003709034496-dstA)
-
 ![Demo night app screens](https://github.com/GenAICollective/demo-night-app/assets/13221124/17248c6c-8e58-46d5-b941-e1f63387f620)
 
+<a href="https://www.loom.com/share/d1b18cb1b4ff4e99b097d727045442ee">
+  <img style="max-width:200px;" src="https://cdn.loom.com/sessions/thumbnails/d1b18cb1b4ff4e99b097d727045442ee-with-play.gif">
+</a>
+  
 ## Contributing
 
 Please reach out to [Aqeel Ali](https://www.linkedin.com/in/aliaqeel/) (<aqeel@genaicollective.ai>) if you'd like to contribute to this community project!
+
+<a href="https://www.loom.com/share/79236c4d42364fbcbcbfa24bc066620c">
+  <img style="max-width:200px;" src="https://cdn.loom.com/sessions/thumbnails/79236c4d42364fbcbcbfa24bc066620c-with-play.gif">
+</a>
 
 ## Getting Started
 
