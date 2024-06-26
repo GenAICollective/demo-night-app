@@ -24,6 +24,7 @@ export default function InfoButton({
           ? "bg-red-200 hover:bg-red-300"
           : "bg-gray-200 hover:bg-gray-300",
       )}
+      title="Info"
       onClick={() => modal?.show(<InfoModal title={title} message={message} />)}
     >
       <BadgeInfo

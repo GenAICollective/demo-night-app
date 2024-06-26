@@ -68,7 +68,7 @@ export default function RecapWorkspace() {
           </AnimatePresence>
         </div>
       </div>
-      {feedback && (
+      {feedback && Object.values(feedback).length > 0 && (
         <div className="flex w-full flex-col gap-2">
           <h2 className="w-full font-kallisto text-2xl font-bold">
             Your Feedback ✍️

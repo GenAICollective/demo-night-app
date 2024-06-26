@@ -203,6 +203,35 @@ export const demoRouter = createTRPCRouter({
         });
       });
     }),
+  setDemos: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        demos: z.array(
+          z.object({
+            id: z.string().optional(),
+            name: z.string(),
+            description: z.string(),
+            email: z.string(),
+            url: z.string(),
+          }),
+        ),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return db.$transaction(async (prisma) => {
+        await prisma.demo.deleteMany({
+          where: { eventId: input.eventId },
+        });
+        await prisma.demo.createMany({
+          data: input.demos.map((demo, index) => ({
+            ...demo,
+            eventId: input.eventId,
+            index,
+          })),
+        });
+      });
+    }),
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
     return db.$transaction(async (prisma) => {
       const demoToDelete = await prisma.demo.findUnique({

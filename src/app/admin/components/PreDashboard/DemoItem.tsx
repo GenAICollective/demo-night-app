@@ -40,7 +40,7 @@ export function DemoItem({
       <button
         title="Edit Demo"
         onClick={onClick}
-        className="flex-1 rounded-xl bg-white p-2 text-start font-medium focus:outline-none"
+        className="line-clamp-1 flex-1 rounded-xl bg-white p-2 text-start font-medium focus:outline-none"
       >
         {demo.name}
       </button>

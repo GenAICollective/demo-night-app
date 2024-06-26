@@ -114,6 +114,31 @@ export const awardRouter = createTRPCRouter({
         });
       });
     }),
+  setAwards: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        awards: z.array(
+          z.object({
+            id: z.string().optional(),
+            name: z.string(),
+            description: z.string(),
+          }),
+        ),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return db.$transaction(async (prisma) => {
+        await prisma.award.deleteMany({ where: { eventId: input.eventId } });
+        await prisma.award.createMany({
+          data: input.awards.map((award, index) => ({
+            ...award,
+            eventId: input.eventId,
+            index,
+          })),
+        });
+      });
+    }),
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
     return db.$transaction(async (prisma) => {
       const awardToDelete = await prisma.award.findUnique({
