@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 
 export default function useWindowSize() {
+  // Initialize to zero before mount since we don't know the window size yet
   const [windowSize, setWindowSize] = useState<{
     width: number | undefined;
     height: number | undefined;
-  }>({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+  }>({ width: 0, height: 0 });
 
   useEffect(() => {
     // Handler to call on window resize
