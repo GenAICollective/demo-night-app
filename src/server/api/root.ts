@@ -6,6 +6,7 @@ import { awardRouter } from "./routers/award";
 import { demoRouter } from "./routers/demo";
 import { eventFeedbackRouter } from "./routers/eventFeedback";
 import { feedbackRouter } from "./routers/feedback";
+import { submissionRouter } from "./routers/submission";
 import { voteRouter } from "./routers/vote";
 
 /**
@@ -15,6 +16,7 @@ import { voteRouter } from "./routers/vote";
  */
 export const appRouter = createTRPCRouter({
   event: eventRouter,
+  submission: submissionRouter,
   demo: demoRouter,
   attendee: attendeeRouter,
   award: awardRouter,

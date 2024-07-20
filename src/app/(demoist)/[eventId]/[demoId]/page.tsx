@@ -4,8 +4,8 @@ import { EventPhase } from "~/lib/types/currentEvent";
 import { api } from "~/trpc/server";
 
 import DemoRecap from "./components/DemoRecap";
-import EventHeader from "./components/EventHeader";
 import { UpdateDemoPage } from "./components/UpdateDemo";
+import EventHeader from "~/components/EventHeader";
 
 export default async function DemoistPage({
   params: { eventId, demoId },
