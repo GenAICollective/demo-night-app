@@ -62,9 +62,10 @@ model VerificationToken {
 model Event {
   id String @id @default(cuid())
 
-  name String
-  date DateTime
-  url  String
+  name   String
+  date   DateTime
+  url    String
+  secret String   @default(cuid())
 
   submissions   Submission[]
   demos         Demo[]
@@ -85,9 +86,10 @@ enum SubmissionStatus {
 }
 
 model Submission {
-  id      String @id @default(cuid())
-  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  id      String  @id @default(cuid())
+  event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId String
+  demoId  String?
 
   name        String
   tagline     String
@@ -98,6 +100,7 @@ model Submission {
   demoUrl     String?
 
   status  SubmissionStatus @default(PENDING)
+  flagged Boolean          @default(false)
   rating  Int?
   comment String?
 

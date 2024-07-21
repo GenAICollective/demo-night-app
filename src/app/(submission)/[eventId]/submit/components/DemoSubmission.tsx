@@ -34,7 +34,7 @@ export default function DemoSubmissionPage({
 }
 
 export function DemoSubmissionForm({ event }: { event: CompleteEvent }) {
-  const submitDemoMutation = api.submission.create.useMutation();
+  const createMutation = api.submission.create.useMutation();
   const {
     register,
     handleSubmit,
@@ -53,9 +53,9 @@ export function DemoSubmissionForm({ event }: { event: CompleteEvent }) {
 
   return (
     <form
-      onSubmit={handleSubmit((data) => {
-        submitDemoMutation.mutate(
-          {
+      onSubmit={handleSubmit(async (data) => {
+        await createMutation
+          .mutateAsync({
             eventId: event.id,
             name: data.name,
             tagline: data.tagline,
@@ -64,14 +64,14 @@ export function DemoSubmissionForm({ event }: { event: CompleteEvent }) {
             url: data.url,
             pocName: data.pocName,
             demoUrl: data.demoUrl,
-          },
-          {
-            onSuccess: () => {
-              toast.success("Successfully submitted demo!");
-              window.location.href = `${window.location.pathname}?success=true`;
-            },
-          },
-        );
+          })
+          .then(() => {
+            toast.success("Successfully submitted demo!");
+            window.location.href = `${window.location.pathname}?success=true`;
+          })
+          .catch((error) => {
+            toast.error(error.message);
+          });
       })}
       className="flex w-full flex-col items-center gap-4 font-medium"
     >
@@ -107,7 +107,7 @@ export function DemoSubmissionForm({ event }: { event: CompleteEvent }) {
             type="text"
             placeholder="GenAI Collective"
             {...register("name", { required: "Startup Name is required" })}
-            className={`z-30 rounded-xl border-2 p-2 text-lg backdrop-blur ${errors.name ? "border-red-500" : "border-gray-200 bg-white/60"}`}
+            className={`z-10 rounded-xl border-2 p-2 text-lg backdrop-blur ${errors.name ? "border-red-500" : "border-gray-200 bg-white/60"}`}
           />
           {errors.name && (
             <span className="text-red-500">{errors.name.message}</span>
@@ -208,7 +208,7 @@ export function DemoSubmissionForm({ event }: { event: CompleteEvent }) {
           className="z-10 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
         />
       </label>
-      <Button pending={submitDemoMutation.isPending}>Submit Demo</Button>
+      <Button pending={createMutation.isPending}>Submit Demo</Button>
     </form>
   );
 }

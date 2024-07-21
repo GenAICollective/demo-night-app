@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleHelp, Download, Link } from "lucide-react";
+import { CircleHelp, Download, ShareIcon } from "lucide-react";
 import { CSVLink } from "react-csv";
 import { toast } from "sonner";
 
@@ -68,8 +68,8 @@ function ActionButtons({ demo }: { demo: CompleteDemo }) {
   return (
     <div className="flex w-full flex-row gap-4">
       <Button className="basis-1/3" onClick={copyLink}>
-        Link
-        <Link className="-mt-1" size={20} strokeWidth={3.5} />
+        Share
+        <ShareIcon className="-mt-1" size={20} strokeWidth={3.5} />
       </Button>
       <Button className="basis-1/3" onClick={showInfoModal}>
         Help

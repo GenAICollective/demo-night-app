@@ -7,6 +7,15 @@ import {
 } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
+const submissionStatus = z.enum([
+  "PENDING",
+  "WAITLISTED",
+  "AWAITING_CONFIRMATION",
+  "CONFIRMED",
+  "CANCELLED",
+  "REJECTED",
+]);
+
 export const submissionRouter = createTRPCRouter({
   create: publicProcedure
     .input(
@@ -22,22 +31,37 @@ export const submissionRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
-      return db.submission.create({
-        data: input,
-      });
+      try {
+        const result = await db.submission.create({
+          data: input,
+        });
+        return result;
+      } catch (error: any) {
+        if (error.code === "P2002") {
+          throw new Error("A submission with this email already exists.");
+        }
+        throw new Error("Failed to create submission.");
+      }
     }),
   all: publicProcedure
     .input(
       z.object({
         eventId: z.string(),
+        secret: z.string(),
       }),
     )
     .query(async ({ input }) => {
+      const event = await db.event.findUnique({
+        where: { id: input.eventId },
+      });
+      if (event?.secret !== input.secret) {
+        throw new Error("Unauthorized");
+      }
       return db.submission.findMany({
         where: { eventId: input.eventId },
       });
     }),
-  update: protectedProcedure
+  adminUpdate: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -48,16 +72,8 @@ export const submissionRouter = createTRPCRouter({
         pocName: z.string().optional(),
         demoUrl: z.string().optional(),
         tagline: z.string().optional(),
-        status: z
-          .enum([
-            "PENDING",
-            "WAITLISTED",
-            "AWAITING_CONFIRMATION",
-            "CONFIRMED",
-            "CANCELLED",
-            "REJECTED",
-          ])
-          .optional(),
+        status: submissionStatus.optional(),
+        flagged: z.boolean().optional(),
         rating: z.number().optional(),
         comment: z.string().optional(),
       }),
@@ -67,6 +83,30 @@ export const submissionRouter = createTRPCRouter({
       return db.submission.update({
         where: { id },
         data,
+      });
+    }),
+  update: publicProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        secret: z.string(),
+        id: z.string(),
+        status: submissionStatus.optional(),
+        flagged: z.boolean().optional(),
+        rating: z.number().optional(),
+        comment: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const event = await db.event.findUnique({
+        where: { id: input.eventId },
+      });
+      if (event?.secret !== input.secret) {
+        throw new Error("Unauthorized");
+      }
+      return db.submission.update({
+        where: { id: input.id },
+        data: input,
       });
     }),
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {

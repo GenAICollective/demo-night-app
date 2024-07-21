@@ -32,7 +32,7 @@ export const eventRouter = createTRPCRouter({
     .query(async ({ input }): Promise<CompleteEvent[]> => {
       return db.event.findMany({
         where: { date: { lte: new Date() } },
-        include: completeEventInclude,
+        select: completeEventSelect,
         orderBy: { date: "desc" },
         take: input?.limit,
         skip: input?.offset,
@@ -44,7 +44,7 @@ export const eventRouter = createTRPCRouter({
     .query(async ({ input }): Promise<CompleteEvent | null> => {
       return db.event.findUnique({
         where: { id: input },
-        include: completeEventInclude,
+        select: completeEventSelect,
       });
     }),
   upsert: protectedProcedure
@@ -137,7 +137,11 @@ export const eventRouter = createTRPCRouter({
   }),
 });
 
-const completeEventInclude: Prisma.EventInclude = {
+const completeEventSelect: Prisma.EventSelect = {
+  id: true,
+  name: true,
+  date: true,
+  url: true,
   demos: {
     orderBy: { index: "asc" },
     select: {
