@@ -22,7 +22,7 @@ export function UpsertEventModal({
 }) {
   const upsertMutation = api.event.upsert.useMutation();
   const { register, handleSubmit } = useForm({
-    defaultValues: {
+    values: {
       name: event?.name ?? "",
       id: event?.id,
       date: (event?.date ?? new Date()).toISOString().substring(0, 10),

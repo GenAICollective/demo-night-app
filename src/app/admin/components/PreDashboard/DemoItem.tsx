@@ -93,7 +93,7 @@ export function DemoItem({
 export function UpdateIndexModal({ demo }: { demo: Demo }) {
   const updateIndexMutation = api.demo.updateIndex.useMutation();
   const { register, handleSubmit } = useForm({
-    defaultValues: { order: demo.index + 1 },
+    values: { order: demo.index + 1 },
   });
   const modal = useModal();
 

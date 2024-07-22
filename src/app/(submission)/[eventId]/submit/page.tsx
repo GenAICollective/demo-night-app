@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { type CompleteEvent } from "~/server/api/routers/event";
 import { api } from "~/trpc/server";
 
-import DemoSubmissionPage from "./components/DemoSubmission";
+import SubmitDemo from "./components/SubmitDemo";
 import { LinkButton } from "~/components/Button";
 import { GaicoConfetti } from "~/components/Confetti";
 import EventHeader from "~/components/EventHeader";
@@ -38,7 +38,7 @@ export default async function SubmitDemoPage({
   return (
     <main className="m-auto flex size-full max-w-4xl flex-col text-black">
       <EventHeader eventName={event.name} />
-      <DemoSubmissionPage event={event} />
+      <SubmitDemo event={event} />
     </main>
   );
 }

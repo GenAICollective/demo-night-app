@@ -20,7 +20,7 @@ export function UpsertAwardModal({
 }) {
   const upsertMutation = api.award.upsert.useMutation();
   const { register, handleSubmit } = useForm({
-    defaultValues: award,
+    values: award,
   });
   const modal = useModal();
 

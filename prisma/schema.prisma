@@ -86,10 +86,9 @@ enum SubmissionStatus {
 }
 
 model Submission {
-  id      String  @id @default(cuid())
-  event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  id      String @id @default(cuid())
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId String
-  demoId  String?
 
   name        String
   tagline     String

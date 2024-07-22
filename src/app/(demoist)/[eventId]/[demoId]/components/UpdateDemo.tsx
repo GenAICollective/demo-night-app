@@ -4,12 +4,12 @@ import { type Demo } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { TAGLINE_MAX_LENGTH } from "~/lib/types/taglineMaxLength";
+import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import Button from "~/components/Button";
 import { GaicoConfetti } from "~/components/Confetti";
-
-const DESCRIPTION_MAX_LENGTH = 120;
 
 export function UpdateDemoPage({
   demo,
@@ -41,8 +41,13 @@ export function UpdateDemoForm({
   secret: string;
 }) {
   const updateDemoMutation = api.demo.update.useMutation();
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm({
+    values: {
       name: demo?.name ?? "",
       description: demo?.description ?? "",
       email: demo?.email ?? "",
@@ -75,52 +80,94 @@ export function UpdateDemoForm({
         </p>
       </div>
       <label className="flex w-full flex-col gap-1">
-        <span className="text-lg font-semibold">Name</span>
+        <span className="text-lg font-semibold">Startup Name</span>
         <input
           type="text"
           placeholder="GenAI Collective"
-          {...register("name")}
-          className="z-30 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
-          required
+          {...register("name", { required: "Startup name is required" })}
+          className={cn(
+            "z-30 rounded-xl border-2 bg-white/60 p-2 text-lg backdrop-blur",
+            errors.name ? "border-red-500" : "border-gray-200",
+          )}
         />
+        {errors.name && (
+          <span className="text-sm text-red-500">{errors.name.message}</span>
+        )}
       </label>
       <label className="flex w-full flex-col gap-1">
-        <span className="text-lg font-semibold">URL</span>
+        <span className="text-lg font-semibold">Startup Website</span>
         <input
           type="url"
           placeholder="https://genaicollective.ai"
-          {...register("url")}
-          className="z-10 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
-          required
+          {...register("url", { required: "Startup website is required" })}
+          className={cn(
+            "z-10 rounded-xl border-2 bg-white/60 p-2 text-lg backdrop-blur",
+            errors.url ? "border-red-500" : "border-gray-200",
+          )}
         />
+        {errors.url && (
+          <span className="text-sm text-red-500">{errors.url.message}</span>
+        )}
       </label>
       <label className="flex w-full flex-col gap-1">
-        <span className="text-lg font-semibold">Email</span>
+        <span className="text-lg font-semibold">Email 📧</span>
+        <span className="italic text-gray-400">
+          This is made public so attendees can connect with you after the event!
+        </span>
         <input
           type="email"
           placeholder="hello@genaicollective.ai"
-          {...register("email")}
-          className="z-10 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
-          required
+          {...register("email", { required: "Email is required" })}
+          className={cn(
+            "z-10 rounded-xl border-2 bg-white/60 p-2 text-lg backdrop-blur",
+            errors.email ? "border-red-500" : "border-gray-200",
+          )}
         />
+        {errors.email && (
+          <span className="text-sm text-red-500">{errors.email.message}</span>
+        )}
       </label>
       <label className="flex w-full flex-col gap-1">
-        <div className="flex w-full flex-row items-center justify-start gap-1">
-          <span className="text-lg font-semibold">Description</span>
-          <span className="text-sm italic text-gray-400">
-            (max {DESCRIPTION_MAX_LENGTH} chars)
-          </span>
+        <div className="flex w-full flex-row items-center justify-start gap-2">
+          <span className="text-lg font-semibold">Tagline 👋</span>
+          {watch("description")?.length >= 100 && (
+            <span
+              className={cn(
+                "text-sm font-semibold italic",
+                watch("description")?.length >= TAGLINE_MAX_LENGTH
+                  ? "text-red-500"
+                  : "text-gray-400",
+              )}
+            >
+              {`(${watch("description").length} / ${TAGLINE_MAX_LENGTH})`}
+            </span>
+          )}
         </div>
+        <span className="italic text-gray-400">
+          Please describe your startup / demo in 120 characters or less!
+        </span>
         <textarea
           placeholder="Building a community of the brightest minds in AI to discuss, exchange, and innovate."
-          {...register("description")}
-          className="z-30 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
-          required
-          maxLength={DESCRIPTION_MAX_LENGTH}
-          rows={3}
+          {...register("description", {
+            required: "Tagline is required",
+            maxLength: {
+              value: TAGLINE_MAX_LENGTH,
+              message: `Tagline must be ${TAGLINE_MAX_LENGTH} characters or less`,
+            },
+          })}
+          className={cn(
+            "z-30 max-h-32 min-h-10 rounded-xl border-2 bg-white/60 p-2 text-lg backdrop-blur",
+            errors.description ? "border-red-500" : "border-gray-200",
+          )}
+          rows={2}
         />
+        {errors.description && (
+          <span className="text-sm text-red-500">
+            {errors.description.message}
+          </span>
+        )}
       </label>
-      <Button pending={updateDemoMutation.isPending}>Update Profile</Button>
+      <Button pending={updateDemoMutation.isPending}>Update Demo</Button>
     </form>
   );
 }

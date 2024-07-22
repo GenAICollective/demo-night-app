@@ -64,7 +64,7 @@ export function UpdateAttendeeForm({
   isPreDemo?: boolean;
 }) {
   const { register, handleSubmit, watch } = useForm({
-    defaultValues: {
+    values: {
       name: attendee?.name ?? "",
       email: attendee?.email ?? "",
       linkedin: attendee?.linkedin ?? "",

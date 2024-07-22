@@ -66,16 +66,16 @@ export const submissionRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         name: z.string().optional(),
+        tagline: z.string().optional(),
         description: z.string().optional(),
         email: z.string().email().optional(),
         url: z.string().url().optional(),
         pocName: z.string().optional(),
-        demoUrl: z.string().optional(),
-        tagline: z.string().optional(),
+        demoUrl: z.string().nullable().optional(),
         status: submissionStatus.optional(),
         flagged: z.boolean().optional(),
-        rating: z.number().optional(),
-        comment: z.string().optional(),
+        rating: z.number().nullable().optional(),
+        comment: z.string().nullable().optional(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -85,6 +85,30 @@ export const submissionRouter = createTRPCRouter({
         data,
       });
     }),
+  convertToDemo: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      const submission = await db.submission.findUnique({
+        where: { id: input },
+      });
+      if (!submission) {
+        throw new Error("Submission not found");
+      }
+      const index = await db.demo.count({
+        where: { eventId: submission.eventId },
+      });
+      const demo = await db.demo.create({
+        data: {
+          eventId: submission.eventId,
+          index,
+          name: submission.name,
+          description: submission.tagline,
+          email: submission.email,
+          url: submission.url,
+        },
+      });
+      return demo;
+    }),
   update: publicProcedure
     .input(
       z.object({
@@ -93,8 +117,8 @@ export const submissionRouter = createTRPCRouter({
         id: z.string(),
         status: submissionStatus.optional(),
         flagged: z.boolean().optional(),
-        rating: z.number().optional(),
-        comment: z.string().optional(),
+        rating: z.number().nullable().optional(),
+        comment: z.string().nullable().optional(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -106,7 +130,12 @@ export const submissionRouter = createTRPCRouter({
       }
       return db.submission.update({
         where: { id: input.id },
-        data: input,
+        data: {
+          status: input.status,
+          flagged: input.flagged,
+          rating: input.rating,
+          comment: input.comment,
+        },
       });
     }),
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {

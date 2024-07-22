@@ -10,7 +10,6 @@ import { api } from "~/trpc/react";
 
 import { useModal } from "~/components/modal/provider";
 
-import { DeleteEventButton } from "./DeleteEvent";
 import { UpsertEventModal } from "./UpsertEventModal";
 
 export default function EventSelectionHeader({
