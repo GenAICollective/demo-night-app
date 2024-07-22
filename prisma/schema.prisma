@@ -62,16 +62,51 @@ model VerificationToken {
 model Event {
   id String @id @default(cuid())
 
-  name String
-  date DateTime
-  url  String
+  name   String
+  date   DateTime
+  url    String
+  secret String   @default(cuid())
 
+  submissions   Submission[]
   demos         Demo[]
   attendees     Attendee[]
   awards        Award[]
   feedback      Feedback[]
   votes         Vote[]
   eventFeedback EventFeedback[]
+}
+
+enum SubmissionStatus {
+  PENDING
+  WAITLISTED
+  AWAITING_CONFIRMATION
+  CONFIRMED
+  CANCELLED
+  REJECTED
+}
+
+model Submission {
+  id      String @id @default(cuid())
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId String
+
+  name        String
+  tagline     String
+  description String
+  email       String
+  url         String
+  pocName     String
+  demoUrl     String?
+
+  status  SubmissionStatus @default(PENDING)
+  flagged Boolean          @default(false)
+  rating  Int?
+  comment String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([eventId, email])
 }
 
 model Demo {

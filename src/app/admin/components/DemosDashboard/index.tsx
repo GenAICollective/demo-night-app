@@ -42,7 +42,7 @@ export default function DemosDashboard() {
             message="Click on a demo when the presenter is about to begin to allow attendees to give feedback on it!"
           />
         </div>
-        <ul className="flex flex-col gap-2  overflow-auto">
+        <ul className="flex flex-col gap-2 overflow-auto">
           <AnimatePresence>
             {event.demos.map((demo) => (
               <DemoItem

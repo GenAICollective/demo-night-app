@@ -1,7 +1,5 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
 import { EventPhase, allPhases, displayName } from "~/lib/types/currentEvent";
@@ -14,6 +12,7 @@ import PreDashboard from "./components/PreDashboard";
 import RecapDashboard from "./components/RecapDashboard";
 import ResultsDashboard from "./components/ResultsDashboard";
 import VotingDashboard from "./components/VotingDashboard";
+import EventTitle from "~/components/EventTitle";
 
 import {
   DashboardContext,
@@ -70,20 +69,7 @@ function EventDashboard() {
 
   return (
     <div className="flex size-full flex-1 flex-col items-center justify-center gap-2 p-2 text-black">
-      <Link
-        className="group flex items-center gap-3 pt-2 transition-all focus:outline-none"
-        href={event?.url ?? ""}
-        target="_blank"
-      >
-        <h1 className="font-kallisto text-4xl font-bold tracking-tight group-hover:underline">
-          {event?.name}
-        </h1>
-        <ArrowUpRight
-          size={28}
-          strokeWidth={3}
-          className="-mt-[5px] rounded-lg bg-gray-200 p-[2px] text-gray-500 group-hover:bg-gray-300 group-hover:text-gray-700"
-        />
-      </Link>
+      <EventTitle name={event?.name ?? ""} url={event?.url ?? ""} />
       <div className="flex w-full flex-1 flex-col justify-between gap-2">
         <PhaseSelector phase={phase} setPhase={setPhase} />
         <div className="flex size-full flex-1 flex-row gap-2">

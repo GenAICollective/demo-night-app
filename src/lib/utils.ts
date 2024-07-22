@@ -13,3 +13,12 @@ export function formatDate(inputDate: string | number | Date) {
     day: "numeric",
   });
 }
+
+export function debounce<T extends Function>(cb: T, wait = 1000) {
+  let h = 0;
+  const callable = (...args: any) => {
+    clearTimeout(h);
+    h = window.setTimeout(() => cb(...args), wait);
+  };
+  return callable as unknown as T;
+}

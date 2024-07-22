@@ -4,12 +4,12 @@ import { type Demo } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { TAGLINE_MAX_LENGTH } from "~/lib/types/taglineMaxLength";
+import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import Button from "~/components/Button";
 import { useModal } from "~/components/modal/provider";
-
-const DESCRIPTION_MAX_LENGTH = 120;
 
 export function UpsertDemoModal({
   demo,
@@ -22,7 +22,7 @@ export function UpsertDemoModal({
 }) {
   const upsertMutation = api.demo.upsert.useMutation();
   const { register, handleSubmit, watch } = useForm({
-    defaultValues: demo,
+    values: demo,
   });
   const modal = useModal();
 
@@ -80,20 +80,24 @@ export function UpsertDemoModal({
         </label>
       )}
       <label className="flex flex-col gap-1">
-        <span
-          className={`font-semibold ${watch("description")?.length > DESCRIPTION_MAX_LENGTH ? "text-red-500" : ""}`}
-        >
-          Description{" "}
-          {watch("description")?.length > DESCRIPTION_MAX_LENGTH
-            ? `(${watch("description").length} / ${DESCRIPTION_MAX_LENGTH})`
-            : ""}
-        </span>
+        <div className="flex justify-between">
+          <span className="font-semibold">Tagline</span>
+          <span
+            className={cn(
+              "text-sm font-medium",
+              watch("description")?.length > TAGLINE_MAX_LENGTH
+                ? "text-red-500"
+                : "text-gray-400",
+            )}
+          >
+            {`(${watch("description").length} / ${TAGLINE_MAX_LENGTH})`}
+          </span>
+        </div>
         <textarea
           placeholder="The future of value creation in an AI-based economy."
           {...register("description")}
           className="rounded-xl border border-gray-200 p-2"
           rows={2}
-          maxLength={DESCRIPTION_MAX_LENGTH}
           required
         />
       </label>

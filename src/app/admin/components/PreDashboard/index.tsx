@@ -3,6 +3,8 @@ import CsvButton from "../CsvButton";
 import InfoButton from "../InfoButton";
 import { type Award, type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 import { api } from "~/trpc/react";
 
@@ -65,48 +67,65 @@ export default function PreDashboard() {
 
   return (
     <div className="flex size-full flex-row gap-2">
-      <div className="flex flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
-        <div className="flex flex-row items-center justify-between">
-          <h2 className="text-2xl font-bold">Demos</h2>
-          <InfoButton
-            title="Demos"
-            message="Send the demoists their URL or have them scan the QR code to edit their information before the demo phase starts!"
-          />
+      <div className="flex flex-1 flex-col gap-2">
+        <div className="relative flex w-full flex-col gap-2 rounded-xl bg-gray-100 p-4">
+          <Link
+            href={`/admin/${event.id}/submissions`}
+            className="group z-20 flex flex-row items-center justify-start gap-2"
+          >
+            <h2 className="z-0 text-2xl font-bold group-hover:underline">
+              Demo Submissions
+            </h2>
+            <ArrowUpRight
+              size={22}
+              strokeWidth={3}
+              className="rounded-lg bg-gray-200 p-[2px] text-gray-500 group-hover:bg-gray-300 group-hover:text-gray-700"
+            />
+          </Link>
         </div>
-        <ul className="flex flex-col gap-2 overflow-y-auto overflow-x-clip">
-          <AnimatePresence>
-            {event.demos.map((demo) => (
-              <DemoItem
-                key={demo.id}
-                demo={demo}
-                eventId={event.id}
-                onClick={() => showUpsertDemoModal(demo)}
-                onClickQR={() => showDemoQRModal(demo)}
-                refetchEvent={refetchEvent}
-              />
-            ))}
-            <motion.li
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex flex-row items-center justify-start gap-2"
-            >
-              <button
-                className="rounded-xl bg-blue-200 p-2 font-semibold outline-none transition-all hover:bg-blue-300 focus:outline-none"
-                onClick={() => showUpsertDemoModal()}
+        <div className="flex w-full flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
+          <div className="flex flex-row items-center justify-between">
+            <h2 className="text-2xl font-bold">Demos</h2>
+            <InfoButton
+              title="Demos"
+              message="Send the demoists their URL or have them scan the QR code to edit their information before the demo phase starts!"
+            />
+          </div>
+          <ul className="flex flex-col gap-2 overflow-y-auto overflow-x-clip">
+            <AnimatePresence>
+              {event.demos.map((demo) => (
+                <DemoItem
+                  key={demo.id}
+                  demo={demo}
+                  eventId={event.id}
+                  onClick={() => showUpsertDemoModal(demo)}
+                  onClickQR={() => showDemoQRModal(demo)}
+                  refetchEvent={refetchEvent}
+                />
+              ))}
+              <motion.li
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-row items-center justify-start gap-2"
               >
-                ⊕ Demo
-              </button>
-              <CsvButton
-                data={event.demos}
-                headers={DEMO_CSV_HEADERS}
-                filename="demos.csv"
-                onUpload={onUploadDemos}
-              />
-            </motion.li>
-          </AnimatePresence>
-        </ul>
+                <button
+                  className="rounded-xl bg-blue-200 p-2 font-semibold outline-none transition-all hover:bg-blue-300 focus:outline-none"
+                  onClick={() => showUpsertDemoModal()}
+                >
+                  ⊕ Demo
+                </button>
+                <CsvButton
+                  data={event.demos}
+                  headers={DEMO_CSV_HEADERS}
+                  filename="demos.csv"
+                  onUpload={onUploadDemos}
+                />
+              </motion.li>
+            </AnimatePresence>
+          </ul>
+        </div>
       </div>
       <div className="flex w-[300px] flex-col gap-2 rounded-xl bg-gray-100 p-4">
         <div className="flex flex-row items-center justify-between">
