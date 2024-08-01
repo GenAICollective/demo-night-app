@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .debug {
+    @apply border-[2px] border-red-500;
+  }
+
+  .debug > * {
+    @apply border-[2px] border-blue-500;
+  }
+}

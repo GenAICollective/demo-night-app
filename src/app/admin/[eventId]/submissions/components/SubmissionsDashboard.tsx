@@ -2,7 +2,7 @@
 
 import { type Submission } from "@prisma/client";
 import { AnimatePresence } from "framer-motion";
-import { ArrowUpRight, ChevronUp, ShareIcon } from "lucide-react";
+import { ArrowUpRight, ShareIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -15,7 +15,18 @@ import EventTitle from "~/components/EventTitle";
 
 import SubmissionDetails from "./SubmissionDetails";
 import { SubmissionItem } from "./SubmissionItem";
-import InfoButton from "~/app/admin/components/InfoButton";
+import CsvButton from "~/app/admin/components/CsvButton";
+
+const CSV_HEADERS = [
+  "id",
+  "name",
+  "tagline",
+  "description",
+  "email",
+  "url",
+  "pocName",
+  "demoUrl",
+];
 
 export type Event = {
   id: string;
@@ -40,8 +51,8 @@ export default function SubmissionsDashboard({
       eventId: initialEvent.id,
       secret: initialEvent.secret,
     });
-  const [selectedSubmission, setSelectedSubmission] =
-    useState<Submission | null>(null);
+  const setSubmissionsMutation = api.submission.setSubmissions.useMutation();
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
   const refetch = () => {
     refetchEvent();
@@ -61,11 +72,30 @@ export default function SubmissionsDashboard({
     return a.name.localeCompare(b.name);
   });
 
+  const selectedSubmission = submissions?.find((s) => s.id === selectedId);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!submissions || submissions.length === 0) return;
       if (event.key === "Escape") {
-        setSelectedSubmission(null);
+        setSelectedId(undefined);
+      }
+      if (event.key === "ArrowUp" || event.key === "[") {
+        setSelectedId((prev) => {
+          if (!prev) return submissions[0]?.id;
+          const currentIndex = submissions.findIndex((s) => s.id === prev);
+          if (currentIndex > 0) return submissions[currentIndex - 1]?.id;
+          return prev;
+        });
+      }
+      if (event.key === "ArrowDown" || event.key === "]") {
+        setSelectedId((prev) => {
+          if (!prev) return submissions[0]?.id;
+          const currentIndex = submissions.findIndex((s) => s.id === prev);
+          if (currentIndex < submissions.length - 1)
+            return submissions[currentIndex + 1]?.id;
+          return prev;
+        });
       }
     };
 
@@ -87,6 +117,21 @@ export default function SubmissionsDashboard({
       ? `${submissions?.length ?? 0} submissions → ${event?.demos.length ?? 0} demos`
       : `${submissions?.length ?? 0} submissions`;
 
+  const onUploadSubmissions = (rows: Record<string, string>[]) => {
+    setSubmissionsMutation
+      .mutateAsync({
+        eventId: initialEvent.id,
+        submissions: rows as any,
+      })
+      .then(() => {
+        toast.success("Submissions updated!");
+        refetch();
+      })
+      .catch((e) => {
+        toast.error("Failed to update submissions: " + e.message);
+      });
+  };
+
   return (
     <div className="flex size-full max-h-screen min-h-screen flex-1 flex-col gap-2 p-2 text-black">
       <div className="flex w-full items-center justify-between gap-4 pt-2">
@@ -101,13 +146,18 @@ export default function SubmissionsDashboard({
       </div>
       <div className="flex w-full flex-1 flex-row gap-2 overflow-y-auto">
         <div className="flex min-w-[400px] max-w-[400px] flex-col gap-2">
-          <div className="flex w-full flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
+          <div className="flex max-h-full w-full flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
             <div className="flex flex-row items-center justify-between">
               <h2 className="text-2xl font-bold">Demo Submissions</h2>
-              <InfoButton
-                title="Submissions"
-                message="Click on a submission to review details and select finalists for the demo night!"
-              />
+              {isAdmin && submissions && (
+                <CsvButton
+                  style="minimal"
+                  data={submissions}
+                  headers={CSV_HEADERS}
+                  filename="submissions.csv"
+                  onUpload={onUploadSubmissions}
+                />
+              )}
             </div>
             <div className="-mt-1 flex flex-row items-center justify-between text-sm font-semibold text-gray-400">
               {description}
@@ -129,9 +179,9 @@ export default function SubmissionsDashboard({
                   <SubmissionItem
                     key={submission.id}
                     index={index}
-                    isSelected={selectedSubmission?.id === submission.id}
+                    isSelected={selectedId === submission.id}
                     submission={submission}
-                    onClick={() => setSelectedSubmission(submission)}
+                    onClick={() => setSelectedId(submission.id)}
                   />
                 ))}
               </AnimatePresence>

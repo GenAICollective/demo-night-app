@@ -10,6 +10,7 @@ import Button from "~/components/Button";
 import { useModal } from "~/components/modal/provider";
 
 type CsvButtonProps<T extends string> = CommonPropTypes & {
+  style?: "default" | "minimal";
   headers: T[];
   onUpload: (rows: Record<T, string>[]) => void;
 };
@@ -19,7 +20,11 @@ export default function CsvButton<T extends string>(props: CsvButtonProps<T>) {
 
   return (
     <button
-      className="group flex h-full flex-row items-center gap-1 rounded-xl bg-blue-200 p-2 font-semibold text-black outline-none transition-all hover:bg-blue-300"
+      className={cn(
+        "group flex h-full flex-row items-center gap-1 rounded-xl bg-blue-200 p-2 font-semibold text-black outline-none transition-all hover:bg-blue-300",
+        props.style === "minimal" &&
+          "rounded-lg bg-gray-200 py-1 text-sm hover:bg-gray-300",
+      )}
       title="Upload + download CSV"
       onClick={() => modal?.show(<CsvModal {...props} />)}
     >
@@ -62,7 +67,7 @@ export function CsvModal<T extends string>(props: CsvButtonProps<T>) {
   });
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex min-w-[300px] max-w-[320px] flex-col items-center gap-4">
       <h1 className="text-center text-2xl font-bold">Upload + Download CSV</h1>
       <CSVLink
         className="w-full"
@@ -77,7 +82,7 @@ export function CsvModal<T extends string>(props: CsvButtonProps<T>) {
       </CSVLink>
       <div
         className={cn(
-          "flex w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-4 py-6 text-center font-medium text-gray-400 transition-all duration-300 hover:text-gray-500",
+          "flex w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-3 py-4 text-center font-medium text-gray-500 transition-all duration-300 hover:text-gray-500",
           isDragActive && "border-gray-400 bg-gray-100",
         )}
         {...getRootProps()}
@@ -85,9 +90,14 @@ export function CsvModal<T extends string>(props: CsvButtonProps<T>) {
         <input {...getInputProps()} />
         <p className="flex flex-row items-center gap-1">
           <ArrowUpFromLine className="h-[14px] w-[14px]" strokeWidth={3} />{" "}
-          {isDragActive ? "Drop CSV here" : "Click to upload CSV"}
+          {isDragActive ? "Drop CSV here" : "Upload CSV"}
         </p>
-        <p className="text-sm">(cols: {props.headers?.join(", ")})</p>
+        <p className="text-xs italic text-red-500/70">
+          WARNING: overwrites existing rows!
+        </p>
+        <p className="text-sm text-gray-400">
+          (columns: {props.headers?.join(", ")})
+        </p>
       </div>
       <Button onClick={() => modal?.hide()}>Done</Button>
     </div>

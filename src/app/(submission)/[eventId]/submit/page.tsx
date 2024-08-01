@@ -52,8 +52,8 @@ function SubmitDemoMessagePage({
 }) {
   const title = success ? "Submission successful! 🥳" : "Submissions closed 😬";
   const message = success
-    ? "Your submission has been received! Hang tight!"
-    : "Oof, sorry but the buzzer has already sounded.";
+    ? "Your submission has been received. Expect to hear from us a few days before the event!"
+    : "Oof. Sorry, but the buzzer has already sounded!";
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center justify-center px-4 pb-16 text-center font-kallisto text-black">

@@ -138,6 +138,37 @@ export const submissionRouter = createTRPCRouter({
         },
       });
     }),
+  setSubmissions: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        submissions: z.array(
+          z.object({
+            id: z.string().optional(),
+            name: z.string(),
+            tagline: z.string(),
+            description: z.string(),
+            email: z.string().email(),
+            url: z.string().url(),
+            pocName: z.string(),
+            demoUrl: z.string().nullable(),
+          }),
+        ),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return db.$transaction(async (prisma) => {
+        await prisma.submission.deleteMany({
+          where: { eventId: input.eventId },
+        });
+        await prisma.submission.createMany({
+          data: input.submissions.map((submission) => ({
+            ...submission,
+            eventId: input.eventId,
+          })),
+        });
+      });
+    }),
   delete: protectedProcedure.input(z.string()).mutation(async ({ input }) => {
     return db.submission.delete({
       where: { id: input },

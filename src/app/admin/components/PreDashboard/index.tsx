@@ -5,6 +5,7 @@ import { type Award, type Demo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
 
@@ -52,17 +53,33 @@ export default function PreDashboard() {
   };
 
   const onUploadDemos = (rows: Record<string, string>[]) => {
-    setDemosMutation.mutate({
-      eventId: event.id,
-      demos: rows as any,
-    });
+    setDemosMutation
+      .mutateAsync({
+        eventId: event.id,
+        demos: rows as any,
+      })
+      .then(() => {
+        toast.success("Demos updated!");
+        refetchEvent();
+      })
+      .catch((e) => {
+        toast.error("Failed to update demos: " + e.message);
+      });
   };
 
   const onUploadAwards = (rows: Record<string, string>[]) => {
-    setAwardsMutation.mutate({
-      eventId: event.id,
-      awards: rows as any,
-    });
+    setAwardsMutation
+      .mutateAsync({
+        eventId: event.id,
+        awards: rows as any,
+      })
+      .then(() => {
+        toast.success("Awards updated!");
+        refetchEvent();
+      })
+      .catch((e) => {
+        toast.error("Failed to update awards: " + e.message);
+      });
   };
 
   return (

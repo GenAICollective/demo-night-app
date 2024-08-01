@@ -1,7 +1,7 @@
 import { type Submission, SubmissionStatus } from "@prisma/client";
 import { FlagIcon, StarIcon } from "lucide-react";
 import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { SUBMISSION_STATUSES, statusTitle } from "~/lib/types/submissionStatus";
@@ -57,9 +57,15 @@ function SubmissionReview({
   const modal = useModal();
   const updateMutation = api.submission.update.useMutation();
   const convertToDemoMutation = api.submission.convertToDemo.useMutation();
-
+  console.log(
+    submission.status,
+    submission.flagged,
+    submission.rating,
+    submission.comment,
+  );
   const { register, setValue, watch } = useForm({
     values: {
+      id: submission.id,
       status: submission.status,
       flagged: submission.flagged,
       rating: submission.rating,
