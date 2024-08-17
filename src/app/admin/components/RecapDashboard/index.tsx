@@ -17,7 +17,7 @@ const REFRESH_INTERVAL =
 export default function RecapDashboard() {
   const { currentEvent } = useDashboardContext();
   const { data: eventFeedback } = api.eventFeedback.getAdmin.useQuery(
-    currentEvent!.id,
+    currentEvent?.id ?? "",
     {
       refetchInterval: REFRESH_INTERVAL,
     },

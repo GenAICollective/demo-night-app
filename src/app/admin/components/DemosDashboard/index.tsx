@@ -19,8 +19,9 @@ const REFRESH_INTERVAL =
 
 export default function DemosDashboard() {
   const { currentEvent, event, refetchEvent } = useDashboardContext();
+  const eventId = currentEvent?.id ?? event?.id ?? "";
   const [selectedDemo, setSelectedDemo] = useState<Demo | undefined>(
-    event?.demos.find((demo) => demo.id === currentEvent?.currentDemoId),
+    event?.demos.find((demo) => demo.id === eventId),
   );
   const { data: feedback, refetch: refetchFeedback } =
     api.demo.getFeedback.useQuery(selectedDemo?.id ?? "", {
@@ -28,7 +29,7 @@ export default function DemosDashboard() {
       refetchInterval: REFRESH_INTERVAL,
     });
   // const { feedback, refetch: refetchFeedback } = useMockFeedback();
-  if (!currentEvent || !event) {
+  if (!event) {
     return null;
   }
 
@@ -50,7 +51,7 @@ export default function DemosDashboard() {
                 demo={demo}
                 selectedDemo={selectedDemo}
                 setSelectedDemo={setSelectedDemo}
-                isCurrent={demo.id === currentEvent.currentDemoId}
+                isCurrent={demo.id === currentEvent?.currentDemoId}
                 refetchEvent={refetchEvent}
               />
             ))}

@@ -88,7 +88,7 @@ function PhaseSelector({
   phase: EventPhase;
   setPhase: (phase: EventPhase) => void;
 }) {
-  const { currentEvent, refetchEvent } = useDashboardContext();
+  const { currentEvent, event, refetchEvent } = useDashboardContext();
   const updateCurrentStateMutation = api.event.updateCurrentState.useMutation();
 
   return (
@@ -111,17 +111,19 @@ function PhaseSelector({
             </option>
           ))}
         </select>
-        <button
-          className="ml-2 rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
-          hidden={phase === currentEvent?.phase}
-          onClick={() =>
-            updateCurrentStateMutation
-              .mutateAsync({ phase: phase })
-              .then(refetchEvent)
-          }
-        >
-          Select Phase
-        </button>
+        {currentEvent?.id === event?.id && (
+          <button
+            className="ml-2 rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
+            hidden={phase === currentEvent?.phase}
+            onClick={() =>
+              updateCurrentStateMutation
+                .mutateAsync({ phase: phase })
+                .then(refetchEvent)
+            }
+          >
+            Select Phase
+          </button>
+        )}
       </div>
     </div>
   );

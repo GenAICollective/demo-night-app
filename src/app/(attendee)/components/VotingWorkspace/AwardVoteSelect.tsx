@@ -114,7 +114,7 @@ export default function AwardVoteSelect({
                         "bg-green-300/80 hover:bg-green-400/80",
                     )}
                   >
-                    <div className="flex flex-col leading-6">
+                    <div className="flex w-full flex-col leading-6">
                       <p>{demo.name}</p>
                       <p className="text-sm font-medium italic leading-5 text-gray-700">
                         {demo.description}

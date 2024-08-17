@@ -223,7 +223,7 @@ function Submission({
 }: {
   submission: Submission;
   isAdmin: boolean;
-  onUpdate: (submission: Submission) => void;
+  onUpdate: () => void;
 }) {
   const adminUpdateMutation = api.submission.adminUpdate.useMutation();
   const deleteMutation = api.submission.delete.useMutation();
@@ -349,6 +349,7 @@ function Submission({
             className="rounded-xl bg-red-200 p-2 font-semibold transition-all hover:bg-red-300 focus:outline-none"
             onClick={() => {
               deleteMutation.mutateAsync(submission.id);
+              onUpdate();
             }}
           >
             Delete

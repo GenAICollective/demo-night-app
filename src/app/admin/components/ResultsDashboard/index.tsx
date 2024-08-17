@@ -9,7 +9,7 @@ export default function ResultsDashboard() {
   const { currentEvent, event, refetchEvent } = useDashboardContext();
   const updateCurrentStateMutation = api.event.updateCurrentState.useMutation();
 
-  if (!event || !currentEvent) {
+  if (!event) {
     return null;
   }
 
@@ -27,7 +27,7 @@ export default function ResultsDashboard() {
   const awards = [...event.awards].reverse();
 
   const currentAwardIndex = awards.findIndex(
-    (a) => a.id === currentEvent.currentAwardId,
+    (a) => a.id === currentEvent?.currentAwardId,
   );
 
   return (

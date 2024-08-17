@@ -1,6 +1,5 @@
 "use client";
 
-import { type Submission } from "@prisma/client";
 import { AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ShareIcon } from "lucide-react";
 import Link from "next/link";
