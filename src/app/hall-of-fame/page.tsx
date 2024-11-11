@@ -43,7 +43,7 @@ export default async function HallOfFamePage() {
             <AwardWinnerItem key={award.id} award={award} demos={event.demos} />
           ))}
         </div>
-        <div className="z-3 pointer-events-none fixed inset-0">
+        <div className="pointer-events-none fixed inset-0">
           <GaicoConfetti />
         </div>
       </div>

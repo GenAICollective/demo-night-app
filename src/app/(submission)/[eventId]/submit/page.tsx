@@ -9,6 +9,13 @@ import { LinkButton } from "~/components/Button";
 import { GaicoConfetti } from "~/components/Confetti";
 import EventHeader from "~/components/EventHeader";
 
+enum SubmissionDeadline {
+  SATURDAY_BEFORE_EVENT = 1,
+  DAY_OF_EVENT = 2,
+}
+
+const DEADLINE: SubmissionDeadline = SubmissionDeadline.DAY_OF_EVENT;
+
 export default async function SubmitDemoPage({
   params,
   searchParams,
@@ -27,12 +34,18 @@ export default async function SubmitDemoPage({
   }
 
   const eventDate = new Date(event.date);
-  const saturdayBeforeEvent = new Date(eventDate);
-  saturdayBeforeEvent.setDate(eventDate.getDate() - eventDate.getDay() - 1); // Get the previous Saturday
-  saturdayBeforeEvent.setHours(23, 59, 59, 999); // Set to 11:59:59 PM
+  if (DEADLINE === SubmissionDeadline.SATURDAY_BEFORE_EVENT) {
+    const saturdayBeforeEvent = new Date(eventDate);
+    saturdayBeforeEvent.setDate(eventDate.getDate() - eventDate.getDay() - 1); // Get the previous Saturday
+    saturdayBeforeEvent.setHours(23, 59, 59, 999); // Set to 11:59:59 PM
 
-  if (new Date() > saturdayBeforeEvent) {
-    return <SubmitDemoMessagePage success={false} event={event} />;
+    if (new Date() > saturdayBeforeEvent) {
+      return <SubmitDemoMessagePage success={false} event={event} />;
+    }
+  } else if (DEADLINE === SubmissionDeadline.DAY_OF_EVENT) {
+    if (new Date() > eventDate) {
+      return <SubmitDemoMessagePage success={false} event={event} />;
+    }
   }
 
   return (
