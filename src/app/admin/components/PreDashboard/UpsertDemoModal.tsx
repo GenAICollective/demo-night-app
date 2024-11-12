@@ -90,7 +90,7 @@ export function UpsertDemoModal({
                 : "text-gray-400",
             )}
           >
-            {`(${watch("description").length} / ${TAGLINE_MAX_LENGTH})`}
+            {`(${watch("description")?.length ?? 0} / ${TAGLINE_MAX_LENGTH})`}
           </span>
         </div>
         <textarea
@@ -116,6 +116,7 @@ export function UpsertDemoModal({
         <span className="font-semibold">URL</span>
         <input
           type="url"
+          placeholder="https://cofactory.ai"
           {...register("url")}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
