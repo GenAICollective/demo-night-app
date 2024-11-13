@@ -50,8 +50,8 @@ export function InfoModal({
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <h1 className="text-center text-2xl font-bold">{title}</h1>
-      <p className="w-[300px] text-wrap text-center">{message}</p>
+      <h1 className="-mb-2 text-center text-2xl font-bold">{title}</h1>
+      <p className="w-[300px] text-wrap text-center leading-5">{message}</p>
       <Button onClick={() => modal?.hide()}>Done</Button>
     </div>
   );

@@ -1,6 +1,6 @@
 import { type Demo } from "@prisma/client";
 import { motion } from "framer-motion";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, MoveDown, MoveUp } from "lucide-react";
 
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
@@ -34,7 +34,7 @@ export function DemoItem({
       <button
         title="Select"
         className={cn(
-          "flex flex-1 cursor-pointer flex-row items-center justify-between rounded-xl p-2 text-start font-medium focus:outline-none",
+          "flex flex-1 flex-row items-center justify-between rounded-xl p-2 text-start font-medium focus:outline-none",
           isCurrent ? "bg-green-200" : "bg-white",
         )}
         onClick={() => {
@@ -49,7 +49,7 @@ export function DemoItem({
           <CircleCheck size={14} strokeWidth={3} />
         )}
       </button>
-      <div className="flex flex-row gap-2 font-semibold">
+      <div className="flex flex-row gap-0 font-semibold">
         <button
           title="Move Up"
           onClick={() => {
@@ -62,7 +62,7 @@ export function DemoItem({
           }}
           className="focus:outline-none"
         >
-          ↑
+          <MoveUp className="h-4 w-4" strokeWidth={2.5} />
         </button>
         <button
           title="Move Down"
@@ -76,7 +76,7 @@ export function DemoItem({
           }}
           className="focus:outline-none"
         >
-          ↓
+          <MoveDown className="h-4 w-4" strokeWidth={2.5} />
         </button>
       </div>
     </motion.li>

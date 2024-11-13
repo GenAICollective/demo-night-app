@@ -150,6 +150,7 @@ model Award {
 
   name        String
   description String
+  votable     Boolean @default(true)
 
   votes Vote[]
 }

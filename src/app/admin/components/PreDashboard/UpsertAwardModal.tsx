@@ -20,7 +20,12 @@ export function UpsertAwardModal({
 }) {
   const upsertMutation = api.award.upsert.useMutation();
   const { register, handleSubmit } = useForm({
-    values: award,
+    values: {
+      id: award?.id,
+      name: award?.name,
+      description: award?.description,
+      votable: award?.votable ?? true,
+    },
   });
   const modal = useModal();
 
@@ -30,10 +35,11 @@ export function UpsertAwardModal({
         upsertMutation
           .mutateAsync({
             originalId: award?.id,
-            id: data.id as string,
+            id: data.id,
             eventId: eventId,
-            name: data.name as string,
-            description: data.description as string,
+            name: data.name!,
+            description: data.description!,
+            votable: data.votable!,
           })
           .then((result) => {
             modal?.hide();
@@ -48,7 +54,7 @@ export function UpsertAwardModal({
             );
           });
       })}
-      className="flex flex-col gap-4"
+      className="flex max-w-[400px] flex-col gap-4"
     >
       <h1 className="text-center text-xl font-bold">
         {award ? "Update" : "Create"} Award
@@ -86,6 +92,20 @@ export function UpsertAwardModal({
           rows={2}
           required
         />
+      </label>
+
+      <label className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          {...register("votable")}
+          className="h-4 w-4 rounded border-gray-300"
+        />
+        <span
+          className="font-semibold"
+          title="Enable this if attendees should be able to cast votes for this award"
+        >
+          Attendees can vote?
+        </span>
       </label>
       <Button pending={upsertMutation.isPending}>
         {`${award ? "Update" : "Create"} Award`}

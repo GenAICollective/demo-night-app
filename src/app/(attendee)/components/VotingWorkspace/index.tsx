@@ -32,16 +32,18 @@ export default function VotingWorkspace() {
           </p>
         </div>
         <div className="flex w-full flex-col gap-8">
-          {event.awards.map((award) => (
-            <AwardVoteItem
-              key={award.id}
-              award={award}
-              demos={event.demos}
-              votes={votes}
-              setVote={setVote}
-              feedbackByDemoId={feedbackByDemoId}
-            />
-          ))}
+          {event.awards
+            .filter((award) => award.votable)
+            .map((award) => (
+              <AwardVoteItem
+                key={award.id}
+                award={award}
+                demos={event.demos}
+                votes={votes}
+                setVote={setVote}
+                feedbackByDemoId={feedbackByDemoId}
+              />
+            ))}
         </div>
       </div>
     </div>

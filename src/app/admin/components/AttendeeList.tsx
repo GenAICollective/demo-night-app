@@ -3,6 +3,7 @@
 import { useDashboardContext } from "../contexts/DashboardContext";
 import { type Attendee } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
+import { Trash } from "lucide-react";
 import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
@@ -86,7 +87,7 @@ function AttendeeItem({
         }}
         className="focus:outline-none"
       >
-        🗑️
+        <Trash className="h-4 w-4" strokeWidth={2.5} />
       </button>
     </motion.li>
   );

@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
-import { QUICK_ACTIONS } from "~/lib/types/quickActions";
+import * as QuickActions from "~/lib/types/quickActions";
 import { cn } from "~/lib/utils";
 import { type DemoFeedback } from "~/server/api/routers/demo";
 
@@ -18,7 +18,8 @@ export function FeedbackItem({ feedback }: { feedback: DemoFeedback }) {
       ? `👏<span class="text-xs"> x${feedback.claps}</span>`
       : null,
     feedback.tellMeMore ? "📬" : null,
-    ...(feedback.quickActions?.map((id) => QUICK_ACTIONS[id]?.icon) ?? []),
+    ...(feedback.quickActions?.map((id) => QuickActions.actions[id]?.icon) ??
+      []),
   ].filter((s) => s) as string[];
   const summaryString = summary.join(" • ");
   const copyEmailToClipboard = () => {

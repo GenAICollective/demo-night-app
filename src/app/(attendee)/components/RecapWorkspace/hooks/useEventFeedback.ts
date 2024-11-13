@@ -1,4 +1,4 @@
-import { type Attendee, type EventFeedback } from "@prisma/client";
+import { type EventFeedback } from "@prisma/client";
 import { useEffect, useState } from "react";
 
 import { api } from "~/trpc/react";
