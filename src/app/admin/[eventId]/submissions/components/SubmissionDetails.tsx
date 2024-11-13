@@ -96,6 +96,7 @@ function SubmissionReview({
     return () => subscription.unsubscribe();
   }, [watch, debouncedUpdate]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const openEmailModal = (status: SubmissionStatus) => {
     modal?.show(<EmailModal submission={submission} status={status} />);
   };

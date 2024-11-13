@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { ATTENDEE_TYPES } from "~/lib/types/attendeeTypes";
-import { QUICK_ACTIONS } from "~/lib/types/quickActions";
+import * as QuickActions from "~/lib/types/quickActions";
 import { type FeedbackAndAttendee } from "~/server/api/routers/demo";
 
 export const useMockFeedback = () => {
@@ -20,9 +20,9 @@ export const useMockFeedback = () => {
           rating: Math.floor(Math.random() * 6) + 1,
           claps: Math.floor(Math.random() * 6),
           tellMeMore: Math.random() > 0.5,
-          quickActions: Object.keys(QUICK_ACTIONS).filter(
-            () => Math.random() > 0.5,
-          ),
+          quickActions: QuickActions.visibleActions
+            .filter(() => Math.random() > 0.5)
+            .map(([id]) => id),
           createdAt: new Date(),
           updatedAt: new Date(),
           attendee: {

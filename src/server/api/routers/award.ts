@@ -25,6 +25,7 @@ export const awardRouter = createTRPCRouter({
         eventId: z.string(),
         name: z.string(),
         description: z.string(),
+        votable: z.boolean().optional(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -34,6 +35,7 @@ export const awardRouter = createTRPCRouter({
           data: {
             name: input.name,
             description: input.description,
+            votable: input.votable,
           },
         });
       } else {
@@ -46,6 +48,7 @@ export const awardRouter = createTRPCRouter({
             index: index,
             name: input.name,
             description: input.description,
+            votable: input.votable,
           },
         });
       }
@@ -123,6 +126,7 @@ export const awardRouter = createTRPCRouter({
             id: z.string().optional(),
             name: z.string(),
             description: z.string(),
+            votable: z.boolean().optional(),
           }),
         ),
       }),

@@ -101,7 +101,7 @@ export default function DemosWorkspace() {
               }}
               rows={3}
               className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
-              placeholder={`• Any questions for the demoist?\n• What was your favorite part?\n• What's one thing they could do better?`}
+              placeholder={`• What was your favorite part?\n• What's one thing they could do better?\n• Any questions for the demoist?`}
             />
             <SaveStatusIndicator status={saveStatus} />
           </div>

@@ -1,26 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { type Event } from "@prisma/client";
+import { PlusIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect } from "react";
 
-import { EventPhase, allPhases, displayName } from "~/lib/types/currentEvent";
+import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
-import AttendeeList from "./components/AttendeeList";
-import DemosDashboard from "./components/DemosDashboard";
-import EventSelectionHeader from "./components/EventSelectionHeader";
-import PreDashboard from "./components/PreDashboard";
-import RecapDashboard from "./components/RecapDashboard";
-import ResultsDashboard from "./components/ResultsDashboard";
-import VotingDashboard from "./components/VotingDashboard";
-import EventTitle from "~/components/EventTitle";
+import { UpsertEventModal } from "./components/UpsertEventModal";
+import { useModal } from "~/components/modal/provider";
 
-import {
-  DashboardContext,
-  useDashboardContext,
-} from "./contexts/DashboardContext";
-import { useEventAdmin } from "./hooks/useEventAdmin";
+import { DashboardContext } from "./[eventId]/contexts/DashboardContext";
+import { useEventAdmin } from "./[eventId]/hooks/useEventAdmin";
 
-export default function AdminPage() {
+export default function AdminHomePage() {
   const {
     currentEvent,
     event,
@@ -28,103 +23,114 @@ export default function AdminPage() {
     selectedEventId,
     setSelectedEventId,
   } = useEventAdmin();
+  const modal = useModal();
+  const { data: events, refetch: _refetchEvents } =
+    api.event.allAdmin.useQuery();
+
+  const updateCurrentMutation = api.event.updateCurrent.useMutation();
+
+  const refetch = () => {
+    refetchEvent();
+    _refetchEvents();
+  };
+
+  useEffect(() => {
+    if (events && events.length > 0 && !selectedEventId) {
+      setSelectedEventId(events[0]!.id);
+    }
+  }, [events, selectedEventId, setSelectedEventId]);
+
+  const showUpsertEventModal = (event?: Event) => {
+    modal?.show(
+      <UpsertEventModal
+        event={event}
+        onSubmit={() => refetch()}
+        onDeleted={() => {
+          setSelectedEventId(undefined);
+          refetch();
+        }}
+      />,
+    );
+  };
 
   return (
     <main className="flex min-h-screen w-full flex-col text-black">
       <DashboardContext.Provider value={{ currentEvent, event, refetchEvent }}>
-        <EventSelectionHeader
-          selectedEventId={selectedEventId}
-          setSelectedEventId={setSelectedEventId}
-        />
-        {event ? (
-          <EventDashboard />
-        ) : (
-          <div className="w-full p-2 text-center text-2xl font-semibold">
-            No event selected
+        <div className="flex items-center gap-2 p-2">
+          <Image src="/images/logo.png" alt="logo" width={40} height={40} />
+          <h1 className="line-clamp-1 font-kallisto text-2xl font-bold">
+            Demo Night App Admin Dashboard
+          </h1>
+        </div>
+
+        <div className="flex flex-col gap-4 p-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {events?.map((event) => (
+              <div
+                key={event.id}
+                className={cn(
+                  "rounded-xl bg-gray-100 p-4",
+                  event.id === selectedEventId
+                    ? "border-blue-500"
+                    : "border-gray-200",
+                )}
+                onClick={() => setSelectedEventId(event.id)}
+                role="button"
+              >
+                <Link
+                  href={`/admin/${event.id}`}
+                  className="flex flex-col gap-1"
+                >
+                  <h3 className="line-clamp-1 text-xl font-bold">
+                    {event.name}
+                  </h3>
+                  <p className="font-semibold leading-4 text-gray-600">
+                    {event.date.toLocaleDateString("en-US", {
+                      timeZone: "UTC",
+                    })}
+                  </p>
+                  <div className="mt-2 flex gap-2">
+                    <button
+                      className="flex-1 rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showUpsertEventModal(event);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className={cn(
+                        "flex-1 rounded-xl p-2 font-semibold transition-all focus:outline-none",
+                        event.id === currentEvent?.id
+                          ? "bg-red-200 hover:bg-red-300"
+                          : "bg-green-200 hover:bg-green-300",
+                      )}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        updateCurrentMutation
+                          .mutateAsync(
+                            event.id === currentEvent?.id ? null : event.id,
+                          )
+                          .then(() => refetch());
+                      }}
+                    >
+                      {event.id === currentEvent?.id ? "Stop" : "Start"}
+                    </button>
+                  </div>
+                </Link>
+              </div>
+            ))}
+            <button
+              className="flex size-full items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-200 bg-white p-2 font-semibold transition-all hover:bg-gray-100 focus:outline-none"
+              onClick={() => showUpsertEventModal()}
+            >
+              <PlusIcon className="size-4" strokeWidth={2.5} />
+              Create Event
+            </button>
           </div>
-        )}
+        </div>
       </DashboardContext.Provider>
     </main>
-  );
-}
-
-function EventDashboard() {
-  const { currentEvent, event } = useDashboardContext();
-  const [phase, setPhase] = useState(currentEvent?.phase ?? EventPhase.Pre);
-
-  function dashboard() {
-    switch (phase) {
-      case EventPhase.Pre:
-        return <PreDashboard />;
-      case EventPhase.Demos:
-        return <DemosDashboard />;
-      case EventPhase.Voting:
-        return <VotingDashboard />;
-      case EventPhase.Results:
-        return <ResultsDashboard />;
-      case EventPhase.Recap:
-        return <RecapDashboard />;
-    }
-  }
-
-  return (
-    <div className="flex size-full flex-1 flex-col items-center justify-center gap-2 p-2 text-black">
-      <EventTitle name={event?.name ?? ""} url={event?.url ?? ""} />
-      <div className="flex w-full flex-1 flex-col justify-between gap-2">
-        <PhaseSelector phase={phase} setPhase={setPhase} />
-        <div className="flex size-full flex-1 flex-row gap-2">
-          <div className="min-h-full flex-1">{dashboard()}</div>
-          <AttendeeList />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PhaseSelector({
-  phase,
-  setPhase,
-}: {
-  phase: EventPhase;
-  setPhase: (phase: EventPhase) => void;
-}) {
-  const { currentEvent, event, refetchEvent } = useDashboardContext();
-  const updateCurrentStateMutation = api.event.updateCurrentState.useMutation();
-
-  return (
-    <div className="flex flex-col">
-      <div className="flex flex-row items-center pb-2">
-        <h3 className="font-semibold">Phase:</h3>
-        <select
-          className="ml-2 w-[120px] rounded-xl border border-gray-200 p-2 font-medium"
-          value={phase}
-          onChange={(e) => {
-            const selectedPhase = parseInt(e.target.value, 10);
-            if (!isNaN(selectedPhase)) {
-              setPhase(selectedPhase as EventPhase);
-            }
-          }}
-        >
-          {allPhases.map((value) => (
-            <option key={value} value={value}>
-              {displayName(value)}
-            </option>
-          ))}
-        </select>
-        {currentEvent?.id === event?.id && (
-          <button
-            className="ml-2 rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
-            hidden={phase === currentEvent?.phase}
-            onClick={() =>
-              updateCurrentStateMutation
-                .mutateAsync({ phase: phase })
-                .then(refetchEvent)
-            }
-          >
-            Select Phase
-          </button>
-        )}
-      </div>
-    </div>
   );
 }

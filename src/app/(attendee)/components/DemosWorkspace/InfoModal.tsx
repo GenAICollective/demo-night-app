@@ -1,4 +1,4 @@
-import { QUICK_ACTIONS } from "~/lib/types/quickActions";
+import * as QuickActions from "~/lib/types/quickActions";
 import { cn } from "~/lib/utils";
 
 import Button from "~/components/Button";
@@ -22,10 +22,10 @@ const actionItems: {
     description: "Send me an email with more info!",
   },
   {
-    icon: "🤝",
-    title: "I want to help by...",
+    icon: QuickActions.icon,
+    title: QuickActions.title,
   },
-  ...Object.values(QUICK_ACTIONS).map((action) => ({
+  ...QuickActions.visibleActions.map(([_, action]) => ({
     icon: action.icon,
     description: action.description,
     indent: true,

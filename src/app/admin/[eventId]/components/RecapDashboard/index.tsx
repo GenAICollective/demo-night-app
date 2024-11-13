@@ -26,7 +26,7 @@ export default function RecapDashboard() {
   const message =
     currentEvent?.phase === EventPhase.Recap
       ? "Job well done! 😄"
-      : "Don't forget to set the phase to Recap!";
+      : "Don't forget to click 'Select Phase' above!";
 
   return (
     <div className="flex size-full flex-1 flex-col items-start justify-start gap-2 rounded-xl bg-gray-100 p-4">

@@ -1,5 +1,6 @@
 import { type Demo } from "@prisma/client";
 import { motion } from "framer-motion";
+import { ArrowUpDown, Link, QrCode, Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -44,7 +45,7 @@ export function DemoItem({
       >
         {demo.name}
       </button>
-      <div className="flex flex-row gap-2 font-semibold">
+      <div className="flex flex-row gap-1 font-semibold">
         <button
           title="Copy URL"
           onClick={() => {
@@ -60,21 +61,21 @@ export function DemoItem({
           }}
           className="focus:outline-none"
         >
-          📋
+          <Link className="h-4 w-4" strokeWidth={2.5} />
         </button>
         <button
           title="View URL as QR Code"
           onClick={onClickQR}
           className="focus:outline-none"
         >
-          🔳
+          <QrCode className="h-4 w-4" strokeWidth={2.5} />
         </button>
         <button
           title="Move"
           onClick={showUpdateIndexModal}
           className="focus:outline-none"
         >
-          ↕
+          <ArrowUpDown className="h-4 w-4" strokeWidth={2.5} />
         </button>
         <button
           title="Delete"
@@ -83,7 +84,7 @@ export function DemoItem({
           }}
           className="focus:outline-none"
         >
-          🗑️
+          <Trash className="h-4 w-4" strokeWidth={2.5} />
         </button>
       </div>
     </motion.li>

@@ -1,7 +1,7 @@
 import { type Feedback } from "@prisma/client";
 import { useMemo } from "react";
 
-import { QUICK_ACTIONS } from "~/lib/types/quickActions";
+import * as QuickActions from "~/lib/types/quickActions";
 
 export default function FeedbackOverview({
   feedback,
@@ -15,7 +15,7 @@ export default function FeedbackOverview({
       claps: 0,
       tellMeMores: 0,
       quickActions: Object.fromEntries(
-        Object.keys(QUICK_ACTIONS).map((id) => [id, 0]),
+        QuickActions.visibleActions.map(([id]) => [id, 0]),
       ),
     };
     for (const f of feedback) {
@@ -23,7 +23,7 @@ export default function FeedbackOverview({
       agg.claps += f.claps;
       agg.tellMeMores += f.tellMeMore ? 1 : 0;
       for (const action of f.quickActions) {
-        agg.quickActions[action] += 1;
+        agg.quickActions[action]! += 1;
       }
     }
     return agg;
@@ -53,9 +53,7 @@ export default function FeedbackOverview({
       </div>
       <div className="flex basis-2/6 flex-col items-center justify-center rounded-xl bg-white py-2">
         <p className="-mt-1 line-clamp-1 h-7 text-gray-400">
-          {Object.values(QUICK_ACTIONS)
-            .map((a) => a.icon)
-            .join(" • ")}
+          {QuickActions.visibleActions.map(([_, a]) => a.icon).join(" • ")}
         </p>
         <p className="line-clamp-1 text-xl font-bold">
           {Object.values(agg.quickActions).join(" • ")}

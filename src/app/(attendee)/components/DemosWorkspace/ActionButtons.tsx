@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import ConfettiExplosion from "react-dom-confetti";
 
-import { QUICK_ACTIONS } from "~/lib/types/quickActions";
+import * as QuickActions from "~/lib/types/quickActions";
 import { cn } from "~/lib/utils";
 
 import { type LocalFeedback } from "./hooks/useFeedback";
@@ -115,10 +115,10 @@ function QuickActionsButton({
           )}
           onClick={() => setShowButtons(!showButtons)}
         >
-          {showButtons ? "❌" : "🤝"}
+          {showButtons ? "❌" : QuickActions.icon}
         </motion.button>
         <p className="pointer-events-none absolute w-32 pt-[104px] text-center text-sm font-semibold text-gray-400">
-          I want to help by...
+          {QuickActions.title}
         </p>
       </div>
       <AnimatePresence>
@@ -129,7 +129,7 @@ function QuickActionsButton({
             animate={{ opacity: 1, y: 0, x: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, x: -50, scale: 0.5 }}
           >
-            {Object.entries(QUICK_ACTIONS).map(([id, action]) => (
+            {QuickActions.visibleActions.map(([id, action]) => (
               <div key={id} className="relative w-[300px]">
                 <p className="pointer-events-none absolute -left-3 top-1/2 line-clamp-1 -translate-x-full -translate-y-1/2 rounded-full bg-white/60 p-2 text-sm font-semibold text-gray-400 backdrop-blur-sm">
                   {action.description}

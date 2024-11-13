@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { QUICK_ACTIONS } from "~/lib/types/quickActions";
+import * as QuickActions from "~/lib/types/quickActions";
 import { type PublicDemo } from "~/server/api/routers/event";
 import { api } from "~/trpc/react";
 
@@ -209,7 +209,7 @@ function FeedbackItem({
       ? `👏<span class="text-xs"> x${feedback.claps}</span>`
       : null,
     feedback.tellMeMore ? "📬" : null,
-    ...feedback.quickActions.map((id) => QUICK_ACTIONS[id]?.icon),
+    ...feedback.quickActions.map((id) => QuickActions.actions[id]?.icon),
   ];
   const summaryString = summary.filter((s) => s).join(" • ");
   return (

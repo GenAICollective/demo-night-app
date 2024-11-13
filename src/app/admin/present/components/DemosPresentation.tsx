@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useMemo } from "react";
 
 import { feedbackScore } from "~/lib/feedback";
-import { QUICK_ACTIONS } from "~/lib/types/quickActions";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as QuickActions from "~/lib/types/quickActions";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
@@ -87,7 +88,7 @@ export function FeedbackItem({ feedback }: { feedback: FeedbackAndAttendee }) {
     // if (feedback.tellMeMore) {
     //   summary.push("📬");
     // }
-    // for (const [id, action] of Object.entries(QUICK_ACTIONS)) {
+    // for (const [id, action] of Object.entries(QuickActions.actions)) {
     //   if (feedback.quickActions.includes(id)) {
     //     summary.push(action.icon);
     //   }

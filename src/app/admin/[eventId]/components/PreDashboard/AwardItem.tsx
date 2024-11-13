@@ -1,5 +1,6 @@
 import { type Award } from "@prisma/client";
 import { motion } from "framer-motion";
+import { EyeOff, MoveDown, MoveUp, Trash } from "lucide-react";
 
 import { api } from "~/trpc/react";
 
@@ -23,15 +24,18 @@ export function AwardItem({
       exit={{ opacity: 0 }}
       className="flex flex-row items-center gap-2"
     >
-      <p className="min-w-[25px] font-bold">{`${award.index + 1}.`}</p>
+      <p className="min-w-[15px] font-bold">{`${award.index + 1}.`}</p>
       <button
         title="Edit Award"
-        className="flex-1 rounded-xl bg-white p-2 text-start font-medium focus:outline-none"
+        className="flex flex-1 flex-row items-center gap-2 rounded-xl bg-white p-2 text-start font-medium focus:outline-none"
         onClick={onClick}
       >
-        {award.name}
+        <p className="line-clamp-1">{award.name}</p>
+        {!award.votable && (
+          <EyeOff size={14} strokeWidth={3} className="text-gray-600" />
+        )}
       </button>
-      <div className="flex flex-row gap-2 font-semibold">
+      <div className="flex flex-row gap-1 font-semibold">
         <button
           title="Move Up"
           onClick={() => {
@@ -44,7 +48,7 @@ export function AwardItem({
           }}
           className="focus:outline-none"
         >
-          ↑
+          <MoveUp className="h-4 w-4" strokeWidth={2.5} />
         </button>
         <button
           title="Move Down"
@@ -58,7 +62,7 @@ export function AwardItem({
           }}
           className="focus:outline-none"
         >
-          ↓
+          <MoveDown className="h-4 w-4" strokeWidth={2.5} />
         </button>
         <button
           title="Delete"
@@ -67,7 +71,7 @@ export function AwardItem({
           }}
           className="focus:outline-none"
         >
-          🗑️
+          <Trash className="h-4 w-4" strokeWidth={2.5} />
         </button>
       </div>
     </motion.li>

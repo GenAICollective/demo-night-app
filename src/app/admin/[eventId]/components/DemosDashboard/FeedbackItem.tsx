@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
+import { Trash } from "lucide-react";
 import { useMemo } from "react";
 
-import { QUICK_ACTIONS } from "~/lib/types/quickActions";
+import * as QuickActions from "~/lib/types/quickActions";
 import { cn } from "~/lib/utils";
 import { type FeedbackAndAttendee } from "~/server/api/routers/demo";
 import { api } from "~/trpc/react";
@@ -28,11 +29,11 @@ export function FeedbackItem({
     if (feedback.tellMeMore) {
       summary.push("📬");
     }
-    for (const [id, action] of Object.entries(QUICK_ACTIONS)) {
+    QuickActions.visibleActions.forEach(([id, action]) => {
       if (feedback.quickActions.includes(id)) {
         summary.push(action.icon);
       }
-    }
+    });
     return summary.join(" • ");
   }, [feedback]);
 
@@ -75,7 +76,7 @@ export function FeedbackItem({
           }}
           className="focus:outline-none"
         >
-          🗑
+          <Trash className="h-4 w-4" strokeWidth={2.5} />
         </button>
       </div>
     </motion.li>
