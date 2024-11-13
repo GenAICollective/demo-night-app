@@ -1,5 +1,6 @@
 "use client";
 
+import CsvButton from "../../components/CsvButton";
 import { AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ShareIcon } from "lucide-react";
 import Link from "next/link";
@@ -14,7 +15,6 @@ import EventTitle from "~/components/EventTitle";
 
 import SubmissionDetails from "./SubmissionDetails";
 import { SubmissionItem } from "./SubmissionItem";
-import CsvButton from "~/app/admin/components/CsvButton";
 
 const CSV_HEADERS = [
   "id",
