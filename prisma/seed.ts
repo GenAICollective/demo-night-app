@@ -166,9 +166,9 @@ async function main() {
     update: {},
     create: {
       id: "sf-demo",
-      name: "SF Demo Extravaganza 🚀",
+      name: "SF Demo Night 🚀",
       date: new Date(Date.now() + 14 * 86_400_000).toISOString(),
-      url: "https://lu.ma/sf-demo",
+      url: "https://lu.ma/demo-night",
       demos: { create: demos },
       attendees: { create: attendees },
       awards: { create: awards },
