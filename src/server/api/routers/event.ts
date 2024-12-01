@@ -1,6 +1,7 @@
 import { type Award, type Demo, type Event, type Prisma } from "@prisma/client";
 import { z } from "zod";
 
+import { DEFAULT_AWARDS } from "~/lib/defaultAwards";
 import * as kv from "~/lib/types/currentEvent";
 import {
   createTRPCRouter,
@@ -78,7 +79,12 @@ export const eventRouter = createTRPCRouter({
           });
       }
       return db.event.create({
-        data: { ...input },
+        data: {
+          ...input,
+          awards: {
+            create: DEFAULT_AWARDS,
+          },
+        },
       });
     }),
   allAdmin: protectedProcedure.query(() => {
