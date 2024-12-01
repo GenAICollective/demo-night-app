@@ -5,6 +5,15 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  redirects: async () => {
+    const cities = ["sf", "nyc", "boston"];
+    return cities.map((city) => ({
+      source: `/${city}`,
+      destination: "/",
+      permanent: true,
+    }));
+  },
+};
 
 export default config;
