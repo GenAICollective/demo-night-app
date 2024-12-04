@@ -62,10 +62,11 @@ model VerificationToken {
 model Event {
   id String @id @default(cuid())
 
-  name   String
-  date   DateTime
-  url    String
-  secret String   @default(cuid())
+  name     String
+  date     DateTime
+  url      String
+  partners Json[]
+  secret   String   @default(cuid())
 
   submissions   Submission[]
   demos         Demo[]

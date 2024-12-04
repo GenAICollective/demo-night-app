@@ -71,7 +71,7 @@ export function UpsertEventModal({
           type="text"
           {...register("name", { required: true })}
           className="rounded-xl border border-gray-200 p-2"
-          placeholder="SF Demo Extravaganza 🚀"
+          placeholder="SF Demo Night 🚀"
           autoComplete="off"
           autoFocus
         />
@@ -104,7 +104,7 @@ export function UpsertEventModal({
           {...register("url")}
           className="rounded-xl border border-gray-200 p-2"
           autoComplete="off"
-          placeholder="https://lu.ma/sf-demo"
+          placeholder="https://lu.ma/demo-night"
           required
         />
       </label>
