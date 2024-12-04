@@ -1,6 +1,6 @@
-# GenAI Collective Demo Night App 🚀
+# Demo Night App 🚀
 
-This is the live feedback app we use during all our GenAI Collective demo night events! [Example event](https://lu.ma/sf-demo)
+This is the live feedback app we use during all our demo night events! [Example event](https://lu.ma/demo-night)
 
 ![Demo night app screens](https://github.com/GenAICollective/demo-night-app/assets/13221124/17248c6c-8e58-46d5-b941-e1f63387f620)
 
@@ -10,7 +10,7 @@ This is the live feedback app we use during all our GenAI Collective demo night 
   
 ## Contributing
 
-Please reach out to [Aqeel Ali](https://www.linkedin.com/in/aliaqeel/) (<aqeel@genaicollective.ai>) if you'd like to contribute to this community project!
+If you'd like to contribute to this community project, consider reaching out to <engineering@genaicollective.ai>!
 
 <a href="https://www.loom.com/share/79236c4d42364fbcbcbfa24bc066620c">
   <img style="max-width:200px;" src="https://cdn.loom.com/sessions/thumbnails/79236c4d42364fbcbcbfa24bc066620c-with-play.gif">
