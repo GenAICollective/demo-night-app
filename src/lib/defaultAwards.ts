@@ -1,15 +1,15 @@
 const awards = [
   {
     name: "🏆 Best Overall",
-    description: "Award for the best overall demo!",
+    description: "The ultimate standout demo of the night!",
   },
   {
     name: "🤖 Best Technology",
-    description: "Award for the most technically impressive demo!",
+    description: "The demo that amazed us with tech brilliance!",
   },
   {
-    name: "🎨 Best Design",
-    description: "Award for the most visually appealing demo!",
+    name: "🎨 Most Creative",
+    description: "The demo that dazzled with originality and flair!",
   },
 ];
 

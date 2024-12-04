@@ -4,9 +4,10 @@ import { type Award, type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Github } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { type Partner } from "~/lib/types/partner";
 import * as QuickActions from "~/lib/types/quickActions";
 import { type PublicDemo } from "~/server/api/routers/event";
 import { api } from "~/trpc/react";
@@ -37,6 +38,10 @@ export default function RecapWorkspace() {
 
   const award = event.awards[awardIndex]!;
 
+  const partners = useMemo(() => {
+    return event.partners?.filter((p): p is Partner => !!p) ?? [];
+  }, [event.partners]);
+
   return (
     <div className="flex size-full flex-1 flex-col items-center justify-center gap-8 p-4">
       <div className="flex w-full flex-col gap-2">
@@ -56,7 +61,7 @@ export default function RecapWorkspace() {
       </div>
       <div className="flex w-full flex-col gap-2">
         <h2 className="w-full font-kallisto text-2xl font-bold">
-          Winning Demos 🏆
+          Award Winners 🏆
         </h2>
         <div className="z-10 flex w-full flex-row">
           <AnimatePresence initial={false} mode="wait">
@@ -68,6 +73,18 @@ export default function RecapWorkspace() {
           </AnimatePresence>
         </div>
       </div>
+      {partners.length > 0 && (
+        <div className="flex w-full flex-col gap-2">
+          <h2 className="w-full font-kallisto text-2xl font-bold">
+            Hosts & Sponsors 🤝
+          </h2>
+          <div className="z-10 flex w-full flex-col gap-4">
+            {partners.map((p) => (
+              <PartnerItem key={p.name} {...p} />
+            ))}
+          </div>
+        </div>
+      )}
       {feedback && Object.values(feedback).length > 0 && (
         <div className="flex w-full flex-col gap-2">
           <h2 className="w-full font-kallisto text-2xl font-bold">
@@ -111,7 +128,7 @@ function ContributeButton() {
       >
         <div className="flex items-center justify-between gap-2 text-blue-800">
           <h3 className="line-clamp-1 text-lg font-semibold italic group-hover:underline">
-            Help us improve this community project!
+            Build this community app with us!
           </h3>
           <Github
             size={24}
@@ -160,6 +177,45 @@ function AwardWinnerItem({
         </p>
       </Link>
     </motion.div>
+  );
+}
+
+function PartnerItem({
+  name,
+  url,
+  email,
+  description,
+}: {
+  name: string;
+  url: string;
+  email?: string;
+  description: string;
+}) {
+  return (
+    <Link
+      href={url}
+      target="_blank"
+      className="group z-10 flex w-full flex-col gap-1 rounded-xl bg-gray-300/50 p-4 font-medium leading-6 shadow-xl backdrop-blur"
+    >
+      <div className="flex w-full flex-row items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <h3 className="line-clamp-1 text-xl font-bold group-hover:underline">
+            {name}
+          </h3>
+          <ArrowUpRight
+            size={24}
+            strokeWidth={3}
+            className="h-5 w-5 flex-none rounded-md bg-gray-300/50 p-[2px] text-gray-500 group-hover:bg-gray-400/50 group-hover:text-gray-700"
+          />
+        </div>
+        {email && (
+          <p className="flex-shrink-0 truncate text-gray-500">
+            📬 <span className="">{email}</span>
+          </p>
+        )}
+      </div>
+      <p className="italic leading-5 text-gray-700">{description}</p>
+    </Link>
   );
 }
 
@@ -217,7 +273,7 @@ function FeedbackItem({
       <Link
         href={demo?.url ?? "/"}
         target="_blank"
-        className="group z-10 flex w-full flex-col gap-2 rounded-xl bg-gray-300/50 p-4 shadow-xl backdrop-blur"
+        className="group z-10 flex w-full flex-col gap-2 rounded-xl bg-purple-300/50 p-4 shadow-xl backdrop-blur"
       >
         <div className="flex w-full items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -227,7 +283,7 @@ function FeedbackItem({
             <ArrowUpRight
               size={24}
               strokeWidth={3}
-              className="h-5 w-5 flex-none rounded-md bg-gray-300/50 p-[2px] text-gray-500 group-hover:bg-gray-400/50 group-hover:text-gray-700"
+              className="h-5 w-5 flex-none rounded-md bg-purple-300/50 p-[2px] text-purple-500 group-hover:bg-purple-400/50 group-hover:text-purple-700"
             />
           </div>
           <p

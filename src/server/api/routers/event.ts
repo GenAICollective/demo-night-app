@@ -148,6 +148,7 @@ const completeEventSelect: Prisma.EventSelect = {
   name: true,
   date: true,
   url: true,
+  partners: true,
   demos: {
     orderBy: { index: "asc" },
     select: {

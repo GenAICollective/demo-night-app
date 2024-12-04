@@ -99,7 +99,7 @@ export function UpdateAttendeeForm({
     >
       <div>
         <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
-          {isPreDemo ? "Welcome! 😄" : "Update Profile 😎"}
+          {isPreDemo ? "Welcome! 😄" : "Update Profile 🧑‍💼"}
         </h1>
         <p className="text-md max-w-[330px] pt-2 text-center font-medium leading-5 text-gray-500">
           {isPreDemo

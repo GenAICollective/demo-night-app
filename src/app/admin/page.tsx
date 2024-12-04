@@ -3,7 +3,7 @@
 import { type Event } from "@prisma/client";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { cn } from "~/lib/utils";
@@ -53,6 +53,8 @@ export default function AdminHomePage() {
     );
   };
 
+  const router = useRouter();
+
   return (
     <main className="flex min-h-screen w-full flex-col text-black">
       <DashboardContext.Provider value={{ currentEvent, event, refetchEvent }}>
@@ -66,60 +68,55 @@ export default function AdminHomePage() {
         <div className="flex flex-col gap-4 p-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {events?.map((event) => (
-              <div
+              <button
                 key={event.id}
                 className={cn(
-                  "rounded-xl bg-gray-100 p-4",
+                  "rounded-xl bg-gray-100 p-4 text-left",
                   event.id === selectedEventId
                     ? "border-blue-500"
                     : "border-gray-200",
                 )}
-                onClick={() => setSelectedEventId(event.id)}
-                role="button"
+                onClick={() => {
+                  setSelectedEventId(event.id);
+                  router.push(`/admin/${event.id}`);
+                }}
               >
-                <Link
-                  href={`/admin/${event.id}`}
-                  className="flex flex-col gap-1"
-                >
-                  <h3 className="line-clamp-1 text-xl font-bold">
-                    {event.name}
-                  </h3>
-                  <p className="font-semibold leading-4 text-gray-600">
-                    {event.date.toLocaleDateString("en-US", {
-                      timeZone: "UTC",
-                    })}
-                  </p>
-                  <div className="mt-2 flex gap-2">
-                    <button
-                      className="flex-1 rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        showUpsertEventModal(event);
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className={cn(
-                        "flex-1 rounded-xl p-2 font-semibold transition-all focus:outline-none",
-                        event.id === currentEvent?.id
-                          ? "bg-red-200 hover:bg-red-300"
-                          : "bg-green-200 hover:bg-green-300",
-                      )}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        updateCurrentMutation
-                          .mutateAsync(
-                            event.id === currentEvent?.id ? null : event.id,
-                          )
-                          .then(() => refetch());
-                      }}
-                    >
-                      {event.id === currentEvent?.id ? "Stop" : "Start"}
-                    </button>
-                  </div>
-                </Link>
-              </div>
+                <h3 className="line-clamp-1 text-xl font-bold">{event.name}</h3>
+                <p className="font-semibold leading-4 text-gray-600">
+                  {event.date.toLocaleDateString("en-US", {
+                    timeZone: "UTC",
+                  })}
+                </p>
+                <div className="mt-2 flex gap-2">
+                  <button
+                    className="flex-1 rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showUpsertEventModal(event);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className={cn(
+                      "flex-1 rounded-xl p-2 font-semibold transition-all focus:outline-none",
+                      event.id === currentEvent?.id
+                        ? "bg-red-200 hover:bg-red-300"
+                        : "bg-green-200 hover:bg-green-300",
+                    )}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateCurrentMutation
+                        .mutateAsync(
+                          event.id === currentEvent?.id ? null : event.id,
+                        )
+                        .then(() => refetch());
+                    }}
+                  >
+                    {event.id === currentEvent?.id ? "Stop" : "Start"}
+                  </button>
+                </div>
+              </button>
             ))}
             <button
               className="flex size-full items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-200 bg-white p-2 font-semibold transition-all hover:bg-gray-100 focus:outline-none"
