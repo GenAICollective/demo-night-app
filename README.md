@@ -48,7 +48,7 @@ yarn db:seed
 yarn dev
 ```
 
-- The local app should now be available at `localhost:3000` and `localhost:300/admin`!
+- The local app should now be available at `localhost:3000` and `localhost:3000/admin`!
 - You can log in with "<test@example.com>"
 
 ## Data Ops
