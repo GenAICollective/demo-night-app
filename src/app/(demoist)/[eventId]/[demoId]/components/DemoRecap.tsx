@@ -1,8 +1,9 @@
 "use client";
 
-import { CircleHelp, Download, ShareIcon } from "lucide-react";
+import { CircleHelp, Download, ShareIcon, ChevronDown } from "lucide-react";
 import { CSVLink } from "react-csv";
 import { toast } from "sonner";
+import { useState } from "react";
 
 import { type CompleteDemo } from "~/server/api/routers/demo";
 
@@ -13,8 +14,23 @@ import { useModal } from "~/components/modal/provider";
 
 import { FeedbackItem } from "./FeedbackItem";
 import InfoModal from "./InfoModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { type FilterOption, type SortOption, filterFeedback, sortFeedback } from "./feedbackUtils";
 
 export default function DemoRecap({ demo }: { demo: CompleteDemo }) {
+  const [sortOption, setSortOption] = useState<SortOption>("rank-highest");
+  const [filterOption, setFilterOption] = useState<FilterOption>("all");
+
+  const processedFeedback = filterFeedback(
+    sortFeedback(demo.feedback, sortOption),
+    filterOption
+  );
+
   return (
     <>
       <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full max-w-xl">
@@ -29,7 +45,47 @@ export default function DemoRecap({ demo }: { demo: CompleteDemo }) {
           </div>
           <ActionButtons demo={demo} />
           <RatingSummary demo={demo} />
-          {demo.feedback.map((feedback) => (
+          
+          <div className="flex w-full gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="flex-1">
+                  Sort by {sortOption === "rank-highest" ? "Highest Rank" : "Lowest Rank"}
+                  <ChevronDown className="-mt-1" size={20} strokeWidth={3.5} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setSortOption("rank-highest")}>
+                  Highest Rank
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortOption("rank-lowest")}>
+                  Lowest Rank
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="flex-1">
+                  Filter: {filterOption === "all" ? "All" : filterOption === "invest" ? "Want to Invest" : "Email Me"}
+                  <ChevronDown className="-mt-1" size={20} strokeWidth={3.5} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setFilterOption("all")}>
+                  All Feedback
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterOption("invest")}>
+                  Want to Invest
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterOption("email")}>
+                  Email Me
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {processedFeedback.map((feedback) => (
             <FeedbackItem key={feedback.id} feedback={feedback} />
           ))}
         </div>
