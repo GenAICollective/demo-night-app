@@ -93,7 +93,7 @@ function RatingSummary({ demo }: { demo: CompleteDemo }) {
   const numByRating = demo.feedback.reduce(
     (acc, feedback) => {
       if (feedback.rating) {
-        acc[feedback.rating] += 1;
+        acc[feedback.rating] = (acc[feedback.rating] ?? 0) + 1;
       }
       return acc;
     },

@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 
-import { EventPhase, allPhases, displayName } from "~/lib/types/currentEvent";
 import { api } from "~/trpc/react";
 
-import AttendeeList from "./components/AttendeeList";
-import DemosDashboard from "./components/DemosDashboard";
-import PreDashboard from "./components/PreDashboard";
-import RecapDashboard from "./components/RecapDashboard";
-import ResultsDashboard from "./components/ResultsDashboard";
-import VotingDashboard from "./components/VotingDashboard";
-import EventTitle from "~/components/EventTitle";
+import { AdminSidebar, AdminTab } from "./components/AdminSidebar";
+import AttendeesTab from "./components/Attendees/AttendeesTab";
+import { AwardsTab } from "./components/Awards/AwardsTab";
+import ControlCenterTab from "./components/ControlCenter/ControlCenterTab";
+import { DemosTab } from "./components/Demos/DemosTab";
+import EventFeedbackTab from "./components/EventFeedback/EventFeedbackTab";
+import { PartnersTab } from "./components/Partners/PartnersTab";
+import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 
 import {
   DashboardContext,
@@ -36,7 +36,7 @@ export default function AdminEventPage({
   }, [params.eventId, setSelectedEventId]);
 
   return (
-    <main className="flex min-h-screen w-full flex-col text-black">
+    <main className="flex min-h-screen w-full">
       <DashboardContext.Provider value={{ currentEvent, event, refetchEvent }}>
         {event ? (
           <EventDashboard />
@@ -51,82 +51,53 @@ export default function AdminEventPage({
 }
 
 function EventDashboard() {
-  const { currentEvent, event } = useDashboardContext();
-  const [phase, setPhase] = useState(currentEvent?.phase ?? EventPhase.Pre);
+  const { event } = useDashboardContext();
+  const [selectedTab, setSelectedTab] = useState<AdminTab>(
+    AdminTab.DemosAndFeedback,
+  );
+  const { data: eventData } = api.event.getAdmin.useQuery(event?.id ?? "", {
+    enabled: !!event?.id,
+  });
 
   function dashboard() {
-    switch (phase) {
-      case EventPhase.Pre:
-        return <PreDashboard />;
-      case EventPhase.Demos:
-        return <DemosDashboard />;
-      case EventPhase.Voting:
-        return <VotingDashboard />;
-      case EventPhase.Results:
-        return <ResultsDashboard />;
-      case EventPhase.Recap:
-        return <RecapDashboard />;
+    switch (selectedTab) {
+      case AdminTab.Submissions:
+        return <div></div>;
+      case AdminTab.Demos:
+        return <DemosTab />;
+      case AdminTab.Awards:
+        return <AwardsTab />;
+      case AdminTab.Partners:
+        return <PartnersTab />;
+      case AdminTab.DemosAndFeedback:
+      case AdminTab.AwardsAndVoting:
+        return (
+          <ControlCenterTab
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+          />
+        );
+      case AdminTab.Attendees:
+        return <AttendeesTab />;
+      case AdminTab.EventFeedback:
+        return <EventFeedbackTab />;
     }
   }
 
-  return (
-    <div className="flex size-full flex-1 flex-col items-center justify-center gap-2 p-2 text-black">
-      <EventTitle name={event?.name ?? ""} url={event?.url ?? ""} />
-      <div className="flex w-full flex-1 flex-col justify-between gap-2">
-        <PhaseSelector phase={phase} setPhase={setPhase} />
-        <div className="flex size-full flex-1 flex-row gap-2">
-          <div className="min-h-full flex-1">{dashboard()}</div>
-          <AttendeeList />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PhaseSelector({
-  phase,
-  setPhase,
-}: {
-  phase: EventPhase;
-  setPhase: (phase: EventPhase) => void;
-}) {
-  const { currentEvent, event, refetchEvent } = useDashboardContext();
-  const updateCurrentStateMutation = api.event.updateCurrentState.useMutation();
+  if (!event) return null;
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-row items-center pb-2">
-        <h3 className="font-semibold">Phase:</h3>
-        <select
-          className="ml-2 w-[120px] rounded-xl border border-gray-200 p-2 font-medium"
-          value={phase}
-          onChange={(e) => {
-            const selectedPhase = parseInt(e.target.value, 10);
-            if (!isNaN(selectedPhase)) {
-              setPhase(selectedPhase as EventPhase);
-            }
-          }}
-        >
-          {allPhases.map((value) => (
-            <option key={value} value={value}>
-              {displayName(value)}
-            </option>
-          ))}
-        </select>
-        {currentEvent?.id === event?.id && (
-          <button
-            className="ml-2 rounded-xl bg-green-200 p-2 font-semibold transition-all hover:bg-green-300 focus:outline-none"
-            hidden={phase === currentEvent?.phase}
-            onClick={() =>
-              updateCurrentStateMutation
-                .mutateAsync({ phase: phase })
-                .then(refetchEvent)
-            }
-          >
-            Select Phase
-          </button>
-        )}
+    <SidebarProvider defaultOpen>
+      <div className="flex h-screen w-full">
+        <AdminSidebar
+          event={event}
+          submissions={eventData?.submissions}
+          attendees={eventData?.attendees}
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+        />
+        <SidebarInset className="flex-1 p-4">{dashboard()}</SidebarInset>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

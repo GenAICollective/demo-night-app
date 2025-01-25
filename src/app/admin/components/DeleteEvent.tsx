@@ -1,10 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
 
-import { useModal } from "~/components/modal/provider";
+import { Button } from "~/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 
 export function DeleteEventButton({
   eventId,
@@ -13,57 +20,69 @@ export function DeleteEventButton({
   eventId: string;
   onDeleted: () => void;
 }) {
-  const modal = useModal();
+  const [open, setOpen] = useState(false);
   return (
-    <button
-      className="w-16 rounded-xl bg-red-500 p-2 font-semibold text-white transition-all hover:bg-red-600 focus:outline-none"
-      onClick={() =>
-        modal?.show(
-          <DeleteEventModal eventId={eventId} onDeleted={onDeleted} />,
-        )
-      }
-    >
-      Delete
-    </button>
+    <>
+      <Button
+        variant="destructive"
+        className="w-20"
+        onClick={() => setOpen(true)}
+      >
+        Delete
+      </Button>
+      <DeleteEventDialog
+        eventId={eventId}
+        onDeleted={onDeleted}
+        open={open}
+        onOpenChange={setOpen}
+      />
+    </>
   );
 }
 
-export function DeleteEventModal({
+export function DeleteEventDialog({
   eventId,
   onDeleted,
+  open,
+  onOpenChange,
 }: {
   eventId: string;
   onDeleted: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
   const deleteMutation = api.event.delete.useMutation();
-  const modal = useModal();
-
-  const handleDelete = () => {
-    deleteMutation
-      .mutateAsync(eventId)
-      .then(() => {
-        modal?.hide();
-        toast.success("Event successfully deleted");
-        onDeleted();
-      })
-      .catch((error) => {
-        toast.error(`Failed to delete event: ${error.message}`);
-      });
-  };
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <h1 className="text-center text-xl font-bold">Confirm Deletion</h1>
-      <p className="w-[300px] text-wrap text-center">
-        Are you sure you want to delete this event?
-      </p>
-      <button
-        className="rounded-xl bg-red-500 p-2 font-semibold text-white transition-all hover:bg-red-600 focus:outline-none"
-        onClick={handleDelete}
-        disabled={deleteMutation.isPending}
-      >
-        Confirm Delete
-      </button>
-    </div>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Confirm Deletion</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center gap-4">
+          <p className="w-[300px] text-wrap text-center">
+            Are you sure you want to delete this event?
+          </p>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              deleteMutation
+                .mutateAsync(eventId)
+                .then(() => {
+                  onOpenChange(false);
+                  toast.success("Event successfully deleted");
+                  onDeleted();
+                })
+                .catch((error) => {
+                  toast.error(`Failed to delete event: ${error.message}`);
+                });
+            }}
+            disabled={deleteMutation.isPending}
+          >
+            Confirm Delete
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

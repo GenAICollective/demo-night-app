@@ -1,8 +1,15 @@
-import { type Award, type Demo, type Event, type Prisma } from "@prisma/client";
+import {
+  type Award,
+  type Demo,
+  type Event,
+  type EventFeedback,
+  type Prisma,
+} from "@prisma/client";
 import { z } from "zod";
 
 import { DEFAULT_AWARDS } from "~/lib/defaultAwards";
 import * as kv from "~/lib/types/currentEvent";
+import { partnersSchema } from "~/lib/types/partner";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -13,6 +20,7 @@ import { db } from "~/server/db";
 export type CompleteEvent = Event & {
   demos: PublicDemo[];
   awards: Award[];
+  eventFeedback: EventFeedback[];
 };
 
 export type PublicDemo = Omit<
@@ -53,22 +61,26 @@ export const eventRouter = createTRPCRouter({
       z.object({
         originalId: z.string().optional(),
         id: z.string().optional(),
-        name: z.string(),
-        date: z.date(),
-        url: z.string().url(),
+        name: z.string().optional(),
+        date: z.date().optional(),
+        url: z.string().url().optional(),
+        partners: partnersSchema.optional(),
       }),
     )
     .mutation(async ({ input }) => {
+      const data = {
+        id: input.id,
+        name: input.name,
+        date: input.date,
+        url: input.url,
+        partners: input.partners,
+      };
+
       if (input.originalId) {
         return db.event
           .update({
             where: { id: input.originalId },
-            data: {
-              id: input.id,
-              name: input.name,
-              date: input.date,
-              url: input.url,
-            },
+            data,
           })
           .then(async (res: Event) => {
             const currentEvent = await kv.getCurrentEvent();
@@ -80,7 +92,11 @@ export const eventRouter = createTRPCRouter({
       }
       return db.event.create({
         data: {
-          ...input,
+          id: data.id!,
+          name: data.name!,
+          date: data.date!,
+          url: data.url!,
+          partners: data.partners ?? [],
           awards: {
             create: DEFAULT_AWARDS,
           },
@@ -101,6 +117,8 @@ export const eventRouter = createTRPCRouter({
         demos: { orderBy: { index: "asc" } },
         attendees: { orderBy: { name: "asc" } },
         awards: { orderBy: { index: "asc" } },
+        submissions: { orderBy: { createdAt: "desc" } },
+        eventFeedback: { orderBy: { createdAt: "desc" } },
       },
     });
   }),

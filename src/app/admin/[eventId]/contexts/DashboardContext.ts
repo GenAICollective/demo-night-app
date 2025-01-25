@@ -3,6 +3,7 @@ import {
   type Award,
   type Demo,
   type Event,
+  type EventFeedback,
 } from "@prisma/client";
 import { createContext, useContext } from "react";
 
@@ -12,6 +13,8 @@ export type AdminEvent = Event & {
   demos: Demo[];
   attendees: Attendee[];
   awards: Award[];
+  eventFeedback: EventFeedback[];
+  submissions: { id: string }[];
 };
 
 export type IDashboardContext = {

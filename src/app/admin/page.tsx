@@ -1,132 +1,161 @@
 "use client";
 
 import { type Event } from "@prisma/client";
-import { PlusIcon } from "lucide-react";
+import { CalendarIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useState } from "react";
 
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import { UpsertEventModal } from "./components/UpsertEventModal";
-import { useModal } from "~/components/modal/provider";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardTitle } from "~/components/ui/card";
 
 import { DashboardContext } from "./[eventId]/contexts/DashboardContext";
 import { useEventAdmin } from "./[eventId]/hooks/useEventAdmin";
 
 export default function AdminHomePage() {
-  const {
-    currentEvent,
-    event,
-    refetch: refetchEvent,
-    selectedEventId,
-    setSelectedEventId,
-  } = useEventAdmin();
-  const modal = useModal();
+  const { currentEvent, event, refetch: refetchEvent } = useEventAdmin();
   const { data: events, refetch: _refetchEvents } =
     api.event.allAdmin.useQuery();
-
-  const updateCurrentMutation = api.event.updateCurrent.useMutation();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<Event | undefined>(
+    undefined,
+  );
 
   const refetch = () => {
     refetchEvent();
     _refetchEvents();
   };
 
-  useEffect(() => {
-    if (events && events.length > 0 && !selectedEventId) {
-      setSelectedEventId(events[0]!.id);
-    }
-  }, [events, selectedEventId, setSelectedEventId]);
-
   const showUpsertEventModal = (event?: Event) => {
-    modal?.show(
-      <UpsertEventModal
-        event={event}
-        onSubmit={() => refetch()}
-        onDeleted={() => {
-          setSelectedEventId(undefined);
-          refetch();
-        }}
-      />,
-    );
+    setSelectedEvent(event);
+    setModalOpen(true);
   };
 
   const router = useRouter();
 
   return (
-    <main className="flex min-h-screen w-full flex-col text-black">
+    <main className="min-h-screen bg-gray-50">
       <DashboardContext.Provider value={{ currentEvent, event, refetchEvent }}>
-        <div className="flex items-center gap-2 p-2">
-          <Image src="/images/logo.png" alt="logo" width={40} height={40} />
-          <h1 className="line-clamp-1 font-kallisto text-2xl font-bold">
-            Demo Night App Admin Dashboard
-          </h1>
-        </div>
+        <header className="sticky top-0 z-10 border-b bg-white/60 shadow-sm backdrop-blur">
+          <div className="flex items-center gap-3 px-6 py-4">
+            <Image
+              src="/images/logo.png"
+              alt="logo"
+              width={40}
+              height={40}
+              className="rounded-lg"
+            />
+            <div className="flex flex-col">
+              <h1 className="line-clamp-1 font-kallisto text-xl font-bold leading-6">
+                Demo Night App
+              </h1>
+              <span className="text-muted-foreground text-sm">
+                Admin Dashboard
+              </span>
+            </div>
+          </div>
+        </header>
 
-        <div className="flex flex-col gap-4 p-4">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="container mx-auto p-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Card
+              className={cn(
+                "cursor-pointer transition-all hover:shadow-md",
+                "border-border border-dashed",
+                "active:scale-95",
+              )}
+              onClick={() => showUpsertEventModal()}
+            >
+              <CardContent className="flex h-[88px] items-center justify-center p-4">
+                <div className="text-muted-foreground flex items-center gap-2">
+                  <PlusIcon className="h-5 w-5" />
+                  <span className="font-medium">Create Event</span>
+                </div>
+              </CardContent>
+            </Card>
             {events?.map((event) => (
-              <button
+              <Card
                 key={event.id}
                 className={cn(
-                  "rounded-xl bg-gray-100 p-4 text-left",
-                  event.id === selectedEventId
-                    ? "border-blue-500"
-                    : "border-gray-200",
+                  "cursor-pointer transition-all hover:shadow-md",
+                  "border-border",
+                  "active:scale-95",
                 )}
                 onClick={() => {
-                  setSelectedEventId(event.id);
                   router.push(`/admin/${event.id}`);
                 }}
               >
-                <h3 className="line-clamp-1 text-xl font-bold">{event.name}</h3>
-                <p className="font-semibold leading-4 text-gray-600">
-                  {event.date.toLocaleDateString("en-US", {
-                    timeZone: "UTC",
-                  })}
-                </p>
-                <div className="mt-2 flex gap-2">
-                  <button
-                    className="flex-1 rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      showUpsertEventModal(event);
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className={cn(
-                      "flex-1 rounded-xl p-2 font-semibold transition-all focus:outline-none",
-                      event.id === currentEvent?.id
-                        ? "bg-red-200 hover:bg-red-300"
-                        : "bg-green-200 hover:bg-green-300",
-                    )}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      updateCurrentMutation
-                        .mutateAsync(
-                          event.id === currentEvent?.id ? null : event.id,
-                        )
-                        .then(() => refetch());
-                    }}
-                  >
-                    {event.id === currentEvent?.id ? "Stop" : "Start"}
-                  </button>
-                </div>
-              </button>
+                <CardContent className="p-4">
+                  <CardTitle className="flex items-start justify-between">
+                    <div className="flex items-center">
+                      <span className="line-clamp-1 pr-2 text-lg">
+                        {event.name}
+                      </span>
+                      {event.id === currentEvent?.id && (
+                        <div className="flex items-center gap-2 rounded-full bg-green-100 px-2 py-1">
+                          <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-green-500" />
+                          <span className="text-xs font-semibold text-green-600">
+                            LIVE
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showUpsertEventModal(event);
+                      }}
+                    >
+                      <span className="sr-only">Edit</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-4 w-4"
+                      >
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                        <path d="m15 5 4 4" />
+                      </svg>
+                    </Button>
+                  </CardTitle>
+                  <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                    <CalendarIcon className="h-4 w-4" />
+                    <time>
+                      {event.date.toLocaleDateString("en-US", {
+                        timeZone: "UTC",
+                        weekday: "short",
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </time>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
-            <button
-              className="flex size-full items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-200 bg-white p-2 font-semibold transition-all hover:bg-gray-100 focus:outline-none"
-              onClick={() => showUpsertEventModal()}
-            >
-              <PlusIcon className="size-4" strokeWidth={2.5} />
-              Create Event
-            </button>
           </div>
         </div>
+        <UpsertEventModal
+          event={selectedEvent}
+          onSubmit={() => refetch()}
+          onDeleted={() => {
+            setModalOpen(false);
+            refetch();
+          }}
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+        />
       </DashboardContext.Provider>
     </main>
   );
