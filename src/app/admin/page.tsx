@@ -10,6 +10,7 @@ import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import { UpsertEventModal } from "./components/UpsertEventModal";
+import Logos from "~/components/Logos";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
 
@@ -36,22 +37,17 @@ export default function AdminHomePage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <header className="sticky top-0 z-10 border-b bg-white/60 shadow-sm backdrop-blur">
-        <div className="flex items-center gap-3 px-6 py-4">
-          <Image
-            src="/images/logo.png"
-            alt="logo"
-            width={40}
-            height={40}
-            className="rounded-lg"
-          />
-          <div className="flex flex-col">
-            <h1 className="line-clamp-1 font-kallisto text-xl font-bold leading-6">
+        <div className="container mx-auto flex items-center justify-between gap-1 px-8 py-2">
+          <Logos size={36} />
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="line-clamp-1 font-kallisto text-xl font-bold leading-6 tracking-tight">
               Demo Night App
             </h1>
-            <span className="text-sm font-medium text-muted-foreground">
+            <span className="font-kallisto text-sm font-bold text-muted-foreground">
               Admin Dashboard
             </span>
           </div>
+          <div className="flex w-[108px] items-center justify-end" />
         </div>
       </header>
       <div className="container mx-auto p-8">
@@ -86,7 +82,7 @@ export default function AdminHomePage() {
               <CardContent className="p-4">
                 <CardTitle className="flex items-start justify-between">
                   <div className="flex items-center">
-                    <span className="line-clamp-1 pr-2 text-lg">
+                    <span className="line-clamp-1 pr-2 text-xl">
                       {event.name}
                     </span>
                     {event.id === currentEvent?.id && (

@@ -11,7 +11,7 @@ import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import AttendeeTypeBadge from "~/components/AttendeeTypeBadge";
-import { GaicoConfetti } from "~/components/Confetti";
+import { LogoConfetti } from "~/components/Confetti";
 import LoadingScreen from "~/components/loading/LoadingScreen";
 
 import { env } from "~/env";
@@ -70,7 +70,7 @@ export default function DemosPresentation() {
         </AnimatePresence>
       </ul>
       <div className="z-3 pointer-events-none fixed inset-0">
-        <GaicoConfetti />
+        <LogoConfetti />
       </div>
     </div>
   );

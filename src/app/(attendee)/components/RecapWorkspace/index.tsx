@@ -12,7 +12,7 @@ import * as QuickActions from "~/lib/types/quickActions";
 import { type PublicDemo } from "~/server/api/routers/event";
 import { api } from "~/trpc/react";
 
-import { GaicoConfetti } from "~/components/Confetti";
+import { LogoConfetti } from "~/components/Confetti";
 
 import { useEventFeedback } from "./hooks/useEventFeedback";
 
@@ -112,7 +112,7 @@ export default function RecapWorkspace() {
         </div>
       </div>
       <div className="z-3 pointer-events-none fixed inset-0">
-        <GaicoConfetti />
+        <LogoConfetti />
       </div>
     </div>
   );

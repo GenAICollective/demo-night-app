@@ -1476,10 +1476,15 @@ camelcase-css@^2.0.1:
   resolved "https://registry.yarnpkg.com/camelcase-css/-/camelcase-css-2.0.1.tgz#ee978f6947914cc30c6b44741b6ed1df7f043fd5"
   integrity sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==
 
-caniuse-lite@^1.0.30001579, caniuse-lite@^1.0.30001587, caniuse-lite@^1.0.30001599, caniuse-lite@^1.0.30001616:
+caniuse-lite@^1.0.30001579, caniuse-lite@^1.0.30001587, caniuse-lite@^1.0.30001599:
   version "1.0.30001616"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001616.tgz#4342712750d35f71ebba9fcac65e2cf8870013c3"
   integrity sha512-RHVYKov7IcdNjVHJFNY/78RdG4oGVjbayxv8u5IO74Wv7Hlq4PnJE6mo/OjFijjVFNy5ijnCt6H3IIo4t+wfEw==
+
+caniuse-lite@^1.0.30001695:
+  version "1.0.30001695"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001695.tgz#39dfedd8f94851132795fdf9b79d29659ad9c4d4"
+  integrity sha512-vHyLade6wTgI2u1ec3WQBxv+2BrTERV28UXQu9LO6lZ9pYeMk34vjXFLOxo1A4UBA8XTL4njRQZdno/yYaSmWw==
 
 chalk@^2.4.2:
   version "2.4.2"
@@ -3375,10 +3380,10 @@ rc-util@^5.36.0:
     react-is "^18.2.0"
 
 "react-confetti@github:chappyasel/react-confetti#develop":
-  version "6.1.4"
-  resolved "https://codeload.github.com/chappyasel/react-confetti/tar.gz/f7a2fc0f96adc1bc4e6f12a6a3e576eed0488322"
+  version "6.1.5"
+  resolved "https://codeload.github.com/chappyasel/react-confetti/tar.gz/dfd42bd4b71c8cbeed8fb7a86f503088d94fc71c"
   dependencies:
-    caniuse-lite "^1.0.30001616"
+    caniuse-lite "^1.0.30001695"
     tween-functions "^1.2.0"
 
 react-csv@^2.2.2:

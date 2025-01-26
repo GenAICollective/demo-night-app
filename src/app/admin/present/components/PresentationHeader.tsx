@@ -1,10 +1,8 @@
 import { usePresentationContext } from "../contexts/PresentationContext";
-import Image from "next/image";
-import Link from "next/link";
 
 import { EventPhase, allPhases, displayName } from "~/lib/types/currentEvent";
 
-import { env } from "~/env";
+import Logos from "~/components/Logos";
 
 export default function PresentationHeader() {
   const { currentEvent } = usePresentationContext();
@@ -13,19 +11,7 @@ export default function PresentationHeader() {
       <div className="flex w-full max-w-xl flex-1 flex-col items-center justify-between">
         <PhasePills currentPhase={currentEvent?.phase ?? EventPhase.Pre} />
         <div className="flex w-full flex-1 flex-row items-center justify-between px-3">
-          <Link
-            href={env.NEXT_PUBLIC_BASE_URL}
-            className="-ml-1 flex items-center p-1"
-            target="_blank"
-          >
-            <Image
-              id="logo"
-              src="/images/logo.png"
-              alt="logo"
-              width={36}
-              height={36}
-            />
-          </Link>
+          <Logos size={36} />
           <h1 className="mt-1 line-clamp-1 text-ellipsis px-1 font-kallisto text-xl font-bold tracking-tight">
             {currentEvent?.name ?? ""}
           </h1>

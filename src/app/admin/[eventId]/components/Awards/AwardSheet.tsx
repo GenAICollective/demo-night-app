@@ -160,7 +160,7 @@ export default function AwardSheet({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Attendees can vote</FormLabel>
+                    <FormLabel>Attendees can vote?</FormLabel>
                     <p className="text-sm text-muted-foreground">
                       Enable this if attendees should be able to cast votes for
                       this award. If unchecked, you can still manually select

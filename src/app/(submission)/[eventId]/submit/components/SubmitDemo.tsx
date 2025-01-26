@@ -9,7 +9,7 @@ import { type CompleteEvent } from "~/server/api/routers/event";
 import { api } from "~/trpc/react";
 
 import Button from "~/components/Button";
-import { GaicoConfetti } from "~/components/Confetti";
+import { LogoConfetti } from "~/components/Confetti";
 
 const GUIDELINES_URL =
   "https://docs.google.com/document/d/1Z-c4KaGAWzH2siuGYoocQ7uVI_o8E6gocUXJO3BMLw8/edit";
@@ -17,14 +17,14 @@ const GUIDELINES_URL =
 export default function SubmitDemoPage({ event }: { event: CompleteEvent }) {
   return (
     <>
-      <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full max-w-4xl">
+      <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full max-w-2xl">
         <div className="size-full p-4">
           <SubmitDemoForm event={event} />
         </div>
       </div>
 
       <div className="z-3 pointer-events-none fixed inset-0">
-        <GaicoConfetti />
+        <LogoConfetti />
       </div>
     </>
   );

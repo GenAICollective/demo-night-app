@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html body {
+  pointer-events: auto !important;
+}
+
 @layer utilities {
   .debug {
     @apply border-[2px] border-red-500;

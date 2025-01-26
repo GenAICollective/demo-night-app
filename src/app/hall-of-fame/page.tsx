@@ -7,12 +7,13 @@ import { api } from "~/trpc/server";
 import AwardWinnerItem from "./components/AwardWinnerItem";
 import HofHeader from "./components/HofHeader";
 import { LinkButton } from "~/components/Button";
-import { GaicoConfetti } from "~/components/Confetti";
+import { LogoConfetti } from "~/components/Confetti";
+import Logos from "~/components/Logos";
 
 import { env } from "~/env";
 
 export const metadata: Metadata = {
-  title: "GenAI Collective Demo Night Hall of Fame 🏆",
+  title: "Demo Night Hall of Fame 🏆",
 };
 
 export default async function HallOfFamePage() {
@@ -44,7 +45,7 @@ export default async function HallOfFamePage() {
           ))}
         </div>
         <div className="pointer-events-none fixed inset-0">
-          <GaicoConfetti />
+          <LogoConfetti />
         </div>
       </div>
     </main>
@@ -54,20 +55,13 @@ export default async function HallOfFamePage() {
 function NoEventsPage() {
   return (
     <main className="flex min-h-screen w-full flex-col items-center justify-center pb-16 font-kallisto text-black">
-      <Image
-        className="z-10"
-        src="/images/logo.png"
-        id="logo"
-        alt="logo"
-        width={160}
-        height={160}
-      />
+      <Logos size={120} />
       <h1 className="pt-4 text-center text-2xl font-semibold">
-        GenAI Collective Demo Night!
+        Demo Night App
       </h1>
       <LinkButton href={env.NEXT_PUBLIC_BASE_URL}>Learn more</LinkButton>
       <div className="z-3 pointer-events-none fixed inset-0">
-        <GaicoConfetti />
+        <LogoConfetti />
       </div>
     </main>
   );

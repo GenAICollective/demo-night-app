@@ -224,7 +224,14 @@ function DemoRow({
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" onClick={copyUrl}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      copyUrl();
+                    }}
+                  >
                     <LinkIcon className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
@@ -237,6 +244,10 @@ function DemoRow({
                     variant="ghost"
                     size="sm"
                     className="focus:outline-none"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      copyUrl();
+                    }}
                   >
                     <QrCode className="h-4 w-4" />
                   </Button>
@@ -331,7 +342,7 @@ function DeleteDemoDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Demo</AlertDialogTitle>
+          <AlertDialogTitle>Delete Demo?</AlertDialogTitle>
           <AlertDialogDescription>
             Are you sure you want to delete this demo? This action cannot be
             undone.

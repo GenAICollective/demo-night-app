@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { type CompleteDemo } from "~/server/api/routers/demo";
 
 import Button from "~/components/Button";
-import { GaicoConfetti } from "~/components/Confetti";
+import { LogoConfetti } from "~/components/Confetti";
 import { RATING_EMOJIS } from "~/components/RatingSlider";
 import { useModal } from "~/components/modal/provider";
 
@@ -36,7 +36,7 @@ export default function DemoRecap({ demo }: { demo: CompleteDemo }) {
       </div>
 
       <div className="z-3 pointer-events-none fixed inset-0">
-        <GaicoConfetti />
+        <LogoConfetti />
       </div>
     </>
   );

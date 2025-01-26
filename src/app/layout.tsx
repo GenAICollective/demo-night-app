@@ -8,8 +8,8 @@ import { ModalProvider } from "~/components/modal/provider";
 import "~/styles/globals.css";
 
 export const metadata = {
-  title: "GenAI Collective Demo Night App",
-  description: "GenAI Collective Demo Night App",
+  title: "Demo Night App",
+  description: "Demo Night App",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
