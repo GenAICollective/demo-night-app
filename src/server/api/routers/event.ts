@@ -7,7 +7,11 @@ import {
 } from "@prisma/client";
 import { z } from "zod";
 
-import { DEFAULT_AWARDS } from "~/lib/defaultAwards";
+import {
+  DEFAULT_AWARDS,
+  DEFAULT_DEMOS,
+  DEFAULT_PARTNERS,
+} from "~/lib/defaults";
 import * as kv from "~/lib/types/currentEvent";
 import { partnersSchema } from "~/lib/types/partner";
 import {
@@ -16,6 +20,8 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { db } from "~/server/db";
+
+import { type AdminEvent } from "~/app/admin/[eventId]/contexts/DashboardContext";
 
 export type CompleteEvent = Event & {
   demos: PublicDemo[];
@@ -96,7 +102,10 @@ export const eventRouter = createTRPCRouter({
           name: data.name!,
           date: data.date!,
           url: data.url!,
-          partners: data.partners ?? [],
+          partners: data.partners ?? DEFAULT_PARTNERS,
+          demos: {
+            create: DEFAULT_DEMOS,
+          },
           awards: {
             create: DEFAULT_AWARDS,
           },
@@ -108,20 +117,19 @@ export const eventRouter = createTRPCRouter({
       orderBy: { date: "desc" },
     });
   }),
-  getAdmin: protectedProcedure.input(z.string()).query(async ({ input }) => {
-    return db.event.findUnique({
-      where: {
-        id: input,
-      },
-      include: {
-        demos: { orderBy: { index: "asc" } },
-        attendees: { orderBy: { name: "asc" } },
-        awards: { orderBy: { index: "asc" } },
-        submissions: { orderBy: { createdAt: "desc" } },
-        eventFeedback: { orderBy: { createdAt: "desc" } },
-      },
-    });
-  }),
+  getAdmin: protectedProcedure
+    .input(z.string())
+    .query(async ({ input }): Promise<AdminEvent | null> => {
+      return db.event.findUnique({
+        where: { id: input },
+        include: {
+          demos: { orderBy: { index: "asc" } },
+          attendees: { orderBy: { name: "asc" } },
+          awards: { orderBy: { index: "asc" } },
+          eventFeedback: { orderBy: { createdAt: "desc" } },
+        },
+      });
+    }),
   updateCurrent: protectedProcedure
     .input(z.string().nullable())
     .mutation(async ({ input }) => {

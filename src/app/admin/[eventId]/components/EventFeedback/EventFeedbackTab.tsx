@@ -100,17 +100,19 @@ export default function EventFeedbackTab() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
-      <div className="flex items-center justify-start gap-2">
-        <SidebarTrigger className="p-5 md:hidden" />
-        <h2 className="text-2xl font-semibold">Event Feedback</h2>
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-2">
+      <div className="flex items-end justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <SidebarTrigger className="p-5 md:hidden" />
+          <h2 className="text-2xl font-semibold">Event Feedback</h2>
+        </div>
+        <Input
+          placeholder="Search by name, type, or comment..."
+          value={searchFilter}
+          onChange={(e) => setSearchFilter(e.target.value)}
+          className="max-w-xs"
+        />
       </div>
-      <Input
-        placeholder="Search by name, type, or comment..."
-        value={searchFilter}
-        onChange={(e) => setSearchFilter(e.target.value)}
-        className="max-w-sm"
-      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

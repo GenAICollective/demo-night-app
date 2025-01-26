@@ -82,8 +82,8 @@ export function AwardsTab() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-2">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center justify-start gap-2">
+      <div className="flex items-end justify-between gap-2">
+        <div className="flex items-end justify-start gap-2">
           <SidebarTrigger className="p-5 md:hidden" />
           <h2 className="text-2xl font-semibold">Awards</h2>
         </div>
@@ -130,7 +130,7 @@ export function AwardsTab() {
       <div className="flex justify-end">
         <Button onClick={() => setAwardSheetOpen(true)}>
           <Plus className="h-4 w-4" />
-          Add Award
+          Award
         </Button>
       </div>
     </div>

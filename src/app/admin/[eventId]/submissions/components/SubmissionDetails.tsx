@@ -1,6 +1,6 @@
 import { type Submission, SubmissionStatus } from "@prisma/client";
-import { FlagIcon, StarIcon } from "lucide-react";
-import { useEffect } from "react";
+import { FlagIcon, Presentation, StarIcon, Trash } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -11,8 +11,37 @@ import { api } from "~/trpc/react";
 
 import { statusColor } from "~/components/SubmissionStatusBadge";
 import { useModal } from "~/components/modal/provider";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
+import { Button, buttonVariants } from "~/components/ui/button";
+import { Card } from "~/components/ui/card";
+import { Checkbox } from "~/components/ui/checkbox";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { ScrollArea } from "~/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Textarea } from "~/components/ui/textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 
-import EmailModal from "./EmailModal";
 import { type Event } from "./SubmissionsDashboard";
 
 export default function SubmissionDetails({
@@ -27,19 +56,20 @@ export default function SubmissionDetails({
   onUpdate: () => void;
 }) {
   return (
-    <div className="flex w-full flex-col gap-2 overflow-y-scroll">
+    <ScrollArea className="flex size-full flex-col gap-2 overflow-y-scroll pb-12">
       <SubmissionReview
         event={event}
         submission={submission}
         isAdmin={isAdmin}
         onUpdate={onUpdate}
       />
+      <h2 className="pb-1 pt-4 text-2xl font-semibold">Submission Details</h2>
       <Submission
         submission={submission}
         isAdmin={isAdmin}
         onUpdate={onUpdate}
       />
-    </div>
+    </ScrollArea>
   );
 }
 
@@ -54,15 +84,7 @@ function SubmissionReview({
   isAdmin: boolean;
   onUpdate: () => void;
 }) {
-  const modal = useModal();
   const updateMutation = api.submission.update.useMutation();
-  const convertToDemoMutation = api.submission.convertToDemo.useMutation();
-  console.log(
-    submission.status,
-    submission.flagged,
-    submission.rating,
-    submission.comment,
-  );
   const { register, setValue, watch } = useForm({
     values: {
       id: submission.id,
@@ -96,89 +118,69 @@ function SubmissionReview({
     return () => subscription.unsubscribe();
   }, [watch, debouncedUpdate]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const openEmailModal = (status: SubmissionStatus) => {
-    modal?.show(<EmailModal submission={submission} status={status} />);
-  };
-
-  const convertToDemo = () => {
-    convertToDemoMutation
-      .mutateAsync(submission.id)
-      .then(() => {
-        toast.success(`Converted to demo!`);
-        onUpdate();
-      })
-      .catch((error) => {
-        toast.error(`Failed to convert to demo: ${error.message}`);
-      });
-  };
-
-  const actionButton = (status: SubmissionStatus) => {
-    switch (status) {
-      // TODO:
-      // case SubmissionStatus.WAITLISTED:
-      // case SubmissionStatus.AWAITING_CONFIRMATION:
-      // case SubmissionStatus.REJECTED:
-      //   return (
-      //     <button
-      //       onClick={() => openEmailModal(status)}
-      //       className="rounded-xl bg-orange-200 p-2 text-sm font-semibold"
-      //     >
-      //       Draft Email ✍️
-      //     </button>
-      //   );
-      case SubmissionStatus.CONFIRMED:
-        return (
-          <button
-            onClick={convertToDemo}
-            className="rounded-xl bg-orange-200 p-2 text-sm font-semibold"
-          >
-            Convert to Demo 🧑‍💻
-          </button>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className="flex flex-col gap-4 rounded-xl bg-gray-100 p-4">
+    <Card className="flex flex-col gap-4 bg-muted p-4">
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-row items-center gap-4">
-          <label className="flex flex-col gap-1">
-            <select
-              {...register("status")}
-              className={cn(
-                "rounded-xl border border-gray-200 p-2 text-sm font-semibold",
-                statusColor(status),
-                `text-${statusColor(status).replace("bg-", "")}-800`,
-              )}
+          <div className="flex flex-col gap-1">
+            <Select
+              value={status}
+              onValueChange={(value: SubmissionStatus) =>
+                setValue("status", value)
+              }
             >
-              {SUBMISSION_STATUSES.map((status) => (
-                <option key={status} value={status}>
+              <SelectTrigger
+                className={cn(
+                  "w-[200px] font-semibold",
+                  statusColor(status),
+                  `text-${statusColor(status).replace("bg-", "")}-800`,
+                )}
+              >
+                <SelectValue placeholder="Select status">
                   {statusTitle(status)}
-                </option>
-              ))}
-            </select>
-          </label>
-          {isAdmin && actionButton(status)}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {SUBMISSION_STATUSES.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    <div className="flex flex-row items-center gap-2">
+                      <div
+                        className={cn(
+                          "size-3 rounded-full",
+                          statusColor(status),
+                        )}
+                      />
+                      <span className="text-sm font-semibold">
+                        {statusTitle(status)}
+                      </span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex flex-col items-start gap-3">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                {...register("flagged")}
-                className="hidden rounded-xl border border-gray-200 p-2"
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={watch("flagged")}
+                onCheckedChange={(checked) => {
+                  if (typeof checked === "boolean") {
+                    setValue("flagged", checked);
+                  }
+                }}
+                className="hidden"
               />
               <FlagIcon
                 className={cn(
                   "h-6 w-6 cursor-pointer transition-all duration-300",
                   watch("flagged")
                     ? "fill-orange-500 text-orange-700"
-                    : "text-gray-400",
+                    : "text-muted-foreground/50",
                 )}
                 strokeWidth={2.5}
+                onClick={() => setValue("flagged", !watch("flagged"))}
               />
-            </label>
+            </div>
           </div>
           <div className="flex flex-col items-start gap-3">
             <div className="flex items-center gap-1">
@@ -189,7 +191,7 @@ function SubmissionReview({
                     "h-[26px] w-[26px] cursor-pointer transition-all duration-300",
                     (watch("rating") ?? 0) >= value
                       ? "fill-yellow-300 text-yellow-500"
-                      : "text-gray-400",
+                      : "text-muted-foreground/50",
                   )}
                   strokeWidth={2.25}
                   onClick={() => {
@@ -204,16 +206,16 @@ function SubmissionReview({
             </div>
           </div>
         </div>
-        <label className="flex flex-col gap-1">
-          <textarea
+        <div className="flex flex-col gap-1">
+          <Textarea
             {...register("comment")}
             placeholder="Add a comment..."
-            className="max-h-32 min-h-10 rounded-xl border border-gray-200 p-2 placeholder:italic"
+            className="max-h-32 min-h-10"
             rows={1}
           />
-        </label>
+        </div>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -227,7 +229,9 @@ function Submission({
   onUpdate: () => void;
 }) {
   const adminUpdateMutation = api.submission.adminUpdate.useMutation();
+  const convertToDemoMutation = api.submission.convertToDemo.useMutation();
   const deleteMutation = api.submission.delete.useMutation();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { register, watch } = useForm({
     values: submission,
   });
@@ -256,107 +260,146 @@ function Submission({
     return () => subscription.unsubscribe();
   }, [watch, debouncedUpdate]);
 
+  const convertToDemo = () => {
+    convertToDemoMutation
+      .mutateAsync(submission.id)
+      .then(() => {
+        toast.success(`Converted to demo!`);
+        onUpdate();
+      })
+      .catch((error) => {
+        toast.error(`Failed to convert to demo: ${error.message}`);
+      });
+  };
+
   return (
-    <div className="flex flex-col gap-4 rounded-xl bg-gray-100 p-4">
-      <div className="flex flex-1 flex-col gap-4">
-        <div className="flex w-full flex-col gap-4 md:flex-row">
-          <label className="flex w-full flex-col gap-1">
-            <span className="font-semibold">Startup Name</span>
-            <input
-              type="text"
-              {...register("name")}
-              className="rounded-xl border border-gray-200 bg-white p-2"
-              disabled={!isAdmin}
-            />
-          </label>
-          <label className="flex w-full flex-col gap-1">
-            <span className="font-semibold">Startup Website</span>
-            <input
-              type="url"
-              placeholder="https://yourstartupwebsite.com"
-              {...register("url")}
-              className="rounded-xl border border-gray-200 bg-white p-2"
-              disabled={!isAdmin}
-            />
-          </label>
-        </div>
-        <label className="flex flex-col gap-1">
-          <div className="flex w-full flex-row items-center justify-start gap-1 font-semibold">
-            <span className="font-semibold">Tagline 👋</span>
-            {watch("tagline")?.length >= 100 && (
-              <span
-                className={cn(
-                  "text-sm italic",
-                  watch("tagline")?.length >= TAGLINE_MAX_LENGTH
-                    ? "text-red-500"
-                    : "text-gray-400",
-                )}
-              >
-                {`(${watch("tagline").length} / ${TAGLINE_MAX_LENGTH})`}
-              </span>
-            )}
+    <TooltipProvider>
+      <Card className="flex flex-col gap-4 bg-muted p-4">
+        <div className="flex flex-1 flex-col gap-4">
+          <div className="flex w-full flex-col gap-4 md:flex-row">
+            <div className="flex w-full flex-col gap-1">
+              <Label className="font-semibold">Demo / Startup Name</Label>
+              <Input type="text" {...register("name")} disabled={!isAdmin} />
+            </div>
+            <div className="flex w-full flex-col gap-1">
+              <Label className="font-semibold">Demo / Startup Website</Label>
+              <Input
+                type="url"
+                placeholder="https://yourstartupwebsite.com"
+                {...register("url")}
+                disabled={!isAdmin}
+              />
+            </div>
           </div>
-          <textarea
-            {...register("tagline")}
-            className="max-h-32 min-h-10 rounded-xl border border-gray-200 bg-white p-2"
-            rows={2}
-            disabled={!isAdmin}
-          />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="font-semibold">Demo Description 🧑‍💻</span>
-          <textarea
-            {...register("description")}
-            className="max-h-64 min-h-10 rounded-xl border border-gray-200 bg-white p-2"
-            rows={3}
-            disabled={!isAdmin}
-          />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="font-semibold">Demo Link 🔗</span>
-          <input
-            type="url"
-            placeholder="None"
-            {...register("demoUrl")}
-            className="rounded-xl border border-gray-200 bg-white p-2 placeholder:italic"
-            autoComplete="off"
-            disabled={!isAdmin}
-          />
-        </label>
-        <div className="flex w-full flex-col gap-4 md:flex-row">
-          <label className="flex w-full flex-col gap-1">
-            <span className="font-semibold">PoC Name</span>
-            <input
-              type="text"
-              {...register("pocName")}
-              className="rounded-xl border border-gray-200 bg-white p-2"
+          <div className="flex flex-col gap-1">
+            <div className="flex w-full flex-row items-center justify-start gap-1">
+              <Label className="font-semibold">Tagline 👋</Label>
+              {watch("tagline")?.length >= 100 && (
+                <span
+                  className={cn(
+                    "text-sm italic",
+                    watch("tagline")?.length >= TAGLINE_MAX_LENGTH
+                      ? "text-red-500"
+                      : "text-gray-400",
+                  )}
+                >
+                  {`(${watch("tagline").length} / ${TAGLINE_MAX_LENGTH})`}
+                </span>
+              )}
+            </div>
+            <Textarea
+              {...register("tagline")}
+              className="max-h-32 min-h-10"
+              rows={2}
               disabled={!isAdmin}
             />
-          </label>
-          <label className="flex w-full flex-col gap-1">
-            <span className="font-semibold">PoC Email</span>
-            <input
-              type="email"
-              {...register("email")}
-              className="rounded-xl border border-gray-200 bg-white p-2"
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label className="font-semibold">Demo Description 🧑‍💻</Label>
+            <Textarea
+              {...register("description")}
+              className="max-h-64 min-h-10"
+              rows={3}
               disabled={!isAdmin}
             />
-          </label>
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label className="font-semibold">Demo Link 🔗</Label>
+            <Input
+              type="url"
+              placeholder="None"
+              {...register("demoUrl")}
+              className="placeholder:italic"
+              autoComplete="off"
+              disabled={!isAdmin}
+            />
+          </div>
+          <div className="flex w-full flex-col gap-4 md:flex-row">
+            <div className="flex w-full flex-col gap-1">
+              <Label className="font-semibold">PoC Name</Label>
+              <Input type="text" {...register("pocName")} disabled={!isAdmin} />
+            </div>
+            <div className="flex w-full flex-col gap-1">
+              <Label className="font-semibold">PoC Email</Label>
+              <Input type="email" {...register("email")} disabled={!isAdmin} />
+            </div>
+          </div>
         </div>
-      </div>
+      </Card>
       {isAdmin && (
-        <div className="flex flex-row gap-4">
-          <button
-            className="rounded-xl bg-red-200 p-2 font-semibold transition-all hover:bg-red-300 focus:outline-none"
-            onClick={() => {
-              deleteMutation.mutateAsync(submission.id);
-              onUpdate();
-            }}
-          >
-            Delete
-          </button>
+        <div className="flex flex-row justify-between gap-4 pt-2">
+          <Button onClick={convertToDemo}>
+            <Presentation className="h-4 w-4" />
+            Convert to demo
+          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                className="text-red-600"
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Delete submission</TooltipContent>
+          </Tooltip>
         </div>
       )}
-    </div>
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Submission</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this submission? This action
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className={cn(buttonVariants({ variant: "destructive" }))}
+              onClick={() => {
+                deleteMutation
+                  .mutateAsync(submission.id)
+                  .then(() => {
+                    setDeleteDialogOpen(false);
+                    toast.success("Submission successfully deleted");
+                    onUpdate();
+                  })
+                  .catch((error) => {
+                    toast.error(
+                      `Failed to delete submission: ${error.message}`,
+                    );
+                  });
+              }}
+              disabled={deleteMutation.isPending}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </TooltipProvider>
   );
 }

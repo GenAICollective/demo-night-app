@@ -67,7 +67,7 @@ export default function DemosAndFeedbackTab() {
       <ResizablePanel defaultSize={50} minSize={10} className="space-y-2">
         <div className="flex items-center justify-start gap-2">
           <SidebarTrigger className="md:hidden" />
-          <h2 className="text-lg font-semibold">Demos</h2>
+          <h2 className="text-2xl font-semibold">Demos</h2>
         </div>
         <div className="max-h-[calc(100vh-122px)] overflow-y-auto rounded-lg border">
           <Table>
@@ -88,9 +88,11 @@ export default function DemosAndFeedbackTab() {
                   )}
                   onClick={() => {
                     setSelectedDemo(demo);
-                    updateCurrentEventStateMutation
-                      .mutateAsync({ currentDemoId: demo.id })
-                      .then(() => refetchEvent());
+                    if (isDemoPhase) {
+                      updateCurrentEventStateMutation
+                        .mutateAsync({ currentDemoId: demo.id })
+                        .then(() => refetchEvent());
+                    }
                   }}
                 >
                   <TableCell className="font-medium">
@@ -135,7 +137,7 @@ export default function DemosAndFeedbackTab() {
       <ResizablePanel minSize={10} className="pl-2">
         <div className="flex min-w-[300px] flex-col gap-2">
           <div className="flex flex-col items-start gap-2">
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-2xl font-semibold">
               {selectedDemo?.name
                 ? `Feedback for ${selectedDemo.name}`
                 : "Feedback"}
@@ -144,19 +146,25 @@ export default function DemosAndFeedbackTab() {
           </div>
           <div className="h-full max-h-[calc(100vh-122px)] space-y-2 overflow-y-auto">
             <AnimatePresence mode="popLayout">
-              {feedback
-                ?.sort((a, b) => feedbackScore(b) - feedbackScore(a))
-                .map((item) => (
-                  <FeedbackItem
-                    key={item.id}
-                    item={item}
-                    onDelete={(id) =>
-                      deleteFeedbackMutation
-                        .mutateAsync(id)
-                        .then(() => refetchFeedback())
-                    }
-                  />
-                ))}
+              {feedback && feedback.length > 0 ? (
+                feedback
+                  .sort((a, b) => feedbackScore(b) - feedbackScore(a))
+                  .map((item) => (
+                    <FeedbackItem
+                      key={item.id}
+                      item={item}
+                      onDelete={(id) =>
+                        deleteFeedbackMutation
+                          .mutateAsync(id)
+                          .then(() => refetchFeedback())
+                      }
+                    />
+                  ))
+              ) : (
+                <div className="p-10 text-center text-sm italic text-muted-foreground/50">
+                  No feedback (yet!)
+                </div>
+              )}
             </AnimatePresence>
           </div>
         </div>

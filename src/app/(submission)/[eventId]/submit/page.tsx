@@ -2,6 +2,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 
 import { type CompleteEvent } from "~/server/api/routers/event";
+import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 
 import SubmitDemo from "./components/SubmitDemo";
@@ -24,6 +25,7 @@ export default async function SubmitDemoPage({
   searchParams?: { success?: boolean };
 }) {
   const event = await api.event.get(params.eventId);
+  const session = await getServerAuthSession();
 
   if (!event) {
     redirect("/404");
@@ -50,7 +52,11 @@ export default async function SubmitDemoPage({
 
   return (
     <main className="m-auto flex size-full max-w-4xl flex-col text-black">
-      <EventHeader eventName={event.name} />
+      <EventHeader
+        eventName={event.name}
+        eventId={event.id}
+        isAdmin={!!session}
+      />
       <SubmitDemo event={event} />
     </main>
   );

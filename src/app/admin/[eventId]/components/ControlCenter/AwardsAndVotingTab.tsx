@@ -7,6 +7,7 @@ import {
   EyeOff,
   EyeOffIcon,
   LockIcon,
+  RotateCcw,
   TriangleAlert,
   X,
 } from "lucide-react";
@@ -96,7 +97,7 @@ export default function AwardsAndVotingTab() {
       <ResizablePanel defaultSize={50} minSize={10} className="space-y-2">
         <div className="flex items-center justify-start gap-2">
           <SidebarTrigger className="md:hidden" />
-          <h2 className="text-lg font-semibold">Awards</h2>
+          <h2 className="text-2xl font-semibold">Awards</h2>
         </div>
         <div className="max-h-[calc(100vh-122px)] overflow-y-auto rounded-lg border">
           <Table>
@@ -194,7 +195,7 @@ export default function AwardsAndVotingTab() {
         <div className="flex min-w-[300px] flex-col gap-2">
           <div className="flex flex-col items-start gap-1">
             <div className="flex w-full items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold">
+              <h2 className="line-clamp-1 text-2xl font-semibold">
                 {selectedAward?.name
                   ? `Votes for ${selectedAward.name}`
                   : "Votes"}
@@ -209,10 +210,10 @@ export default function AwardsAndVotingTab() {
                     onClick={() => handleSelectWinner(null)}
                     disabled={!selectedAward?.winnerId}
                   >
-                    <X className="h-4 w-4" />
+                    <RotateCcw className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Unselect winner</TooltipContent>
+                <TooltipContent>Deselect winner</TooltipContent>
               </Tooltip>
             </div>
           </div>

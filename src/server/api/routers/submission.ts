@@ -43,6 +43,11 @@ export const submissionRouter = createTRPCRouter({
         throw new Error("Failed to create submission.");
       }
     }),
+  count: publicProcedure
+    .input(z.object({ eventId: z.string() }))
+    .query(async ({ input }) => {
+      return db.submission.count({ where: { eventId: input.eventId } });
+    }),
   all: publicProcedure
     .input(
       z.object({

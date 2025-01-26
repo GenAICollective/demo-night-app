@@ -1,4 +1,5 @@
 import { useDashboardContext } from "../../contexts/DashboardContext";
+import CsvButton from "../CsvButton";
 import { AnimatePresence, motion } from "framer-motion";
 import { Pencil, Plus, Trash } from "lucide-react";
 import { useState } from "react";
@@ -39,19 +40,57 @@ import PartnerSheet from "./PartnerSheet";
 
 const partnersSchema = z.array(partnerSchema);
 
+const PARTNER_CSV_HEADERS = ["name", "description", "url", "email"];
+
 export function PartnersTab() {
   const { event, refetchEvent } = useDashboardContext();
   const [partnerSheetOpen, setPartnerSheetOpen] = useState(false);
+  const upsertMutation = api.event.upsert.useMutation();
 
   if (!event) return null;
 
   const partners = partnersSchema.parse(event.partners);
 
+  const onUploadPartners = (rows: Record<string, string>[]) => {
+    const newPartners = rows.map((row) => {
+      if (!row.name || !row.description || !row.url) {
+        throw new Error("Name, description, and URL are required fields");
+      }
+      return {
+        name: row.name,
+        description: row.description,
+        url: row.url,
+        email: row.email ?? undefined,
+      };
+    });
+
+    upsertMutation
+      .mutateAsync({
+        originalId: event.id,
+        partners: newPartners,
+      })
+      .then(() => {
+        toast.success("Partners updated!");
+        refetchEvent();
+      })
+      .catch((e) => {
+        toast.error("Failed to update partners: " + e.message);
+      });
+  };
+
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-2">
-      <div className="flex items-center justify-start gap-2">
-        <SidebarTrigger className="p-5 md:hidden" />
-        <h2 className="text-2xl font-semibold">Partners</h2>
+      <div className="flex items-end justify-between">
+        <div className="flex items-end justify-start gap-2">
+          <SidebarTrigger className="p-5 md:hidden" />
+          <h2 className="text-2xl font-semibold">Partners</h2>
+        </div>
+        <CsvButton
+          data={partners}
+          headers={PARTNER_CSV_HEADERS}
+          filename="partners.csv"
+          onUpload={onUploadPartners}
+        />
       </div>
       <div className="overflow-x-auto rounded-md border">
         <PartnerSheet
@@ -89,7 +128,7 @@ export function PartnersTab() {
       <div className="flex justify-end">
         <Button onClick={() => setPartnerSheetOpen(true)}>
           <Plus className="h-4 w-4" />
-          Add Partner
+          Partner
         </Button>
       </div>
     </div>

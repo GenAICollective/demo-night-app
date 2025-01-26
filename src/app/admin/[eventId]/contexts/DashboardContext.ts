@@ -14,7 +14,6 @@ export type AdminEvent = Event & {
   attendees: Attendee[];
   awards: Award[];
   eventFeedback: EventFeedback[];
-  submissions: { id: string }[];
 };
 
 export type IDashboardContext = {

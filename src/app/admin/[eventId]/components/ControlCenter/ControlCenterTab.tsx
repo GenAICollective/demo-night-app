@@ -40,9 +40,11 @@ export default function ControlCenterTab({
   );
 
   useEffect(() => {
+    if (!currentEvent?.phase) return;
+
     if (
-      currentEvent?.phase === EventPhase.Voting ||
-      currentEvent?.phase === EventPhase.Results
+      currentEvent.phase === EventPhase.Voting ||
+      currentEvent.phase === EventPhase.Results
     ) {
       setSelectedTab(AdminTab.AwardsAndVoting);
     } else {
@@ -91,7 +93,7 @@ export default function ControlCenterTab({
 
   return (
     <div className="flex w-full flex-col gap-4">
-      {currentEvent && (
+      {currentEvent && currentEvent.id === event.id && (
         <TooltipProvider>
           <div className="flex w-full flex-row items-center justify-between gap-2">
             {phaseConfigs.map((config) => (

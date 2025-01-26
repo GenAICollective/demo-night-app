@@ -29,13 +29,13 @@ export default function CsvButton<T extends string>(props: CsvButtonProps<T>) {
       <Button
         variant="secondary"
         className={cn(
-          "group flex h-full flex-row items-center gap-1.5",
+          "group flex flex-row items-center gap-1.5",
           props.style === "minimal" && "py-1 text-sm",
         )}
         title="Edit via CSV"
         onClick={() => setOpen(true)}
       >
-        <FileText className="h-[14px] w-[14px]" strokeWidth={2.5} /> Edit via
+        <FileText className="size-4" />
         CSV
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -102,7 +102,7 @@ function CsvModalContent<T extends string>(
       </CSVLink>
       <div
         className={cn(
-          "flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-3 py-4 text-center font-medium text-gray-500 transition-all duration-300 hover:text-gray-500",
+          "flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-3 py-4 text-center font-medium text-muted-foreground transition-all duration-300 hover:text-gray-500",
           isDragActive && "border-gray-400 bg-gray-100",
         )}
         {...getRootProps()}
@@ -112,10 +112,10 @@ function CsvModalContent<T extends string>(
           <ArrowUpFromLine className="h-[14px] w-[14px]" strokeWidth={3} />{" "}
           {isDragActive ? "Drop CSV here" : "Upload CSV"}
         </p>
-        <p className="text-xs italic text-red-500/70">
+        <p className="text-xs italic text-red-500">
           WARNING: overwrites existing rows!
         </p>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-muted-foreground">
           (columns: {props.headers?.join(", ")})
         </p>
       </div>

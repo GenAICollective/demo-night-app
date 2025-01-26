@@ -1,15 +1,19 @@
 "use client";
 
-import { type Attendee, type Submission } from "@prisma/client";
+import { type AdminEvent } from "../contexts/DashboardContext";
 import {
   CalendarIcon,
   ChevronDown,
   ChevronsUpDown,
-  ExternalLinkIcon,
+  CirclePlay,
+  CircleX,
+  ClipboardListIcon,
+  ExternalLink,
   HandshakeIcon,
   LayoutDashboardIcon,
-  ListCheckIcon,
   MessageSquareTextIcon,
+  OctagonPause,
+  PlayIcon,
   PresentationIcon,
   TrophyIcon,
   UsersIcon,
@@ -18,7 +22,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { EventPhase } from "~/lib/types/currentEvent";
-import { type CompleteEvent } from "~/server/api/routers/event";
 import { api } from "~/trpc/react";
 
 import { Button } from "~/components/ui/button";
@@ -60,17 +63,13 @@ export enum AdminTab {
 }
 
 interface AdminSidebarProps {
-  event: CompleteEvent;
-  submissions?: Submission[];
-  attendees?: Attendee[];
+  event: AdminEvent;
   selectedTab: AdminTab;
   setSelectedTab: (tab: AdminTab) => void;
 }
 
 export function AdminSidebar({
   event,
-  submissions,
-  attendees,
   selectedTab,
   setSelectedTab,
 }: AdminSidebarProps) {
@@ -82,6 +81,10 @@ export function AdminSidebar({
     currentEvent?.id === event.id ? currentEvent.phase : null;
   const updateCurrentMutation = api.event.updateCurrent.useMutation();
 
+  const { data: submissionCount } = api.submission.count.useQuery({
+    eventId: event.id,
+  });
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -90,13 +93,13 @@ export function AdminSidebar({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton className="h-14">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <Image
                       src="/images/logo.png"
                       alt="logo"
-                      width={30}
-                      height={30}
-                      className="rounded-lg"
+                      width={40}
+                      height={40}
+                      className="-ml-1"
                     />
                     <div className="flex flex-col items-start">
                       <div className="flex items-center">
@@ -167,7 +170,8 @@ export function AdminSidebar({
           variant="outline"
           className="w-full"
         >
-          Open Event Page
+          <ExternalLink className="size-4" />
+          View event
         </Button>
         <Button
           onClick={async () => {
@@ -179,14 +183,18 @@ export function AdminSidebar({
           variant={currentEvent?.id === event.id ? "destructive" : "default"}
           className="w-full"
         >
+          {currentEvent?.id === event.id ? (
+            <OctagonPause className="size-4" />
+          ) : (
+            <CirclePlay className="size-4" />
+          )}
           {currentEvent?.id === event.id
-            ? "Stop Live Event"
-            : "Make Live Event"}
+            ? "Stop live event"
+            : "Start live event"}
         </Button>
       </div>
 
       <SidebarContent>
-        {/* Edit Event Section */}
         <SidebarGroup>
           <SidebarGroupLabel>Setup</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -195,19 +203,19 @@ export function AdminSidebar({
                 <SidebarMenuButton
                   onClick={() => {
                     setSelectedTab(AdminTab.Submissions);
-                    router.push(`/admin/${event.id}/submissions`);
                   }}
                   className={
                     selectedTab === AdminTab.Submissions ? "bg-accent" : ""
                   }
                 >
                   <div className="flex items-center gap-2">
-                    <ListCheckIcon className="h-4 w-4" />
+                    <ClipboardListIcon className="h-4 w-4" />
                     <span>Submissions</span>
-                    <ExternalLinkIcon className="ml-auto h-4 w-4" />
                   </div>
                 </SidebarMenuButton>
-                <SidebarMenuBadge>{submissions?.length ?? 0}</SidebarMenuBadge>
+                {submissionCount !== undefined ? (
+                  <SidebarMenuBadge>{submissionCount}</SidebarMenuBadge>
+                ) : null}
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
@@ -250,8 +258,6 @@ export function AdminSidebar({
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-        {/* Phases Section */}
         <SidebarGroup>
           <SidebarGroupLabel>Management</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -321,7 +327,7 @@ export function AdminSidebar({
                     <span>Attendees</span>
                   </div>
                 </SidebarMenuButton>
-                <SidebarMenuBadge>{attendees?.length ?? 0}</SidebarMenuBadge>
+                <SidebarMenuBadge>{event.attendees.length}</SidebarMenuBadge>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
