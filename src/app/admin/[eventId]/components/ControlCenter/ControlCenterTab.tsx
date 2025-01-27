@@ -77,8 +77,7 @@ export default function ControlCenterTab({
         }
         break;
       case EventPhase.Results:
-        const lastAward = event?.awards[event.awards.length - 1];
-        if (lastAward?.winnerId) {
+        if (currentEvent?.currentAwardId === event?.awards[0]?.id) {
           setSuggestedPhase(EventPhase.Recap);
           return;
         }

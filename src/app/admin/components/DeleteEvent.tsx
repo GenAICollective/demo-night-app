@@ -26,6 +26,7 @@ export function DeleteEventButton({
       <Button
         variant="destructive"
         className="w-20"
+        type="button"
         onClick={() => setOpen(true)}
       >
         Delete
