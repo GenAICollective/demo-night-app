@@ -1,22 +1,26 @@
-# Demo Night App 🚀
+# Demo Night App 🧬
 
-This is the live feedback app we use during all our demo night events! [Example event](https://lu.ma/demo-night)
+**The [Demo Night App (DNA)](https://demos.genaicollective.ai) is an open-source, community-led project we use to maximize value for all involved at our flagship demo night events!**
 
-![Demo night app screens](https://github.com/GenAICollective/demo-night-app/assets/13221124/17248c6c-8e58-46d5-b941-e1f63387f620)
+![App Screenshots](./assets/App.png)
 
-<a href="https://www.loom.com/share/d1b18cb1b4ff4e99b097d727045442ee">
-  <img style="max-width:200px;" src="https://cdn.loom.com/sessions/thumbnails/d1b18cb1b4ff4e99b097d727045442ee-with-play.gif">
-</a>
-  
-## Contributing
-
-If you'd like to contribute to this community project, consider reaching out to <engineering@genaicollective.ai>!
-
-<a href="https://www.loom.com/share/79236c4d42364fbcbcbfa24bc066620c">
-  <img style="max-width:200px;" src="https://cdn.loom.com/sessions/thumbnails/79236c4d42364fbcbcbfa24bc066620c-with-play.gif">
+<a href="https://www.loom.com/share/20bb08ab431040cf878a8a654860efab">
+  <img src="https://cdn.loom.com/sessions/thumbnails/20bb08ab431040cf878a8a654860efab-29f338a04a89eb3c-full-play.gif">
 </a>
 
-## Getting Started
+## 🚀 What is Demo Night?
+
+_An evening of live demos and collaboration with the innovators shaping tomorrow_. Here's an [example event](https://lu.ma/demo-night)!
+
+<img src="./assets/logos.png" width="300" alt="Logos">
+
+## 🧑‍💻 Contributing
+
+If you'd like to contribute to this community project, check out our [issues](https://github.com/GenAICollective/demo-night-app/issues) to find tasks you can help with!
+
+Feel free to reach out to us at [engineering@genaicollective.ai](mailto:engineering@genaicollective.ai)! 😄
+
+## ⚙️ Getting Started
 
 ### 1. Install the packages
 
@@ -51,7 +55,7 @@ yarn dev
 - The local app should now be available at `localhost:3000` and `localhost:3000/admin`!
 - You can log in with "<test@example.com>"
 
-## Data Ops
+## 📊 Data Ops
 
 ### Dev Data Studio
 
