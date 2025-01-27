@@ -118,7 +118,7 @@ function SubmissionReview({
   }, [watch, debouncedUpdate]);
 
   return (
-    <Card className="flex flex-col gap-4 bg-muted p-4">
+    <Card className="flex flex-col gap-4 bg-muted/50 p-4">
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-row items-center gap-4">
           <div className="flex flex-col gap-1">
@@ -149,7 +149,7 @@ function SubmissionReview({
                           statusColor(status),
                         )}
                       />
-                      <span className="text-sm font-semibold">
+                      <span className="text-sm font-medium">
                         {statusTitle(status)}
                       </span>
                     </div>
@@ -273,7 +273,7 @@ function Submission({
 
   return (
     <TooltipProvider>
-      <Card className="flex flex-col gap-4 bg-muted p-4">
+      <Card className="flex flex-col gap-4 bg-muted/50 p-4">
         <div className="flex flex-1 flex-col gap-4">
           <div className="flex w-full flex-col gap-4 md:flex-row">
             <div className="flex w-full flex-col gap-1">

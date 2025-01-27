@@ -50,7 +50,7 @@ export default function RecapWorkspace() {
             setEventFeedback({ ...eventFeedback, comment: e.target.value })
           }
           className="z-10 mt-4 block w-full resize-none rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg font-medium backdrop-blur"
-          placeholder={`How can we make these community demo nights even better?!`}
+          placeholder={`What'd ya think?! How can we make these community demo nights even better?`}
         />
         <ContributeButton />
       </div>
@@ -124,7 +124,7 @@ function ContributeButton() {
       >
         <div className="flex items-center justify-between gap-2 text-blue-800">
           <h3 className="line-clamp-1 text-lg font-semibold italic group-hover:underline">
-            Build this community app with us!
+            Build this open source app with us!
           </h3>
           <Github
             size={24}
