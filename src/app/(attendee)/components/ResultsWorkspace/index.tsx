@@ -19,7 +19,7 @@ export default function ResultsWorkspace() {
 
   return (
     <>
-      <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full">
+      <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full max-w-xl">
         <div className="flex size-full flex-col items-center justify-center gap-4 p-4">
           <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
             Voting Results! 🤩

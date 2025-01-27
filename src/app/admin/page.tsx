@@ -16,8 +16,11 @@ import { Card, CardContent, CardTitle } from "~/components/ui/card";
 export default function AdminHomePage() {
   const { data: currentEvent, refetch: refetchCurrentEvent } =
     api.event.getCurrent.useQuery();
-  const { data: events, refetch: refetchEvents } =
-    api.event.allAdmin.useQuery();
+  const {
+    data: events,
+    refetch: refetchEvents,
+    isLoading,
+  } = api.event.allAdmin.useQuery();
   const [modalOpen, setModalOpen] = useState(false);
   const [eventToEdit, setEventToEdit] = useState<Event | undefined>(undefined);
 
@@ -66,73 +69,83 @@ export default function AdminHomePage() {
               </div>
             </CardContent>
           </Card>
-          {events?.map((event) => (
-            <Card
-              key={event.id}
-              className={cn(
-                "cursor-pointer transition-all hover:shadow-md",
-                "border-border",
-                "active:scale-95",
-              )}
-              onClick={() => {
-                router.push(`/admin/${event.id}`);
-              }}
-            >
-              <CardContent className="p-4">
-                <CardTitle className="flex items-start justify-between">
-                  <div className="flex items-center">
-                    <span className="line-clamp-1 pr-2 text-xl">
-                      {event.name}
-                    </span>
-                    {event.id === currentEvent?.id && (
-                      <div className="flex items-center gap-2 rounded-full bg-green-100 px-2 py-1">
-                        <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-green-500" />
-                        <span className="text-xs font-semibold text-green-600">
-                          LIVE
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      showUpsertEventModal(event);
-                    }}
-                  >
-                    <span className="sr-only">Edit</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-4 w-4"
+          {isLoading ? (
+            <>
+              <EventSkeleton />
+              <EventSkeleton />
+              <EventSkeleton />
+              <EventSkeleton />
+              <EventSkeleton />
+            </>
+          ) : (
+            events?.map((event) => (
+              <Card
+                key={event.id}
+                className={cn(
+                  "cursor-pointer transition-all hover:shadow-md",
+                  "border-border",
+                  "active:scale-95",
+                )}
+                onClick={() => {
+                  router.push(`/admin/${event.id}`);
+                }}
+              >
+                <CardContent className="p-4">
+                  <CardTitle className="flex items-start justify-between">
+                    <div className="flex items-center">
+                      <span className="line-clamp-1 pr-2 text-xl">
+                        {event.name}
+                      </span>
+                      {event.id === currentEvent?.id && (
+                        <div className="flex items-center gap-2 rounded-full bg-green-100 px-2 py-1">
+                          <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-green-500" />
+                          <span className="text-xs font-semibold text-green-600">
+                            LIVE
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showUpsertEventModal(event);
+                      }}
                     >
-                      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                      <path d="m15 5 4 4" />
-                    </svg>
-                  </Button>
-                </CardTitle>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CalendarIcon className="h-4 w-4" />
-                  <time>
-                    {event.date.toLocaleDateString("en-US", {
-                      timeZone: "UTC",
-                      weekday: "short",
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </time>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                      <span className="sr-only">Edit</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-4 w-4"
+                      >
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                        <path d="m15 5 4 4" />
+                      </svg>
+                    </Button>
+                  </CardTitle>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <CalendarIcon className="h-4 w-4" />
+                    <time>
+                      {event.date.toLocaleDateString("en-US", {
+                        timeZone: "UTC",
+                        weekday: "short",
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </time>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       </div>
       <UpsertEventModal
@@ -146,5 +159,22 @@ export default function AdminHomePage() {
         onOpenChange={setModalOpen}
       />
     </main>
+  );
+}
+
+function EventSkeleton() {
+  return (
+    <Card className="animate-pulse">
+      <CardContent className="p-4">
+        <CardTitle className="flex items-start justify-between">
+          <div className="h-7 w-48 rounded bg-gray-200" />
+          <div className="h-8 w-8 rounded bg-gray-200" />
+        </CardTitle>
+        <div className="mt-2 flex items-center gap-2">
+          <div className="h-4 w-4 rounded bg-gray-200" />
+          <div className="h-4 w-32 rounded bg-gray-200" />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
