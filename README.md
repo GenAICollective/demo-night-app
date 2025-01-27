@@ -12,7 +12,7 @@
 
 _An evening of live demos and collaboration with the innovators shaping tomorrow_. Here's an [example event](https://lu.ma/demo-night)!
 
-<img src="./assets/logos.png" width="300" alt="Logos">
+<img src="./assets/Logos.png" width="300" alt="Logos">
 
 ## 🧑‍💻 Contributing
 
