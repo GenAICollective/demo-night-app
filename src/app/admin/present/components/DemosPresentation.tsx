@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useMemo } from "react";
 
 import { feedbackScore } from "~/lib/feedback";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as QuickActions from "~/lib/types/quickActions";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
@@ -15,8 +13,6 @@ import { LogoConfetti } from "~/components/Confetti";
 import LoadingScreen from "~/components/loading/LoadingScreen";
 
 import { env } from "~/env";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useMockFeedback } from "~/test/hooks/useMockFeedback";
 
 const REFRESH_INTERVAL =
   env.NEXT_PUBLIC_NODE_ENV === "development" ? 1_000 : 5_000;

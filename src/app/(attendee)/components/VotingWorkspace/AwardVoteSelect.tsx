@@ -42,6 +42,7 @@ export default function AwardVoteSelect({
   }, [onKeyDown]);
 
   const voteDemoIds = Object.values(votes).map((v) => v.demoId);
+  const votableDemos = demos.filter((demo) => demo.votable);
 
   return (
     <>
@@ -96,7 +97,7 @@ export default function AwardVoteSelect({
                 </div>
               </div>
               <div className="left-0 z-20 flex max-h-[calc(100vh-4rem)] w-full flex-col gap-2 overflow-y-auto p-4 pb-[60vh]">
-                {demos.map((demo) => (
+                {votableDemos.map((demo) => (
                   <motion.div
                     initial={{ opacity: 0, y: -(demo.index + 1) * 30 }}
                     animate={{ opacity: 1, y: 0 }}

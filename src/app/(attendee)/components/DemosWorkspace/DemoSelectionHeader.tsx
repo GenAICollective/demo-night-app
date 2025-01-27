@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, CircleCheck } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { cn } from "~/lib/utils";
 import { type PublicDemo } from "~/server/api/routers/event";
@@ -30,6 +30,11 @@ export function DemoSelectionHeader({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [onKeyDown]);
 
+  const votableIndices = useMemo(() => {
+    const votableDemos = demos.filter((d) => d.votable);
+    return new Map(votableDemos.map((d, i) => [d.id, i + 1]));
+  }, [demos]);
+
   return (
     <>
       <div className="fixed z-20 w-full max-w-xl select-none px-4">
@@ -55,7 +60,9 @@ export function DemoSelectionHeader({
               <p className="italic text-white">Select a demo:</p>
             )) || (
               <>
-                <p className="w-7">{(selectedDemo?.index ?? 0) + 1}.</p>
+                <p className="w-7">
+                  {votableIndices.get(selectedDemo?.id ?? "") ?? "-"}
+                </p>
                 <p>
                   {selectedDemo?.name ?? ""}
                   <span className="font-bold text-red-700">
@@ -104,7 +111,7 @@ export function DemoSelectionHeader({
                   )}
                 >
                   <div className="flex flex-row gap-2">
-                    <p className="w-7">{demo.index + 1}.</p>
+                    <p className="w-7">{votableIndices.get(demo.id) ?? "-"}</p>
                     <p>
                       {demo.name}
                       <span className="font-bold text-green-700">

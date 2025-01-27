@@ -143,60 +143,71 @@ export default function AttendeesTab() {
           </TableHeader>
           <TableBody>
             <AnimatePresence>
-              {filteredAttendees?.map((attendee) => (
-                <TableRow key={attendee.id} className="group">
-                  <TableCell>
-                    {attendee.name ? (
-                      <span className="line-clamp-1">{attendee.name}</span>
-                    ) : (
-                      <span className="line-clamp-1 italic text-gray-400">
-                        Anonymous
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <AttendeeTypeBadge type={attendee.type} />
-                  </TableCell>
-                  <TableCell>
-                    <span className="line-clamp-1">{attendee.email}</span>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-1">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => copyIdToClipboard(attendee.id)}
-                            >
-                              <Copy className="h-4 w-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Copy attendee ID</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600"
-                              onClick={() => {
-                                setSelectedAttendeeId(attendee.id);
-                                setDeleteDialogOpen(true);
-                              }}
-                            >
-                              <Trash className="h-4 w-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Delete attendee</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </TableCell>
+              {filteredAttendees?.length === 0 ? (
+                <TableRow>
+                  <td
+                    colSpan={4}
+                    className="h-24 text-center italic text-muted-foreground/50"
+                  >
+                    No attendees (yet!)
+                  </td>
                 </TableRow>
-              ))}
+              ) : (
+                filteredAttendees?.map((attendee) => (
+                  <TableRow key={attendee.id} className="group">
+                    <TableCell>
+                      {attendee.name ? (
+                        <span className="line-clamp-1">{attendee.name}</span>
+                      ) : (
+                        <span className="line-clamp-1 italic text-gray-400">
+                          Anonymous
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <AttendeeTypeBadge type={attendee.type} />
+                    </TableCell>
+                    <TableCell>
+                      <span className="line-clamp-1">{attendee.email}</span>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-1">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => copyIdToClipboard(attendee.id)}
+                              >
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Copy attendee ID</TooltipContent>
+                          </Tooltip>
+
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-red-600"
+                                onClick={() => {
+                                  setSelectedAttendeeId(attendee.id);
+                                  setDeleteDialogOpen(true);
+                                }}
+                              >
+                                <Trash className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Delete attendee</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </AnimatePresence>
           </TableBody>
         </Table>

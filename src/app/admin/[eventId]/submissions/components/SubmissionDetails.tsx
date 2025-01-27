@@ -1,4 +1,4 @@
-import { type Submission, SubmissionStatus } from "@prisma/client";
+import { type Submission, type SubmissionStatus } from "@prisma/client";
 import { FlagIcon, Presentation, StarIcon, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,6 @@ import { cn, debounce } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import { statusColor } from "~/components/SubmissionStatusBadge";
-import { useModal } from "~/components/modal/provider";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -76,7 +75,7 @@ export default function SubmissionDetails({
 function SubmissionReview({
   event,
   submission,
-  isAdmin,
+  isAdmin: _,
   onUpdate,
 }: {
   event: Event;

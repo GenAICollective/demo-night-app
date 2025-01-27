@@ -26,6 +26,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "~/components/ui/sheet";
+import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
 
 const formSchema = z.object({
@@ -40,6 +41,7 @@ const formSchema = z.object({
     ),
   email: z.string().email("Invalid email address"),
   url: z.string().url("Invalid URL"),
+  votable: z.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -65,6 +67,7 @@ export default function DemoSheet({
       description: "",
       email: "",
       url: "",
+      votable: true,
     },
   });
 
@@ -78,6 +81,7 @@ export default function DemoSheet({
         description: data.description,
         email: data.email,
         url: data.url,
+        votable: data.votable,
       });
       onOpenChange(false);
       toast.success(`Successfully ${demo ? "updated" : "created"} demo!`);
@@ -204,6 +208,28 @@ export default function DemoSheet({
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="votable"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 py-2">
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Eligible for awards?</FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      Disable this if this demo is not eligible for awards (eg.
+                      for sponsor demos)
+                    </p>
+                  </div>
                 </FormItem>
               )}
             />

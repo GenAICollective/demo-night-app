@@ -2,7 +2,6 @@
 
 import { type Event } from "@prisma/client";
 import { CalendarIcon, PlusIcon } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -51,7 +50,7 @@ export default function AdminHomePage() {
         </div>
       </header>
       <div className="container mx-auto p-8">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           <Card
             className={cn(
               "cursor-pointer transition-all hover:shadow-md",

@@ -7,13 +7,13 @@ import {
 } from "@prisma/client";
 import { z } from "zod";
 
-import {
-  DEFAULT_AWARDS,
-  DEFAULT_DEMOS,
-  DEFAULT_PARTNERS,
-} from "~/lib/defaults";
+import { DEFAULT_AWARDS } from "~/lib/types/award";
 import * as kv from "~/lib/types/currentEvent";
-import { partnersSchema } from "~/lib/types/partner";
+import { DEFAULT_DEMOS } from "~/lib/types/demo";
+import {
+  DEFAULT_EVENT_CONFIG,
+  eventConfigSchema,
+} from "~/lib/types/eventConfig";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -70,7 +70,7 @@ export const eventRouter = createTRPCRouter({
         name: z.string().optional(),
         date: z.date().optional(),
         url: z.string().url().optional(),
-        partners: partnersSchema.optional(),
+        config: eventConfigSchema.optional(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -79,7 +79,7 @@ export const eventRouter = createTRPCRouter({
         name: input.name,
         date: input.date,
         url: input.url,
-        partners: input.partners,
+        config: input.config,
       };
 
       if (input.originalId) {
@@ -102,7 +102,7 @@ export const eventRouter = createTRPCRouter({
           name: data.name!,
           date: data.date!,
           url: data.url!,
-          partners: data.partners ?? DEFAULT_PARTNERS,
+          config: data.config ?? DEFAULT_EVENT_CONFIG,
           demos: {
             create: DEFAULT_DEMOS,
           },
@@ -174,7 +174,7 @@ const completeEventSelect: Prisma.EventSelect = {
   name: true,
   date: true,
   url: true,
-  partners: true,
+  config: true,
   demos: {
     orderBy: { index: "asc" },
     select: {
@@ -184,6 +184,7 @@ const completeEventSelect: Prisma.EventSelect = {
       description: true,
       email: true,
       url: true,
+      votable: true,
     },
   },
   awards: { orderBy: { index: "asc" } },

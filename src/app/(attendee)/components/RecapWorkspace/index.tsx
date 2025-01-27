@@ -4,11 +4,10 @@ import { type Award, type Feedback } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Github } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { type Partner } from "~/lib/types/partner";
-import * as QuickActions from "~/lib/types/quickActions";
+import { type QuickAction } from "~/lib/types/quickAction";
 import { type PublicDemo } from "~/server/api/routers/event";
 import { api } from "~/trpc/react";
 
@@ -17,7 +16,7 @@ import { LogoConfetti } from "~/components/Confetti";
 import { useEventFeedback } from "./hooks/useEventFeedback";
 
 export default function RecapWorkspace() {
-  const { currentEvent, event, attendee } = useWorkspaceContext();
+  const { currentEvent, event, attendee, config } = useWorkspaceContext();
   const { eventFeedback, setEventFeedback } = useEventFeedback(
     currentEvent.id,
     attendee.id,
@@ -37,10 +36,6 @@ export default function RecapWorkspace() {
   }, [event?.awards.length]);
 
   const award = event.awards[awardIndex]!;
-
-  const partners = useMemo(() => {
-    return event.partners?.filter((p): p is Partner => !!p) ?? [];
-  }, [event.partners]);
 
   return (
     <div className="flex size-full flex-1 flex-col items-center justify-center gap-8 p-4">
@@ -73,13 +68,13 @@ export default function RecapWorkspace() {
           </AnimatePresence>
         </div>
       </div>
-      {partners.length > 0 && (
+      {config.partners.length > 0 && (
         <div className="flex w-full flex-col gap-2">
           <h2 className="w-full font-kallisto text-2xl font-bold">
             Hosts & Sponsors 🤝
           </h2>
           <div className="z-10 flex w-full flex-col gap-4">
-            {partners.map((p) => (
+            {config.partners.map((p) => (
               <PartnerItem key={p.name} {...p} />
             ))}
           </div>
@@ -96,6 +91,7 @@ export default function RecapWorkspace() {
                 key={f.id}
                 feedback={f}
                 demo={event.demos.find((d) => d.id === f.demoId)}
+                quickActions={config.quickActions}
               />
             ))}
           </div>
@@ -256,16 +252,20 @@ function DemoItem({ demo }: { demo: PublicDemo }) {
 function FeedbackItem({
   feedback,
   demo,
+  quickActions,
 }: {
   feedback: Feedback;
   demo?: PublicDemo;
+  quickActions: QuickAction[];
 }) {
   const summary = [
     feedback.claps
       ? `👏<span class="text-xs"> x${feedback.claps}</span>`
       : null,
     feedback.tellMeMore ? "📬" : null,
-    ...feedback.quickActions.map((id) => QuickActions.actions[id]?.icon),
+    ...feedback.quickActions.map(
+      (id) => quickActions.find((a) => a.id === id)?.icon ?? "❓",
+    ),
   ];
   const summaryString = summary.filter((s) => s).join(" • ");
   return (

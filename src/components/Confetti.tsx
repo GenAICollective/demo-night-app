@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
+import type Particle from "react-confetti/dist/types/Particle";
 
 import useWindowSize from "~/lib/hooks/useWindowSize";
 
 import { type LocalFeedback } from "~/app/(attendee)/components/DemosWorkspace/hooks/useFeedback";
-import Particle from "react-confetti/dist/types/Particle";
 
 export function TellMeMoreConfetti({ feedback }: { feedback: LocalFeedback }) {
   const { windowSize } = useWindowSize();
@@ -154,9 +154,9 @@ export function LogoConfetti({ run = true }: { run?: boolean }) {
   const [images, setImages] = useState<HTMLImageElement[]>([]);
 
   useEffect(() => {
-    const logoElements = Array.from(document.getElementsByClassName("logo")).filter(
-      (el): el is HTMLImageElement => el instanceof HTMLImageElement
-    );
+    const logoElements = Array.from(
+      document.getElementsByClassName("logo"),
+    ).filter((el): el is HTMLImageElement => el instanceof HTMLImageElement);
 
     // Create new Image objects and wait for them to load
     const loadImages = logoElements.map((logoEl) => {
@@ -177,7 +177,7 @@ export function LogoConfetti({ run = true }: { run?: boolean }) {
     try {
       ctx.drawImage(img, -18, -18, 36, 36);
     } catch (error) {
-      console.error('Error drawing image:', error);
+      console.error("Error drawing image:", error);
     }
   };
 

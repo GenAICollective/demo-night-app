@@ -4,8 +4,8 @@ import { useDashboardContext } from "../../contexts/DashboardContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
+import { eventConfigSchema } from "~/lib/types/eventConfig";
 import { type Partner, partnerSchema } from "~/lib/types/partner";
 import { api } from "~/trpc/react";
 
@@ -27,10 +27,6 @@ import {
 } from "~/components/ui/sheet";
 import { Textarea } from "~/components/ui/textarea";
 
-type FormValues = Partner;
-
-const partnersSchema = z.array(partnerSchema);
-
 export default function PartnerSheet({
   partner,
   eventId,
@@ -46,7 +42,7 @@ export default function PartnerSheet({
 }) {
   const { event } = useDashboardContext();
   const upsertMutation = api.event.upsert.useMutation();
-  const form = useForm<FormValues>({
+  const form = useForm<Partner>({
     resolver: zodResolver(partnerSchema),
     defaultValues: partner ?? {
       name: "",
@@ -56,17 +52,20 @@ export default function PartnerSheet({
     },
   });
 
-  const onFormSubmit = async (data: FormValues) => {
+  const onFormSubmit = async (data: Partner) => {
     if (!event) return;
-    const partners = partnersSchema.parse(event.partners);
+    const config = eventConfigSchema.parse(event.config);
     try {
       await upsertMutation.mutateAsync({
         originalId: eventId,
-        partners: partner
-          ? // Update existing partner
-            partners.map((p) => (p.name === partner.name ? data : p))
-          : // Add new partner
-            [...partners, data],
+        config: {
+          ...config,
+          partners: partner
+            ? // Update existing partner
+              config.partners.map((p) => (p.name === partner.name ? data : p))
+            : // Add new partner
+              [...config.partners, data],
+        },
       });
       onOpenChange(false);
       toast.success(`Successfully ${partner ? "updated" : "created"} partner!`);

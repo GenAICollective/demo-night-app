@@ -56,7 +56,7 @@ function copyCommentToClipboard(comment: string | null) {
 }
 
 export default function EventFeedbackTab() {
-  const { currentEvent } = useDashboardContext();
+  const { event, currentEvent } = useDashboardContext();
   const [searchFilter, setSearchFilter] = React.useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [selectedFeedbackId, setSelectedFeedbackId] = React.useState<
@@ -64,10 +64,11 @@ export default function EventFeedbackTab() {
   >(null);
 
   const { data: eventFeedback } = api.eventFeedback.getAdmin.useQuery(
-    currentEvent?.id ?? "",
+    event?.id ?? "",
     {
-      enabled: !!currentEvent?.id,
-      refetchInterval: REFRESH_INTERVAL,
+      enabled: !!event?.id,
+      refetchInterval:
+        currentEvent?.id === event?.id ? REFRESH_INTERVAL : false,
     },
   );
 
@@ -81,18 +82,19 @@ export default function EventFeedbackTab() {
     },
   });
 
-  const filteredFeedback = eventFeedback?.filter(
-    (feedback) =>
-      (feedback.attendee.name?.toLowerCase() ?? "").includes(
-        searchFilter.toLowerCase(),
-      ) ||
-      (feedback.attendee.type?.toLowerCase() ?? "").includes(
-        searchFilter.toLowerCase(),
-      ) ||
-      (feedback.comment?.toLowerCase() ?? "").includes(
-        searchFilter.toLowerCase(),
-      ),
-  );
+  const filteredFeedback =
+    eventFeedback?.filter(
+      (feedback) =>
+        (feedback.attendee.name?.toLowerCase() ?? "").includes(
+          searchFilter.toLowerCase(),
+        ) ||
+        (feedback.attendee.type?.toLowerCase() ?? "").includes(
+          searchFilter.toLowerCase(),
+        ) ||
+        (feedback.comment?.toLowerCase() ?? "").includes(
+          searchFilter.toLowerCase(),
+        ),
+    ) ?? [];
 
   const handleDelete = async () => {
     if (!selectedFeedbackId) return;
@@ -124,70 +126,81 @@ export default function EventFeedbackTab() {
           </TableHeader>
           <TableBody>
             <AnimatePresence>
-              {filteredFeedback?.map((feedback) => (
-                <TableRow key={feedback.id} className="group">
-                  <TableCell>
-                    {feedback.attendee.name ? (
-                      <span className="line-clamp-1">
-                        {feedback.attendee.name}
-                      </span>
-                    ) : (
-                      <span className="line-clamp-1 italic text-muted-foreground">
-                        Anonymous
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <span className="whitespace-pre-wrap">
-                      {feedback.comment ? (
-                        <span className="italic">
-                          &ldquo;{feedback.comment}&rdquo;
+              {filteredFeedback?.length === 0 ? (
+                <TableRow>
+                  <td
+                    colSpan={3}
+                    className="h-24 text-center italic text-muted-foreground/50"
+                  >
+                    No feedback (yet!)
+                  </td>
+                </TableRow>
+              ) : (
+                filteredFeedback?.map((feedback) => (
+                  <TableRow key={feedback.id} className="group">
+                    <TableCell>
+                      {feedback.attendee.name ? (
+                        <span className="line-clamp-1">
+                          {feedback.attendee.name}
                         </span>
                       ) : (
-                        <span className="italic text-muted-foreground">
-                          No comment
+                        <span className="line-clamp-1 italic text-muted-foreground">
+                          Anonymous
                         </span>
                       )}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-1">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() =>
-                                copyCommentToClipboard(feedback.comment)
-                              }
-                            >
-                              <Copy className="h-4 w-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Copy comment</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600"
-                              onClick={() => {
-                                setSelectedFeedbackId(feedback.id);
-                                setDeleteDialogOpen(true);
-                              }}
-                            >
-                              <Trash className="h-4 w-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Delete feedback</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell>
+                      <span className="whitespace-pre-wrap">
+                        {feedback.comment ? (
+                          <span className="italic">
+                            &ldquo;{feedback.comment}&rdquo;
+                          </span>
+                        ) : (
+                          <span className="italic text-muted-foreground">
+                            No comment
+                          </span>
+                        )}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-1">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() =>
+                                  copyCommentToClipboard(feedback.comment)
+                                }
+                              >
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Copy comment</TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-red-600"
+                                onClick={() => {
+                                  setSelectedFeedbackId(feedback.id);
+                                  setDeleteDialogOpen(true);
+                                }}
+                              >
+                                <Trash className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Delete feedback</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </AnimatePresence>
           </TableBody>
         </Table>

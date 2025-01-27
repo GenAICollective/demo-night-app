@@ -10,6 +10,7 @@ import {
   Plus,
   QrCode,
   Trash,
+  TrophyIcon,
 } from "lucide-react";
 import { useState } from "react";
 import QRCode from "react-qr-code";
@@ -51,7 +52,14 @@ import {
 
 import DemoSheet from "./DemoSheet";
 
-const DEMO_CSV_HEADERS = ["id", "name", "description", "email", "url"];
+const DEMO_CSV_HEADERS = [
+  "id",
+  "name",
+  "description",
+  "email",
+  "url",
+  "votable",
+];
 
 export function DemosTab() {
   const { event, refetchEvent } = useDashboardContext();
@@ -71,6 +79,7 @@ export function DemosTab() {
         description: updates.description ?? demo.description,
         email: updates.email ?? demo.email,
         url: updates.url ?? demo.url,
+        votable: updates.votable ?? demo.votable,
       });
       toast.success("Successfully updated demo!");
       refetchEvent();
@@ -128,15 +137,26 @@ export function DemosTab() {
           </TableHeader>
           <TableBody>
             <AnimatePresence>
-              {event.demos.map((demo) => (
-                <DemoRow
-                  key={demo.id}
-                  demo={demo}
-                  eventId={event.id}
-                  onUpdate={(updates) => handleDemoUpdate(demo, updates)}
-                  refetchEvent={refetchEvent}
-                />
-              ))}
+              {event.demos.length === 0 ? (
+                <TableRow>
+                  <td
+                    colSpan={3}
+                    className="h-24 text-center italic text-muted-foreground/50"
+                  >
+                    No demos (yet!)
+                  </td>
+                </TableRow>
+              ) : (
+                event.demos.map((demo) => (
+                  <DemoRow
+                    key={demo.id}
+                    demo={demo}
+                    eventId={event.id}
+                    onUpdate={(updates) => handleDemoUpdate(demo, updates)}
+                    refetchEvent={refetchEvent}
+                  />
+                ))
+              )}
             </AnimatePresence>
           </TableBody>
         </Table>
@@ -199,9 +219,19 @@ function DemoRow({
         <motion.td
           layout
           layoutId={`name-${demo.id}`}
-          className="w-full p-4 py-2 font-semibold"
+          className="w-full p-4 py-2"
         >
-          {demo.name}
+          <div className="flex items-center gap-2">
+            <span className="font-semibold">{demo.name}</span>
+            {!demo.votable && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <TrophyIcon className="h-4 w-4 shrink-0 text-destructive" />
+                </TooltipTrigger>
+                <TooltipContent>Not eligible for awards</TooltipContent>
+              </Tooltip>
+            )}
+          </div>
         </motion.td>
         <motion.td layout layoutId={`actions-${demo.id}`} className="p-4 py-2">
           <div className="flex gap-1">

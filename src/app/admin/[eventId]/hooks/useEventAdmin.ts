@@ -1,5 +1,4 @@
 import { type AdminEvent } from "../contexts/DashboardContext";
-import { useEffect, useState } from "react";
 
 import { type CurrentEvent } from "~/lib/types/currentEvent";
 import { api } from "~/trpc/react";
@@ -24,7 +23,8 @@ export function useEventAdmin({
     initialEvent?.id ?? "",
     {
       enabled: !!initialEvent?.id,
-      refetchInterval: REFRESH_INTERVAL,
+      refetchInterval:
+        currentEvent?.id === initialEvent?.id ? REFRESH_INTERVAL : false,
       initialData: initialEvent,
     },
   );

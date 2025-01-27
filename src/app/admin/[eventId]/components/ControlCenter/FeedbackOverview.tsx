@@ -1,14 +1,16 @@
 import { type Feedback } from "@prisma/client";
 import { useMemo } from "react";
 
-import * as QuickActions from "~/lib/types/quickActions";
+import { type QuickAction } from "~/lib/types/quickAction";
 
 import { Card } from "~/components/ui/card";
 
 export default function FeedbackOverview({
   feedback,
+  quickActions,
 }: {
   feedback: Feedback[];
+  quickActions: QuickAction[];
 }) {
   const agg = useMemo(() => {
     const agg = {
@@ -17,7 +19,7 @@ export default function FeedbackOverview({
       claps: 0,
       tellMeMores: 0,
       quickActions: Object.fromEntries(
-        QuickActions.visibleActions.map(([id]) => [id, 0]),
+        quickActions.map((action) => [action.id, 0]),
       ),
     };
     for (const f of feedback) {
@@ -29,7 +31,7 @@ export default function FeedbackOverview({
       }
     }
     return agg;
-  }, [feedback]);
+  }, [feedback, quickActions]);
 
   return (
     <div className="flex w-full flex-row gap-2">
@@ -57,7 +59,7 @@ export default function FeedbackOverview({
       </Card>
       <Card className="flex basis-2/6 flex-col items-center justify-center py-2">
         <p className="line-clamp-1 h-5 text-sm text-muted-foreground">
-          {QuickActions.visibleActions.map(([_, a]) => a.icon).join(" • ")}
+          {quickActions.map((a) => a.icon).join(" • ")}
         </p>
         <p
           className="line-clamp-1 text-lg font-bold"

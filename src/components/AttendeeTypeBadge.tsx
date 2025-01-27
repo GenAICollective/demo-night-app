@@ -23,7 +23,7 @@ export default function AttendeeTypeBadge({ type }: { type: string | null }) {
   const color = colorForAttendeeType(type);
   return (
     <span
-      className={`rounded-lg px-2 text-xs font-semibold ${color} text-${color.replace("bg-", "")}-800`}
+      className={`whitespace-nowrap rounded-lg px-2 text-xs font-semibold ${color} text-${color.replace("bg-", "")}-800`}
     >
       {type}
     </span>

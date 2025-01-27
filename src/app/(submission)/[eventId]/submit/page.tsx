@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { redirect } from "next/navigation";
 
 import { type CompleteEvent } from "~/server/api/routers/event";

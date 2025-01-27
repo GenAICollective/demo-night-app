@@ -56,7 +56,7 @@ export default function ControlCenterTab({
     switch (currentEvent?.phase) {
       case EventPhase.Pre:
         if (
-          currentEvent?.currentDemoId &&
+          currentEvent.currentDemoId === null ||
           currentEvent?.currentDemoId === event?.demos[0]?.id
         ) {
           setSuggestedPhase(EventPhase.Demos);

@@ -1,16 +1,20 @@
 "use client";
 
 import { useQueryState } from "nuqs";
+import { useState } from "react";
+import { useEffect } from "react";
 
 import { type CurrentEvent } from "~/lib/types/currentEvent";
+import { type EventConfig } from "~/lib/types/eventConfig";
+import { eventConfigSchema } from "~/lib/types/eventConfig";
 
 import { AdminSidebar, AdminTab } from "./components/AdminSidebar";
 import AttendeesTab from "./components/Attendees/AttendeesTab";
 import { AwardsTab } from "./components/Awards/AwardsTab";
+import { ConfigurationTab } from "./components/Configuration/ConfigurationTab";
 import ControlCenterTab from "./components/ControlCenter/ControlCenterTab";
 import { DemosTab } from "./components/Demos/DemosTab";
 import EventFeedbackTab from "./components/EventFeedback/EventFeedbackTab";
-import { PartnersTab } from "./components/Partners/PartnersTab";
 import SubmissionsTab from "./components/Submissions/SubmissionsTab";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 
@@ -28,11 +32,20 @@ export function ClientEventDashboard({
     initialEvent,
     initialCurrentEvent,
   });
+  const [config, setConfig] = useState<EventConfig>(
+    eventConfigSchema.parse(event?.config),
+  );
   const [selectedTab, setSelectedTab] = useQueryState<AdminTab>("tab", {
     defaultValue: AdminTab.DemosAndFeedback,
     parse: (value) => value as AdminTab,
     serialize: (value) => value,
   });
+
+  useEffect(() => {
+    if (event) {
+      setConfig(eventConfigSchema.parse(event.config));
+    }
+  }, [event]);
 
   function dashboard() {
     switch (selectedTab) {
@@ -42,8 +55,8 @@ export function ClientEventDashboard({
         return <DemosTab />;
       case AdminTab.Awards:
         return <AwardsTab />;
-      case AdminTab.Partners:
-        return <PartnersTab />;
+      case AdminTab.Configuration:
+        return <ConfigurationTab />;
       case AdminTab.DemosAndFeedback:
       case AdminTab.AwardsAndVoting:
         return (
@@ -69,12 +82,14 @@ export function ClientEventDashboard({
         event: event,
         currentEvent: currentEvent,
         refetchEvent: refetch,
+        config,
       }}
     >
       <SidebarProvider defaultOpen>
         <div className="flex h-screen w-full">
           <AdminSidebar
             event={event}
+            config={config}
             selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}
           />

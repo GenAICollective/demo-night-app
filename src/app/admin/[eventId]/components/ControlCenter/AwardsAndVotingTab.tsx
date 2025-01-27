@@ -4,12 +4,11 @@ import {
   CircleCheck,
   CircleCheckIcon,
   EyeIcon,
-  EyeOff,
   EyeOffIcon,
   LockIcon,
   RotateCcw,
   TriangleAlert,
-  X,
+  TrophyIcon,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -55,7 +54,8 @@ export default function AwardsAndVotingTab() {
     selectedAwardId ?? "",
     {
       enabled: !!selectedAwardId,
-      refetchInterval: REFRESH_INTERVAL,
+      refetchInterval:
+        currentEvent?.id === event?.id ? REFRESH_INTERVAL : false,
     },
   );
   const updateWinnerMutation = api.award.updateWinner.useMutation();
@@ -68,7 +68,11 @@ export default function AwardsAndVotingTab() {
 
   const votesByDemoId = useMemo(() => {
     if (!event || !votes) return new Map();
-    const map = new Map(event.demos.map((demo) => [demo.id, 0]));
+    const map = new Map(
+      event.demos
+        .filter((demo) => demo.votable !== false)
+        .map((demo) => [demo.id, 0]),
+    );
     votes?.forEach((vote) => {
       if (!vote.demoId) return;
       map.set(vote.demoId, (map.get(vote.demoId) ?? 0) + 1);
@@ -129,7 +133,7 @@ export default function AwardsAndVotingTab() {
                         {!award.votable && (
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <EyeOff className="h-4 w-4 text-destructive" />
+                              <TrophyIcon className="h-4 w-4 shrink-0 text-destructive" />
                             </TooltipTrigger>
                             <TooltipContent>Not votable</TooltipContent>
                           </Tooltip>

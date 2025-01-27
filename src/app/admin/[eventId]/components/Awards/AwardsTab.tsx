@@ -3,7 +3,7 @@ import CsvButton from "../CsvButton";
 import { UpdateIndexDialog } from "../UpdateIndexDialog";
 import { type Award } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpDown, EyeOff, Pencil, Plus, Trash } from "lucide-react";
+import { ArrowUpDown, Pencil, Plus, Trash, TrophyIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -114,15 +114,26 @@ export function AwardsTab() {
           </TableHeader>
           <TableBody>
             <AnimatePresence>
-              {event.awards.map((award) => (
-                <AwardRow
-                  key={award.id}
-                  award={award}
-                  eventId={event.id}
-                  onUpdate={(updates) => handleAwardUpdate(award, updates)}
-                  refetchEvent={refetchEvent}
-                />
-              ))}
+              {event.awards.length === 0 ? (
+                <TableRow>
+                  <td
+                    colSpan={3}
+                    className="h-24 text-center italic text-muted-foreground/50"
+                  >
+                    No awards (yet!)
+                  </td>
+                </TableRow>
+              ) : (
+                event.awards.map((award) => (
+                  <AwardRow
+                    key={award.id}
+                    award={award}
+                    eventId={event.id}
+                    onUpdate={(updates) => handleAwardUpdate(award, updates)}
+                    refetchEvent={refetchEvent}
+                  />
+                ))
+              )}
             </AnimatePresence>
           </TableBody>
         </Table>
@@ -181,7 +192,7 @@ function AwardRow({
               {!award.votable && (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <EyeOff className="h-4 w-4 text-destructive" />
+                    <TrophyIcon className="h-4 w-4 shrink-0 text-destructive" />
                   </TooltipTrigger>
                   <TooltipContent>Not votable</TooltipContent>
                 </Tooltip>

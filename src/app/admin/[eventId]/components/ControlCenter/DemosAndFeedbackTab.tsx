@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 
 import { feedbackScore } from "~/lib/feedback";
 import { EventPhase } from "~/lib/types/currentEvent";
-import * as QuickActions from "~/lib/types/quickActions";
+import { type QuickAction } from "~/lib/types/quickAction";
 import { cn } from "~/lib/utils";
 import { type FeedbackAndAttendee } from "~/server/api/routers/demo";
 import { api } from "~/trpc/react";
@@ -42,17 +42,24 @@ const REFRESH_INTERVAL =
   env.NEXT_PUBLIC_NODE_ENV === "development" ? 1_000 : 5_000;
 
 export default function DemosAndFeedbackTab() {
-  const { currentEvent, event, refetchEvent } = useDashboardContext();
+  const { currentEvent, event, refetchEvent, config } = useDashboardContext();
   const isDemoPhase =
     currentEvent?.id === event?.id && currentEvent?.phase === EventPhase.Demos;
   const [selectedDemo, setSelectedDemo] = useState<Demo | undefined>(
     event?.demos.find((demo) => demo.id === currentEvent?.currentDemoId),
   );
 
+  const votableIndices = useMemo(() => {
+    if (!event) return new Map<string, number>();
+    const votableDemos = event.demos.filter((d) => d.votable);
+    return new Map(votableDemos.map((d, i) => [d.id, i + 1]));
+  }, [event]);
+
   const { data: feedback, refetch: refetchFeedback } =
     api.demo.getFeedback.useQuery(selectedDemo?.id ?? "", {
       enabled: !!selectedDemo,
-      refetchInterval: REFRESH_INTERVAL,
+      refetchInterval:
+        currentEvent?.id === event?.id ? REFRESH_INTERVAL : false,
     });
   // const { feedback, refetch: refetchFeedback } = useMockFeedback();
 
@@ -79,56 +86,68 @@ export default function DemosAndFeedbackTab() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {event.demos.map((demo) => (
-                <TableRow
-                  key={demo.id}
-                  className={cn(
-                    "cursor-pointer",
-                    selectedDemo?.id === demo.id && "bg-accent",
-                  )}
-                  onClick={() => {
-                    setSelectedDemo(demo);
-                    if (isDemoPhase) {
-                      updateCurrentEventStateMutation
-                        .mutateAsync({ currentDemoId: demo.id })
-                        .then(() => refetchEvent());
-                    }
-                  }}
-                >
-                  <TableCell className="font-medium">
-                    {demo.index + 1}
-                  </TableCell>
-                  <TableCell className="flex items-center gap-2">
-                    <span className="line-clamp-1 font-semibold">
-                      {demo.name}
-                    </span>
-                    {isDemoPhase && demo.id === currentEvent?.currentDemoId && (
-                      <LiveIndicator />
-                    )}
-                  </TableCell>
-                  <TableCell className="py-0">
-                    {isDemoPhase && selectedDemo?.id !== demo.id && (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedDemo(demo);
-                            }}
-                          >
-                            <EyeIcon className="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Sneak peek</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
-                  </TableCell>
+              {event.demos.length === 0 ? (
+                <TableRow>
+                  <td
+                    colSpan={3}
+                    className="h-24 text-center italic text-muted-foreground/50"
+                  >
+                    No demos (yet!)
+                  </td>
                 </TableRow>
-              ))}
+              ) : (
+                event.demos.map((demo) => (
+                  <TableRow
+                    key={demo.id}
+                    className={cn(
+                      "cursor-pointer",
+                      selectedDemo?.id === demo.id && "bg-accent",
+                    )}
+                    onClick={() => {
+                      setSelectedDemo(demo);
+                      if (isDemoPhase) {
+                        updateCurrentEventStateMutation
+                          .mutateAsync({ currentDemoId: demo.id })
+                          .then(() => refetchEvent());
+                      }
+                    }}
+                  >
+                    <TableCell className="font-medium">
+                      {demo.votable ? votableIndices.get(demo.id) : "-"}
+                    </TableCell>
+                    <TableCell className="flex items-center gap-2">
+                      <span className="line-clamp-1 font-semibold">
+                        {demo.name}
+                      </span>
+                      {isDemoPhase &&
+                        demo.id === currentEvent?.currentDemoId && (
+                          <LiveIndicator />
+                        )}
+                    </TableCell>
+                    <TableCell className="py-0">
+                      {isDemoPhase && selectedDemo?.id !== demo.id && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedDemo(demo);
+                              }}
+                            >
+                              <EyeIcon className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Sneak peek</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
@@ -142,7 +161,10 @@ export default function DemosAndFeedbackTab() {
                 ? `Feedback for ${selectedDemo.name}`
                 : "Feedback"}
             </h2>
-            <FeedbackOverview feedback={feedback ?? []} />
+            <FeedbackOverview
+              feedback={feedback ?? []}
+              quickActions={config.quickActions}
+            />
           </div>
           <div className="h-full max-h-[calc(100vh-122px)] space-y-2 overflow-y-auto">
             <AnimatePresence mode="popLayout">
@@ -153,6 +175,7 @@ export default function DemosAndFeedbackTab() {
                     <FeedbackItem
                       key={item.id}
                       item={item}
+                      quickActions={config.quickActions}
                       onDelete={(id) =>
                         deleteFeedbackMutation
                           .mutateAsync(id)
@@ -176,9 +199,11 @@ export default function DemosAndFeedbackTab() {
 function FeedbackItem({
   item,
   onDelete,
+  quickActions,
 }: {
   item: FeedbackAndAttendee;
   onDelete: (id: string) => void;
+  quickActions: QuickAction[];
 }) {
   const summaryString = useMemo(() => {
     const summary: string[] = [];
@@ -186,20 +211,18 @@ function FeedbackItem({
       summary.push(String.fromCodePoint(48 + item.rating, 65039, 8419));
     }
     if (item.claps) {
-      summary.push(
-        `👏<span class="text-xs text-primary"> x${item.claps}</span>`,
-      );
+      summary.push(`👏<span class="text-xs text-black"> x${item.claps}</span>`);
     }
     if (item.tellMeMore) {
       summary.push("📬");
     }
-    QuickActions.visibleActions.forEach(([id, action]) => {
-      if (item.quickActions.includes(id)) {
+    quickActions.forEach((action) => {
+      if (item.quickActions.includes(action.id)) {
         summary.push(action.icon);
       }
     });
     return summary.join(" • ");
-  }, [item]);
+  }, [item, quickActions]);
 
   return (
     <motion.div
@@ -215,7 +238,7 @@ function FeedbackItem({
               className={cn(
                 "font-semibold",
                 item.attendee.name?.length ?? 0 > 0
-                  ? "text-primary"
+                  ? "text-black"
                   : "italic text-muted-foreground",
               )}
             >

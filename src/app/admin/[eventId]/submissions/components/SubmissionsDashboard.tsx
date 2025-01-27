@@ -3,7 +3,6 @@
 import CsvButton from "../../components/CsvButton";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  ArrowUpRight,
   CalendarIcon,
   ExternalLink,
   FlagIcon,
@@ -16,12 +15,11 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { statusScore } from "~/lib/types/submissionStatus";
-import { cn, formatDate } from "~/lib/utils";
+import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import SubmissionStatusBadge from "~/components/SubmissionStatusBadge";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import {
   HoverCard,
   HoverCardContent,
@@ -32,7 +30,6 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "~/components/ui/resizable";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import {
   Table,
@@ -71,21 +68,12 @@ export default function SubmissionsDashboard({
   event: Event;
   isAdmin: boolean;
 }) {
-  const { data: event, refetch: refetchEvent } = api.event.get.useQuery(
-    initialEvent.id,
-  );
-  const { data: submissions, refetch: refetchSubmissions } =
-    api.submission.all.useQuery({
-      eventId: initialEvent.id,
-      secret: initialEvent.secret,
-    });
+  const { data: submissions, refetch } = api.submission.all.useQuery({
+    eventId: initialEvent.id,
+    secret: initialEvent.secret,
+  });
   const setSubmissionsMutation = api.submission.setSubmissions.useMutation();
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
-
-  const refetch = () => {
-    refetchEvent();
-    refetchSubmissions();
-  };
 
   submissions?.sort((a, b) => {
     if (a.status !== b.status) {
@@ -197,39 +185,52 @@ export default function SubmissionsDashboard({
               </TableHeader>
               <TableBody>
                 <AnimatePresence>
-                  {submissions?.map((submission, index) => (
-                    <motion.tr
-                      key={submission.id}
-                      layout
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      className={`cursor-pointer border-b transition-colors hover:bg-muted/50 ${
-                        selectedId === submission.id ? "bg-muted" : ""
-                      }`}
-                      onClick={() => setSelectedId(submission.id)}
-                    >
-                      <TableCell className="font-medium">{index + 1}</TableCell>
-                      <TableCell className="py-2">
-                        <div className="font-medium">{submission.name}</div>
-                        <div className="line-clamp-2 text-sm italic text-muted-foreground">
-                          {submission.tagline}
-                        </div>
-                      </TableCell>
-                      <TableCell className="flex flex-col items-end justify-end gap-1 text-right">
-                        <div className="flex flex-row items-center justify-end gap-2">
-                          {submission.flagged && (
-                            <FlagIcon
-                              className="h-[18px] w-[18px] fill-orange-500 text-orange-700"
-                              strokeWidth={2.5}
-                            />
-                          )}
-                          <StarRating rating={submission.rating ?? 0} />
-                        </div>
-                        <SubmissionStatusBadge status={submission.status} />
-                      </TableCell>
-                    </motion.tr>
-                  ))}
+                  {submissions?.length === 0 ? (
+                    <TableRow>
+                      <td
+                        colSpan={3}
+                        className="h-24 text-center italic text-muted-foreground/50"
+                      >
+                        No submissions (yet!)
+                      </td>
+                    </TableRow>
+                  ) : (
+                    submissions?.map((submission, index) => (
+                      <motion.tr
+                        key={submission.id}
+                        layout
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        className={`cursor-pointer border-b transition-colors hover:bg-muted/50 ${
+                          selectedId === submission.id ? "bg-muted" : ""
+                        }`}
+                        onClick={() => setSelectedId(submission.id)}
+                      >
+                        <TableCell className="font-medium">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell className="py-2">
+                          <div className="font-medium">{submission.name}</div>
+                          <div className="line-clamp-2 text-sm italic text-muted-foreground">
+                            {submission.tagline}
+                          </div>
+                        </TableCell>
+                        <TableCell className="flex flex-col items-end justify-end gap-1 text-right">
+                          <div className="flex flex-row items-center justify-end gap-2">
+                            {submission.flagged && (
+                              <FlagIcon
+                                className="h-[18px] w-[18px] fill-orange-500 text-orange-700"
+                                strokeWidth={2.5}
+                              />
+                            )}
+                            <StarRating rating={submission.rating ?? 0} />
+                          </div>
+                          <SubmissionStatusBadge status={submission.status} />
+                        </TableCell>
+                      </motion.tr>
+                    ))
+                  )}
                 </AnimatePresence>
               </TableBody>
             </Table>

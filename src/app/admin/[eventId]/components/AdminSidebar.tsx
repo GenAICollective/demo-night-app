@@ -6,15 +6,13 @@ import {
   ChevronDown,
   ChevronsUpDown,
   CirclePlay,
-  CircleX,
   ClipboardListIcon,
   ExternalLink,
-  HandshakeIcon,
   LayoutDashboardIcon,
   MessageSquareTextIcon,
   OctagonPause,
-  PlayIcon,
   PresentationIcon,
+  SettingsIcon,
   TrophyIcon,
   UsersIcon,
 } from "lucide-react";
@@ -22,6 +20,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { EventPhase } from "~/lib/types/currentEvent";
+import { type EventConfig } from "~/lib/types/eventConfig";
 import { api } from "~/trpc/react";
 
 import { Button } from "~/components/ui/button";
@@ -55,7 +54,7 @@ export enum AdminTab {
   Submissions = "submissions",
   Demos = "demos",
   Awards = "awards",
-  Partners = "partners",
+  Configuration = "configuration",
   DemosAndFeedback = "demos-and-feedback",
   AwardsAndVoting = "awards-and-voting",
   Attendees = "attendees",
@@ -64,12 +63,14 @@ export enum AdminTab {
 
 interface AdminSidebarProps {
   event: AdminEvent;
+  config: EventConfig;
   selectedTab: AdminTab;
   setSelectedTab: (tab: AdminTab) => void;
 }
 
 export function AdminSidebar({
   event,
+  config,
   selectedTab,
   setSelectedTab,
 }: AdminSidebarProps) {
@@ -243,17 +244,19 @@ export function AdminSidebar({
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  onClick={() => setSelectedTab(AdminTab.Partners)}
+                  onClick={() => setSelectedTab(AdminTab.Configuration)}
                   className={
-                    selectedTab === AdminTab.Partners ? "bg-accent" : ""
+                    selectedTab === AdminTab.Configuration ? "bg-accent" : ""
                   }
                 >
                   <div className="flex items-center gap-2">
-                    <HandshakeIcon className="h-4 w-4" />
-                    <span>Partners</span>
+                    <SettingsIcon className="h-4 w-4" />
+                    <span>Configuration</span>
                   </div>
                 </SidebarMenuButton>
-                <SidebarMenuBadge>{event.partners.length}</SidebarMenuBadge>
+                <SidebarMenuBadge>
+                  {config.quickActions.length}
+                </SidebarMenuBadge>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

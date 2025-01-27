@@ -9,7 +9,6 @@ import * as z from "zod";
 import { api } from "~/trpc/react";
 
 import { Button } from "~/components/ui/button";
-import { Checkbox } from "~/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -25,6 +24,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "~/components/ui/sheet";
+import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
 
 const formSchema = z.object({
@@ -152,9 +152,9 @@ export default function AwardSheet({
               control={form.control}
               name="votable"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 py-2">
                   <FormControl>
-                    <Checkbox
+                    <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
@@ -162,9 +162,9 @@ export default function AwardSheet({
                   <div className="space-y-1 leading-none">
                     <FormLabel>Attendees can vote?</FormLabel>
                     <p className="text-sm text-muted-foreground">
-                      Enable this if attendees should be able to cast votes for
-                      this award. If unchecked, you can still manually select
-                      the winner.
+                      Determine the winner of this award by audience vote. If
+                      unchecked, you can still manually select the winner (eg.
+                      for judges&apos; choice)
                     </p>
                   </div>
                 </FormItem>
