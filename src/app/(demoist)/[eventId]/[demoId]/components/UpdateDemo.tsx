@@ -9,7 +9,7 @@ import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import Button from "~/components/Button";
-import { GaicoConfetti } from "~/components/Confetti";
+import { LogoConfetti } from "~/components/Confetti";
 
 export function UpdateDemoPage({
   demo,
@@ -27,7 +27,7 @@ export function UpdateDemoPage({
       </div>
 
       <div className="z-3 pointer-events-none fixed inset-0">
-        <GaicoConfetti />
+        <LogoConfetti />
       </div>
     </>
   );

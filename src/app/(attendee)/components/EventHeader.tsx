@@ -1,11 +1,10 @@
 import { useWorkspaceContext } from "../contexts/WorkspaceContext";
-import Image from "next/image";
-import Link from "next/link";
 
 import { EventPhase, allPhases, displayName } from "~/lib/types/currentEvent";
 
+import Logos from "~/components/Logos";
+
 import { UpdateAttendeeButton } from "./UpdateAttendee";
-import { env } from "~/env";
 
 export default function EventHeader() {
   const { currentEvent, attendee, setAttendee } = useWorkspaceContext();
@@ -13,30 +12,22 @@ export default function EventHeader() {
     <header className="fixed left-0 right-0 z-[11] flex h-20 w-full select-none flex-col items-center bg-white/60 text-black backdrop-blur">
       <div className="flex w-full max-w-xl flex-1 flex-col items-center justify-between">
         <PhasePills currentPhase={currentEvent?.phase ?? EventPhase.Pre} />
-        <div className="flex w-full flex-1 flex-row items-center justify-between px-3">
-          <Link
-            href={env.NEXT_PUBLIC_BASE_URL}
-            className="-ml-1 flex items-center p-1"
-            target="_blank"
-          >
-            <Image
-              id="logo"
-              src="/images/logo.png"
-              alt="logo"
-              width={36}
-              height={36}
-            />
-          </Link>
+        <div className="flex w-full flex-1 flex-row items-center justify-between gap-1 px-4">
+          <div className="flex w-[108px] shrink-0 items-center gap-0">
+            <Logos size={36} />
+          </div>
           <h1 className="mt-1 line-clamp-1 text-ellipsis px-1 font-kallisto text-xl font-bold tracking-tight">
             {currentEvent?.name ?? ""}
           </h1>
-          <div className="flex aspect-square w-9 items-center justify-center">
-            {currentEvent?.phase !== EventPhase.Pre && (
-              <UpdateAttendeeButton
-                attendee={attendee}
-                setAttendee={setAttendee}
-              />
-            )}
+          <div className="flex w-[108px] shrink-0 items-center justify-end">
+            <div className="flex aspect-square w-9 items-center justify-center">
+              {currentEvent?.phase !== EventPhase.Pre && (
+                <UpdateAttendeeButton
+                  attendee={attendee}
+                  setAttendee={setAttendee}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

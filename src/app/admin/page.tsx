@@ -1,133 +1,150 @@
 "use client";
 
 import { type Event } from "@prisma/client";
-import { PlusIcon } from "lucide-react";
-import Image from "next/image";
+import { CalendarIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useState } from "react";
 
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
 import { UpsertEventModal } from "./components/UpsertEventModal";
-import { useModal } from "~/components/modal/provider";
-
-import { DashboardContext } from "./[eventId]/contexts/DashboardContext";
-import { useEventAdmin } from "./[eventId]/hooks/useEventAdmin";
+import Logos from "~/components/Logos";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardTitle } from "~/components/ui/card";
 
 export default function AdminHomePage() {
-  const {
-    currentEvent,
-    event,
-    refetch: refetchEvent,
-    selectedEventId,
-    setSelectedEventId,
-  } = useEventAdmin();
-  const modal = useModal();
-  const { data: events, refetch: _refetchEvents } =
+  const { data: currentEvent, refetch: refetchCurrentEvent } =
+    api.event.getCurrent.useQuery();
+  const { data: events, refetch: refetchEvents } =
     api.event.allAdmin.useQuery();
-
-  const updateCurrentMutation = api.event.updateCurrent.useMutation();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [eventToEdit, setEventToEdit] = useState<Event | undefined>(undefined);
 
   const refetch = () => {
-    refetchEvent();
-    _refetchEvents();
+    refetchCurrentEvent();
+    refetchEvents();
   };
 
-  useEffect(() => {
-    if (events && events.length > 0 && !selectedEventId) {
-      setSelectedEventId(events[0]!.id);
-    }
-  }, [events, selectedEventId, setSelectedEventId]);
-
   const showUpsertEventModal = (event?: Event) => {
-    modal?.show(
-      <UpsertEventModal
-        event={event}
-        onSubmit={() => refetch()}
-        onDeleted={() => {
-          setSelectedEventId(undefined);
-          refetch();
-        }}
-      />,
-    );
+    setEventToEdit(event);
+    setModalOpen(true);
   };
 
   const router = useRouter();
 
   return (
-    <main className="flex min-h-screen w-full flex-col text-black">
-      <DashboardContext.Provider value={{ currentEvent, event, refetchEvent }}>
-        <div className="flex items-center gap-2 p-2">
-          <Image src="/images/logo.png" alt="logo" width={40} height={40} />
-          <h1 className="line-clamp-1 font-kallisto text-2xl font-bold">
-            Demo Night App Admin Dashboard
-          </h1>
+    <main className="min-h-screen bg-gray-50">
+      <header className="sticky top-0 z-10 border-b bg-white/60 shadow-sm backdrop-blur">
+        <div className="container mx-auto flex items-center justify-between gap-1 px-8 py-2">
+          <Logos size={36} />
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="line-clamp-1 font-kallisto text-xl font-bold leading-6 tracking-tight">
+              Demo Night App
+            </h1>
+            <span className="font-kallisto text-sm font-bold text-muted-foreground">
+              Admin Dashboard
+            </span>
+          </div>
+          <div className="flex w-[108px] items-center justify-end" />
         </div>
-
-        <div className="flex flex-col gap-4 p-4">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {events?.map((event) => (
-              <button
-                key={event.id}
-                className={cn(
-                  "rounded-xl bg-gray-100 p-4 text-left",
-                  event.id === selectedEventId
-                    ? "border-blue-500"
-                    : "border-gray-200",
-                )}
-                onClick={() => {
-                  setSelectedEventId(event.id);
-                  router.push(`/admin/${event.id}`);
-                }}
-              >
-                <h3 className="line-clamp-1 text-xl font-bold">{event.name}</h3>
-                <p className="font-semibold leading-4 text-gray-600">
-                  {event.date.toLocaleDateString("en-US", {
-                    timeZone: "UTC",
-                  })}
-                </p>
-                <div className="mt-2 flex gap-2">
-                  <button
-                    className="flex-1 rounded-xl bg-blue-200 p-2 font-semibold transition-all hover:bg-blue-300 focus:outline-none"
+      </header>
+      <div className="container mx-auto p-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <Card
+            className={cn(
+              "cursor-pointer transition-all hover:shadow-md",
+              "border-dashed border-border",
+              "active:scale-95",
+            )}
+            onClick={() => showUpsertEventModal()}
+          >
+            <CardContent className="flex h-[88px] items-center justify-center p-4">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <PlusIcon className="h-5 w-5" />
+                <span className="font-medium">Create Event</span>
+              </div>
+            </CardContent>
+          </Card>
+          {events?.map((event) => (
+            <Card
+              key={event.id}
+              className={cn(
+                "cursor-pointer transition-all hover:shadow-md",
+                "border-border",
+                "active:scale-95",
+              )}
+              onClick={() => {
+                router.push(`/admin/${event.id}`);
+              }}
+            >
+              <CardContent className="p-4">
+                <CardTitle className="flex items-start justify-between">
+                  <div className="flex items-center">
+                    <span className="line-clamp-1 pr-2 text-xl">
+                      {event.name}
+                    </span>
+                    {event.id === currentEvent?.id && (
+                      <div className="flex items-center gap-2 rounded-full bg-green-100 px-2 py-1">
+                        <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-green-500" />
+                        <span className="text-xs font-semibold text-green-600">
+                          LIVE
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0"
                     onClick={(e) => {
                       e.stopPropagation();
                       showUpsertEventModal(event);
                     }}
                   >
-                    Edit
-                  </button>
-                  <button
-                    className={cn(
-                      "flex-1 rounded-xl p-2 font-semibold transition-all focus:outline-none",
-                      event.id === currentEvent?.id
-                        ? "bg-red-200 hover:bg-red-300"
-                        : "bg-green-200 hover:bg-green-300",
-                    )}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      updateCurrentMutation
-                        .mutateAsync(
-                          event.id === currentEvent?.id ? null : event.id,
-                        )
-                        .then(() => refetch());
-                    }}
-                  >
-                    {event.id === currentEvent?.id ? "Stop" : "Start"}
-                  </button>
+                    <span className="sr-only">Edit</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-4 w-4"
+                    >
+                      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                      <path d="m15 5 4 4" />
+                    </svg>
+                  </Button>
+                </CardTitle>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <CalendarIcon className="h-4 w-4" />
+                  <time>
+                    {event.date.toLocaleDateString("en-US", {
+                      timeZone: "UTC",
+                      weekday: "short",
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </time>
                 </div>
-              </button>
-            ))}
-            <button
-              className="flex size-full items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-200 bg-white p-2 font-semibold transition-all hover:bg-gray-100 focus:outline-none"
-              onClick={() => showUpsertEventModal()}
-            >
-              <PlusIcon className="size-4" strokeWidth={2.5} />
-              Create Event
-            </button>
-          </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </DashboardContext.Provider>
+      </div>
+      <UpsertEventModal
+        event={eventToEdit}
+        onSubmit={() => refetch()}
+        onDeleted={() => {
+          setModalOpen(false);
+          refetch();
+        }}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+      />
     </main>
   );
 }

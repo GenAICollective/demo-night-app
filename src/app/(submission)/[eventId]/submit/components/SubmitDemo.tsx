@@ -9,7 +9,7 @@ import { type CompleteEvent } from "~/server/api/routers/event";
 import { api } from "~/trpc/react";
 
 import Button from "~/components/Button";
-import { GaicoConfetti } from "~/components/Confetti";
+import { LogoConfetti } from "~/components/Confetti";
 
 const GUIDELINES_URL =
   "https://docs.google.com/document/d/1Z-c4KaGAWzH2siuGYoocQ7uVI_o8E6gocUXJO3BMLw8/edit";
@@ -17,14 +17,14 @@ const GUIDELINES_URL =
 export default function SubmitDemoPage({ event }: { event: CompleteEvent }) {
   return (
     <>
-      <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full max-w-4xl">
+      <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full max-w-2xl">
         <div className="size-full p-4">
           <SubmitDemoForm event={event} />
         </div>
       </div>
 
       <div className="z-3 pointer-events-none fixed inset-0">
-        <GaicoConfetti />
+        <LogoConfetti />
       </div>
     </>
   );
@@ -100,11 +100,13 @@ export function SubmitDemoForm({ event }: { event: CompleteEvent }) {
       </div>
       <div className="flex w-full flex-col gap-4 md:flex-row">
         <label className="flex w-full flex-col gap-1">
-          <span className="text-lg font-semibold">Startup Name</span>
+          <span className="text-lg font-semibold">Demo / Startup Name</span>
           <input
             type="text"
             placeholder="GenAI Collective"
-            {...register("name", { required: "Startup name is required" })}
+            {...register("name", {
+              required: "Startup / demo name is required",
+            })}
             className={cn(
               "z-10 rounded-xl border-2 bg-white/60 p-2 text-lg backdrop-blur",
               errors.name ? "border-red-500" : "border-gray-200",
@@ -115,11 +117,13 @@ export function SubmitDemoForm({ event }: { event: CompleteEvent }) {
           )}
         </label>
         <label className="flex w-full flex-col gap-1">
-          <span className="text-lg font-semibold">Startup Website</span>
+          <span className="text-lg font-semibold">Demo / Startup Website</span>
           <input
             type="url"
             placeholder="https://genaicollective.ai"
-            {...register("url", { required: "Startup website is required" })}
+            {...register("url", {
+              required: "Startup / demo website is required",
+            })}
             className={cn(
               "z-10 rounded-xl border-2 bg-white/60 p-2 text-lg backdrop-blur",
               errors.url ? "border-red-500" : "border-gray-200",
@@ -132,11 +136,13 @@ export function SubmitDemoForm({ event }: { event: CompleteEvent }) {
       </div>
       <div className="flex w-full flex-col gap-4 md:flex-row">
         <label className="flex w-full flex-col gap-1">
-          <span className="text-lg font-semibold">PoC Name</span>
+          <span className="text-lg font-semibold">Your Name</span>
           <input
             type="text"
             placeholder="Ada Lovelace"
-            {...register("pocName", { required: "PoC Name is required" })}
+            {...register("pocName", {
+              required: "Point of contact name is required",
+            })}
             className={`z-10 rounded-xl border-2 p-2 text-lg backdrop-blur ${errors.pocName ? "border-red-500" : "border-gray-200 bg-white/60"}`}
           />
           {errors.pocName && (
@@ -144,11 +150,13 @@ export function SubmitDemoForm({ event }: { event: CompleteEvent }) {
           )}
         </label>
         <label className="flex w-full flex-col gap-1">
-          <span className="text-lg font-semibold">PoC Email</span>
+          <span className="text-lg font-semibold">Your Email</span>
           <input
             type="email"
             placeholder="ada@genaicollective.ai"
-            {...register("email", { required: "PoC Email is required" })}
+            {...register("email", {
+              required: "Point of contact email is required",
+            })}
             className={cn(
               "z-10 rounded-xl border-2 bg-white/60 p-2 text-lg backdrop-blur",
               errors.email ? "border-red-500" : "border-gray-200",
@@ -179,7 +187,7 @@ export function SubmitDemoForm({ event }: { event: CompleteEvent }) {
           Please describe your startup / demo in 120 characters or less!
         </span>
         <textarea
-          placeholder="Building a community of the brightest minds in AI to discuss, exchange, and innovate."
+          placeholder="Building a global community of the brightest minds in AI to discuss, exchange, and innovate."
           {...register("tagline", {
             required: "Tagline is required",
             maxLength: {

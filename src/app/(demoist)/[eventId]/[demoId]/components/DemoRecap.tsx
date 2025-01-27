@@ -4,17 +4,24 @@ import { CircleHelp, Download, ShareIcon } from "lucide-react";
 import { CSVLink } from "react-csv";
 import { toast } from "sonner";
 
+import { QUICK_ACTIONS_TITLE, type QuickAction } from "~/lib/types/quickAction";
 import { type CompleteDemo } from "~/server/api/routers/demo";
 
 import Button from "~/components/Button";
-import { GaicoConfetti } from "~/components/Confetti";
+import { LogoConfetti } from "~/components/Confetti";
 import { RATING_EMOJIS } from "~/components/RatingSlider";
 import { useModal } from "~/components/modal/provider";
 
 import { FeedbackItem } from "./FeedbackItem";
 import InfoModal from "./InfoModal";
 
-export default function DemoRecap({ demo }: { demo: CompleteDemo }) {
+export default function DemoRecap({
+  demo,
+  quickActions,
+}: {
+  demo: CompleteDemo;
+  quickActions: QuickAction[];
+}) {
   return (
     <>
       <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full max-w-xl">
@@ -27,22 +34,32 @@ export default function DemoRecap({ demo }: { demo: CompleteDemo }) {
               Here&apos;s all your feedback and followups!
             </p>
           </div>
-          <ActionButtons demo={demo} />
+          <ActionButtons demo={demo} quickActions={quickActions} />
           <RatingSummary demo={demo} />
           {demo.feedback.map((feedback) => (
-            <FeedbackItem key={feedback.id} feedback={feedback} />
+            <FeedbackItem
+              key={feedback.id}
+              feedback={feedback}
+              quickActions={quickActions}
+            />
           ))}
         </div>
       </div>
 
       <div className="z-3 pointer-events-none fixed inset-0">
-        <GaicoConfetti />
+        <LogoConfetti />
       </div>
     </>
   );
 }
 
-function ActionButtons({ demo }: { demo: CompleteDemo }) {
+function ActionButtons({
+  demo,
+  quickActions,
+}: {
+  demo: CompleteDemo;
+  quickActions: QuickAction[];
+}) {
   const modal = useModal();
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -50,7 +67,7 @@ function ActionButtons({ demo }: { demo: CompleteDemo }) {
   };
 
   const showInfoModal = () => {
-    modal?.show(<InfoModal />);
+    modal?.show(<InfoModal quickActions={quickActions} />);
   };
 
   const headers = [
@@ -58,12 +75,27 @@ function ActionButtons({ demo }: { demo: CompleteDemo }) {
     { label: "Claps", key: "claps" },
     { label: "Comment", key: "comment" },
     { label: "Tell me more?", key: "tellMeMore" },
-    { label: "Quick actions?", key: "quickActions" },
+    ...quickActions.map((action) => ({
+      label: `${action.icon} ${QUICK_ACTIONS_TITLE.replace(
+        "...",
+        "",
+      )} ${action.description.charAt(0).toLowerCase() + action.description.slice(1)}`,
+      key: `quickActions.${action.id}`,
+    })),
     { label: "Attendee name", key: "attendee.name" },
     { label: "Attendee email", key: "attendee.email" },
     { label: "Attendee linkedin", key: "attendee.linkedin" },
     { label: "Attendee type", key: "attendee.type" },
   ];
+
+  const feedback = demo.feedback.map((feedback) => ({
+    ...feedback,
+    ...quickActions.reduce<Record<string, boolean>>((acc, action) => {
+      acc[`quickActions.${action.id}`] =
+        feedback.quickActions?.includes(action.id) ?? false;
+      return acc;
+    }, {}),
+  }));
 
   return (
     <div className="flex w-full flex-row gap-4">
@@ -77,7 +109,7 @@ function ActionButtons({ demo }: { demo: CompleteDemo }) {
       </Button>
       <CSVLink
         className="z-30 basis-1/3"
-        data={demo.feedback}
+        data={feedback}
         headers={headers}
         filename={`${demo.name} feedback.csv`}
       >
@@ -93,7 +125,7 @@ function RatingSummary({ demo }: { demo: CompleteDemo }) {
   const numByRating = demo.feedback.reduce(
     (acc, feedback) => {
       if (feedback.rating) {
-        acc[feedback.rating] += 1;
+        acc[feedback.rating] = (acc[feedback.rating] ?? 0) + 1;
       }
       return acc;
     },

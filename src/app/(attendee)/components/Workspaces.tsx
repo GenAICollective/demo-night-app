@@ -4,9 +4,11 @@ import { WorkspaceContext } from "../contexts/WorkspaceContext";
 import { useAttendee } from "../hooks/useAttendee";
 import useEventSync from "../hooks/useEventSync";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 import { animationVariants } from "~/lib/animation";
 import { type CurrentEvent, EventPhase } from "~/lib/types/currentEvent";
+import { type EventConfig, eventConfigSchema } from "~/lib/types/eventConfig";
 
 import LoadingScreen from "~/components/loading/LoadingScreen";
 
@@ -23,7 +25,16 @@ export default function Workspaces({
   currentEvent: CurrentEvent;
 }) {
   const { currentEvent, event } = useEventSync(initialCurrentEvent);
+  const [config, setConfig] = useState<EventConfig>(
+    eventConfigSchema.parse(event?.config ?? {}),
+  );
   const { attendee, setAttendee } = useAttendee(initialCurrentEvent.id);
+
+  useEffect(() => {
+    if (event) {
+      setConfig(eventConfigSchema.parse(event.config));
+    }
+  }, [event]);
 
   function workspace() {
     switch (currentEvent?.phase) {
@@ -47,7 +58,7 @@ export default function Workspaces({
 
   return (
     <WorkspaceContext.Provider
-      value={{ currentEvent, event, attendee, setAttendee }}
+      value={{ currentEvent, event, attendee, setAttendee, config }}
     >
       <EventHeader />
       <AnimatePresence initial={false} mode="popLayout">

@@ -1,20 +1,46 @@
 "use client";
 
 import CsvButton from "../../components/CsvButton";
-import { AnimatePresence } from "framer-motion";
-import { ArrowUpRight, ShareIcon } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  CalendarIcon,
+  ExternalLink,
+  FlagIcon,
+  ShareIcon,
+  StarIcon,
+} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { statusScore } from "~/lib/types/submissionStatus";
+import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
-import Button from "~/components/Button";
-import EventTitle from "~/components/EventTitle";
+import SubmissionStatusBadge from "~/components/SubmissionStatusBadge";
+import { Button } from "~/components/ui/button";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "~/components/ui/hover-card";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "~/components/ui/resizable";
+import { SidebarTrigger } from "~/components/ui/sidebar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
 
 import SubmissionDetails from "./SubmissionDetails";
-import { SubmissionItem } from "./SubmissionItem";
 
 const CSV_HEADERS = [
   "id",
@@ -42,21 +68,12 @@ export default function SubmissionsDashboard({
   event: Event;
   isAdmin: boolean;
 }) {
-  const { data: event, refetch: refetchEvent } = api.event.get.useQuery(
-    initialEvent.id,
-  );
-  const { data: submissions, refetch: refetchSubmissions } =
-    api.submission.all.useQuery({
-      eventId: initialEvent.id,
-      secret: initialEvent.secret,
-    });
+  const { data: submissions, refetch } = api.submission.all.useQuery({
+    eventId: initialEvent.id,
+    secret: initialEvent.secret,
+  });
   const setSubmissionsMutation = api.submission.setSubmissions.useMutation();
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
-
-  const refetch = () => {
-    refetchEvent();
-    refetchSubmissions();
-  };
 
   submissions?.sort((a, b) => {
     if (a.status !== b.status) {
@@ -111,11 +128,6 @@ export default function SubmissionsDashboard({
     toast.success("URL to view submissions copied to clipboard!");
   };
 
-  const description =
-    event?.demos.length ?? 0 > 0
-      ? `${submissions?.length ?? 0} submissions → ${event?.demos.length ?? 0} demos`
-      : `${submissions?.length ?? 0} submissions`;
-
   const onUploadSubmissions = (rows: Record<string, string>[]) => {
     setSubmissionsMutation
       .mutateAsync({
@@ -132,86 +144,189 @@ export default function SubmissionsDashboard({
   };
 
   return (
-    <div className="flex size-full max-h-screen min-h-screen flex-1 flex-col gap-2 p-2 text-black">
-      <div className="flex w-full items-center justify-between gap-4 pt-2">
-        <EventTitle name={initialEvent.name} url={initialEvent.url} />
-        <Button
-          className="w-40 bg-gray-200 text-gray-500 shadow-none hover:bg-gray-300 hover:text-gray-700"
-          onClick={copyLink}
-        >
-          Share
-          <ShareIcon className="-mt-1" size={20} strokeWidth={3.5} />
-        </Button>
-      </div>
-      <div className="flex w-full flex-1 flex-row gap-2 overflow-y-auto">
-        <div className="flex min-w-[400px] max-w-[400px] flex-col gap-2">
-          <div className="flex max-h-full w-full flex-1 flex-col gap-2 rounded-xl bg-gray-100 p-4">
-            <div className="flex flex-row items-center justify-between">
-              <h2 className="text-2xl font-bold">Demo Submissions</h2>
-              {isAdmin && submissions && (
-                <CsvButton
-                  style="minimal"
-                  data={submissions}
-                  headers={CSV_HEADERS}
-                  filename="submissions.csv"
-                  onUpload={onUploadSubmissions}
+    <div className="flex size-full flex-1 flex-col gap-2">
+      <ResizablePanelGroup direction="horizontal" className="flex-1">
+        <ResizablePanel defaultSize={50} minSize={30}>
+          <div className="flex min-h-12 flex-row items-end justify-between space-y-0 pb-2">
+            <div className="flex items-end gap-2">
+              {!isAdmin && (
+                <Image
+                  src="/images/logo.png"
+                  alt="logo"
+                  width={40}
+                  height={40}
+                  className="-ml-1"
                 />
               )}
+              <div className="flex items-center justify-start gap-2">
+                {isAdmin && <SidebarTrigger className="md:hidden" />}
+                <h2 className="line-clamp-1 text-2xl font-semibold">
+                  Submissions ({submissions?.length ?? 0})
+                </h2>
+              </div>
             </div>
-            <div className="-mt-1 flex flex-row items-center justify-between text-sm font-semibold text-gray-400">
-              {description}
-              <Link
-                href={`/${initialEvent.id}/submit`}
-                className="group flex items-center gap-1 hover:underline"
-              >
-                View form
-                <ArrowUpRight
-                  size={16}
-                  strokeWidth={2.5}
-                  className="rounded-md bg-gray-200 p-[1px] text-gray-400 group-hover:bg-gray-300 group-hover:text-gray-700"
-                />
-              </Link>
-            </div>
-            <ul className="flex flex-col gap-2 overflow-y-auto overflow-x-clip">
-              <AnimatePresence>
-                {submissions?.map((submission, index) => (
-                  <SubmissionItem
-                    key={submission.id}
-                    index={index}
-                    isSelected={selectedId === submission.id}
-                    submission={submission}
-                    onClick={() => setSelectedId(submission.id)}
-                  />
-                ))}
-              </AnimatePresence>
-            </ul>
-          </div>
-          {/* <div className="relative flex w-full flex-col gap-2 rounded-xl bg-gray-100 p-4">
-            <ChevronUp className="absolute top-1 z-10 -ml-4 h-8 w-full cursor-pointer" />
-            <div className="z-20 flex flex-row items-center justify-between">
-              <h2 className="z-0 text-2xl font-bold">Demos</h2>
-              <InfoButton
-                title="Demos"
-                message="These are the finalized demos for the event!"
+            {submissions && (
+              <CsvButton
+                data={submissions}
+                headers={CSV_HEADERS}
+                filename="submissions.csv"
+                onUpload={onUploadSubmissions}
               />
-            </div>
-          </div> */}
-        </div>
-        {selectedSubmission ? (
-          <SubmissionDetails
-            event={initialEvent}
-            submission={selectedSubmission}
-            isAdmin={isAdmin}
-            onUpdate={refetch}
-          />
-        ) : (
-          <div className="flex size-full items-start justify-center p-6">
-            <p className="text-lg font-semibold italic text-gray-300">
-              Select a submission to view details
-            </p>
+            )}
           </div>
-        )}
-      </div>
+          <div className="max-h-[calc(100%-48px)] overflow-y-auto rounded-md border">
+            <Table className="h-full">
+              <TableHeader className="sticky top-0 z-10">
+                <TableRow>
+                  <TableHead className="w-[50px]">#</TableHead>
+                  <TableHead>Submission</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <AnimatePresence>
+                  {submissions?.length === 0 ? (
+                    <TableRow>
+                      <td
+                        colSpan={3}
+                        className="h-24 text-center italic text-muted-foreground/50"
+                      >
+                        No submissions (yet!)
+                      </td>
+                    </TableRow>
+                  ) : (
+                    submissions?.map((submission, index) => (
+                      <motion.tr
+                        key={submission.id}
+                        layout
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        className={`cursor-pointer border-b transition-colors hover:bg-muted/50 ${
+                          selectedId === submission.id ? "bg-muted" : ""
+                        }`}
+                        onClick={() => setSelectedId(submission.id)}
+                      >
+                        <TableCell className="font-medium">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell className="py-2">
+                          <div className="font-medium">{submission.name}</div>
+                          <div className="line-clamp-2 text-sm italic text-muted-foreground">
+                            {submission.tagline}
+                          </div>
+                        </TableCell>
+                        <TableCell className="flex flex-col items-end justify-end gap-1 text-right">
+                          <div className="flex flex-row items-center justify-end gap-2">
+                            {submission.flagged && (
+                              <FlagIcon
+                                className="h-[18px] w-[18px] fill-orange-500 text-orange-700"
+                                strokeWidth={2.5}
+                              />
+                            )}
+                            <StarRating rating={submission.rating ?? 0} />
+                          </div>
+                          <SubmissionStatusBadge status={submission.status} />
+                        </TableCell>
+                      </motion.tr>
+                    ))
+                  )}
+                </AnimatePresence>
+              </TableBody>
+            </Table>
+          </div>
+        </ResizablePanel>
+        <ResizableHandle className="bg-transparent pl-2" />
+        <ResizablePanel minSize={30} className="pl-2">
+          <div className="flex max-h-[calc(100%-48px)] w-full items-center justify-end gap-2 overflow-y-scroll pb-2">
+            <div className="flex items-center gap-2">
+              {!isAdmin && (
+                <HoverCard openDelay={100}>
+                  <HoverCardTrigger asChild>
+                    <Button asChild variant="secondary">
+                      <Link href={initialEvent.url} className="gap-2">
+                        <ExternalLink className="size-4" />
+                        View event
+                      </Link>
+                    </Button>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="flex w-auto max-w-lg flex-row items-center gap-2">
+                    <Image
+                      src="/images/logo.png"
+                      alt="logo"
+                      width={40}
+                      height={40}
+                      className="-ml-1"
+                    />
+                    <div className="flex flex-col items-start">
+                      <div className="flex items-center">
+                        <div className="line-clamp-1 text-base font-bold leading-6">
+                          {initialEvent.name}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <CalendarIcon className="h-3 w-3" />
+                        <time>
+                          {initialEvent.date.toLocaleDateString("en-US", {
+                            timeZone: "UTC",
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </time>
+                      </div>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              )}
+              <Button asChild variant="secondary">
+                <Link href={`/${initialEvent.id}/submit`} className="gap-2">
+                  <ExternalLink className="size-4" />
+                  View form
+                </Link>
+              </Button>
+              <Button onClick={copyLink}>
+                <ShareIcon className="size-4" />
+                Share
+              </Button>
+            </div>
+          </div>
+          {selectedSubmission ? (
+            <SubmissionDetails
+              event={initialEvent}
+              submission={selectedSubmission}
+              isAdmin={isAdmin}
+              onUpdate={refetch}
+            />
+          ) : (
+            <div className="flex size-full items-start justify-center p-6">
+              <p className="self-center italic text-muted-foreground/50">
+                Select a submission to view details
+              </p>
+            </div>
+          )}
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
+  );
+}
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex flex-row gap-[1px]">
+      {[1, 2, 3, 4, 5].map((_, index) => (
+        <StarIcon
+          key={index}
+          className={cn(
+            "h-[20px] w-[20px] transition-all duration-300",
+            index < rating
+              ? "fill-yellow-300 text-yellow-500"
+              : "text-muted-foreground/50",
+          )}
+          strokeWidth={2.25}
+        />
+      ))}
     </div>
   );
 }

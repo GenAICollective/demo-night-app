@@ -4,7 +4,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import ConfettiExplosion from "react-dom-confetti";
 
-import * as QuickActions from "~/lib/types/quickActions";
+import {
+  QUICK_ACTIONS_ICON,
+  QUICK_ACTIONS_TITLE,
+  type QuickAction,
+} from "~/lib/types/quickAction";
 import { cn } from "~/lib/utils";
 
 import { type LocalFeedback } from "./hooks/useFeedback";
@@ -12,9 +16,11 @@ import { type LocalFeedback } from "./hooks/useFeedback";
 export function ActionButtons({
   feedback,
   setFeedback,
+  quickActions,
 }: {
   feedback: LocalFeedback | null;
   setFeedback: (feedback: LocalFeedback) => void;
+  quickActions: QuickAction[];
 }) {
   const [isExploding, setIsExploding] = useState(false);
 
@@ -85,7 +91,11 @@ export function ActionButtons({
           </p>
         </motion.button>
       </div>
-      <QuickActionsButton feedback={feedback} setFeedback={setFeedback} />
+      <QuickActionsButton
+        feedback={feedback}
+        setFeedback={setFeedback}
+        quickActions={quickActions}
+      />
     </div>
   );
 }
@@ -93,9 +103,11 @@ export function ActionButtons({
 function QuickActionsButton({
   feedback,
   setFeedback,
+  quickActions,
 }: {
   feedback: LocalFeedback | null;
   setFeedback: (feedback: LocalFeedback) => void;
+  quickActions: QuickAction[];
 }) {
   const [showButtons, setShowButtons] = useState(false);
 
@@ -115,10 +127,10 @@ function QuickActionsButton({
           )}
           onClick={() => setShowButtons(!showButtons)}
         >
-          {showButtons ? "❌" : QuickActions.icon}
+          {showButtons ? "❌" : QUICK_ACTIONS_ICON}
         </motion.button>
         <p className="pointer-events-none absolute w-32 pt-[104px] text-center text-sm font-semibold text-gray-400">
-          {QuickActions.title}
+          {QUICK_ACTIONS_TITLE}
         </p>
       </div>
       <AnimatePresence>
@@ -129,8 +141,8 @@ function QuickActionsButton({
             animate={{ opacity: 1, y: 0, x: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, x: -50, scale: 0.5 }}
           >
-            {QuickActions.visibleActions.map(([id, action]) => (
-              <div key={id} className="relative w-[300px]">
+            {quickActions.map((action) => (
+              <div key={action.id} className="relative w-[300px]">
                 <p className="pointer-events-none absolute -left-3 top-1/2 line-clamp-1 -translate-x-full -translate-y-1/2 rounded-full bg-white/60 p-2 text-sm font-semibold text-gray-400 backdrop-blur-sm">
                   {action.description}
                 </p>
@@ -139,7 +151,7 @@ function QuickActionsButton({
                   whileTap={{ scale: 1.5, transition: { duration: 0.2 } }}
                   className={cn(
                     "relative aspect-square w-20 rounded-full border-4 border-transparent from-yellow-300/40 from-50% to-yellow-500/60 text-center text-[40px] shadow-[0_10px_40px_rgb(234,179,8,0.5)] backdrop-blur transition-all bg-radient-ellipse-c hover:bg-yellow-500/20",
-                    feedback?.quickActions.includes(id)
+                    feedback?.quickActions.includes(action.id)
                       ? "border-yellow-500"
                       : "",
                   )}
@@ -147,9 +159,11 @@ function QuickActionsButton({
                     if (feedback) {
                       const updatedFeedback = {
                         ...feedback,
-                        quickActions: feedback.quickActions.includes(id)
-                          ? feedback.quickActions.filter((key) => key !== id)
-                          : [...feedback.quickActions, id],
+                        quickActions: feedback.quickActions.includes(action.id)
+                          ? feedback.quickActions.filter(
+                              (key) => key !== action.id,
+                            )
+                          : [...feedback.quickActions, action.id],
                       };
                       setFeedback(updatedFeedback);
                     }

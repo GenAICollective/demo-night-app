@@ -4,22 +4,29 @@ import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
-import * as QuickActions from "~/lib/types/quickActions";
+import { type QuickAction } from "~/lib/types/quickAction";
 import { cn } from "~/lib/utils";
 import { type DemoFeedback } from "~/server/api/routers/demo";
 
 import AttendeeTypeBadge from "~/components/AttendeeTypeBadge";
 import { RATING_EMOJIS } from "~/components/RatingSlider";
 
-export function FeedbackItem({ feedback }: { feedback: DemoFeedback }) {
+export function FeedbackItem({
+  feedback,
+  quickActions,
+}: {
+  feedback: DemoFeedback;
+  quickActions: QuickAction[];
+}) {
   const summary = [
     feedback.rating ? RATING_EMOJIS[feedback.rating] : null,
     feedback.claps
       ? `👏<span class="text-xs"> x${feedback.claps}</span>`
       : null,
     feedback.tellMeMore ? "📬" : null,
-    ...(feedback.quickActions?.map((id) => QuickActions.actions[id]?.icon) ??
-      []),
+    ...(feedback.quickActions?.map(
+      (id) => quickActions.find((a) => a.id === id)?.icon ?? "❓",
+    ) ?? []),
   ].filter((s) => s) as string[];
   const summaryString = summary.join(" • ");
   const copyEmailToClipboard = () => {

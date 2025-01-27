@@ -7,7 +7,7 @@ import ConfettiExplosion from "react-dom-confetti";
 import { EventPhase } from "~/lib/types/currentEvent";
 import { type PublicDemo } from "~/server/api/routers/event";
 
-import { GaicoConfetti, ResultsConfetti } from "~/components/Confetti";
+import { LogoConfetti, ResultsConfetti } from "~/components/Confetti";
 
 export default function AwardsPresentation() {
   const { currentEvent, event } = usePresentationContext();
@@ -57,7 +57,7 @@ export default function AwardsPresentation() {
       </div>
       <div className="z-3 pointer-events-none fixed inset-0">
         <ResultsConfetti currentAwardIndex={currentAwardIndex} />
-        <GaicoConfetti run={currentEvent.phase === EventPhase.Recap} />
+        <LogoConfetti run={currentEvent.phase === EventPhase.Recap} />
       </div>
     </>
   );

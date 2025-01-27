@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
+import type Particle from "react-confetti/dist/types/Particle";
 
 import useWindowSize from "~/lib/hooks/useWindowSize";
 
@@ -148,13 +149,36 @@ export function ResultsConfetti({
   );
 }
 
-export function GaicoConfetti({ run = true }: { run?: boolean }) {
+export function LogoConfetti({ run = true }: { run?: boolean }) {
   const { windowSize } = useWindowSize();
+  const [images, setImages] = useState<HTMLImageElement[]>([]);
 
-  const drawShape = (ctx: CanvasRenderingContext2D) => {
-    const image = document.getElementById("logo") as HTMLImageElement;
+  useEffect(() => {
+    const logoElements = Array.from(
+      document.getElementsByClassName("logo"),
+    ).filter((el): el is HTMLImageElement => el instanceof HTMLImageElement);
 
-    ctx.drawImage(image, -18, -18, 36, 36);
+    // Create new Image objects and wait for them to load
+    const loadImages = logoElements.map((logoEl) => {
+      return new Promise<HTMLImageElement>((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.src = logoEl.src;
+      });
+    });
+
+    void Promise.all(loadImages).then(setImages);
+  }, []); // Only run once on mount
+
+  const drawShape = (ctx: CanvasRenderingContext2D, particle: Particle) => {
+    if (!images || images.length === 0) return;
+    const img = images[particle.shape % images.length];
+    if (!img || !(img instanceof HTMLImageElement)) return;
+    try {
+      ctx.drawImage(img, -18, -18, 36, 36);
+    } catch (error) {
+      console.error("Error drawing image:", error);
+    }
   };
 
   return (
@@ -163,6 +187,7 @@ export function GaicoConfetti({ run = true }: { run?: boolean }) {
       height={windowSize.height}
       drawShape={drawShape}
       basicFloat={true}
+      numberOfShapes={images.length}
       initialVelocityY={{ min: -10, max: 0 }}
       tweenDuration={30_000}
       gravity={0.01}

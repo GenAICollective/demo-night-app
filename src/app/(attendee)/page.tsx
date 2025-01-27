@@ -6,7 +6,7 @@ import Workspaces from "./components/Workspaces";
 
 export async function generateMetadata() {
   const currentEvent = await api.event.getCurrent();
-  return { title: currentEvent?.name ?? "GenAI Collective Demo Night!" };
+  return { title: currentEvent?.name ?? "Demo Night" };
 }
 
 export default async function AttendeePage() {
