@@ -181,7 +181,7 @@ export function ConfigurationTab() {
         <div className="flex items-end justify-between">
           <div className="flex items-end justify-start gap-2">
             <SidebarTrigger className="p-5 md:hidden" />
-            <h2 className="text-2xl font-semibold">Partners</h2>
+            <h2 className="text-2xl font-semibold">Hosts & Sponsors</h2>
           </div>
           <CsvButton
             data={config.partners}
@@ -216,7 +216,7 @@ export function ConfigurationTab() {
                       colSpan={4}
                       className="h-24 text-center italic text-muted-foreground/50"
                     >
-                      No partners (yet!)
+                      No hosts or sponsors (yet!)
                     </td>
                   </TableRow>
                 ) : (

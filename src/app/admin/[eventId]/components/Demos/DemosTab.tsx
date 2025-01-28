@@ -92,7 +92,14 @@ export function DemosTab() {
     setDemosMutation
       .mutateAsync({
         eventId: event.id,
-        demos: rows as any,
+        demos: rows.map((row) => ({
+          id: row.id,
+          name: row.name!,
+          description: row.description!,
+          email: row.email!,
+          url: row.url!,
+          votable: !["0", "false", "FALSE"].includes(row.votable ?? ""),
+        })),
       })
       .then(() => {
         toast.success("Demos updated!");
