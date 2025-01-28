@@ -69,7 +69,12 @@ export function AwardsTab() {
     setAwardsMutation
       .mutateAsync({
         eventId: event.id,
-        awards: rows as any,
+        awards: rows.map((row) => ({
+          id: row.id,
+          name: row.name!,
+          description: row.description!,
+          votable: !["0", "false", "FALSE"].includes(row.votable ?? ""),
+        })),
       })
       .then(() => {
         toast.success("Awards updated!");
