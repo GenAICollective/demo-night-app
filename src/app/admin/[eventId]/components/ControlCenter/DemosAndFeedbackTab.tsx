@@ -63,6 +63,11 @@ export default function DemosAndFeedbackTab() {
     });
   // const { feedback, refetch: refetchFeedback } = useMockFeedback();
 
+  const scoredFeedback = useMemo(() => {
+    if (!feedback) return [];
+    return feedback.sort((a, b) => feedbackScore(b) - feedbackScore(a));
+  }, [feedback]);
+
   const updateCurrentEventStateMutation =
     api.event.updateCurrentState.useMutation();
   const deleteFeedbackMutation = api.feedback.delete.useMutation();
@@ -169,20 +174,18 @@ export default function DemosAndFeedbackTab() {
           <div className="h-full max-h-[calc(100vh-122px)] space-y-2 overflow-y-auto">
             <AnimatePresence mode="popLayout">
               {feedback && feedback.length > 0 ? (
-                feedback
-                  .sort((a, b) => feedbackScore(b) - feedbackScore(a))
-                  .map((item) => (
-                    <FeedbackItem
-                      key={item.id}
-                      item={item}
-                      quickActions={config.quickActions}
-                      onDelete={(id) =>
-                        deleteFeedbackMutation
-                          .mutateAsync(id)
-                          .then(() => refetchFeedback())
-                      }
-                    />
-                  ))
+                scoredFeedback.map((item) => (
+                  <FeedbackItem
+                    key={item.id}
+                    item={item}
+                    quickActions={config.quickActions}
+                    onDelete={(id) =>
+                      deleteFeedbackMutation
+                        .mutateAsync(id)
+                        .then(() => refetchFeedback())
+                    }
+                  />
+                ))
               ) : (
                 <div className="p-10 text-center text-sm italic text-muted-foreground/50">
                   No feedback (yet!)
@@ -236,7 +239,7 @@ function FeedbackItem({
           <div className="flex items-center gap-1">
             <span
               className={cn(
-                "font-semibold",
+                "line-clamp-1 font-semibold",
                 item.attendee.name?.length ?? 0 > 0
                   ? "text-black"
                   : "italic text-muted-foreground",
@@ -248,7 +251,7 @@ function FeedbackItem({
             </span>
             <AttendeeTypeBadge type={item.attendee.type} />
             <p
-              className="font-semibold text-muted-foreground"
+              className="shrink-0 font-semibold text-muted-foreground"
               dangerouslySetInnerHTML={{
                 __html: `${summaryString ? `• ${summaryString}` : ""}`,
               }}

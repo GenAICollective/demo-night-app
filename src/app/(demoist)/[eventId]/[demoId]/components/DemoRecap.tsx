@@ -1,6 +1,7 @@
 "use client";
 
 import { CircleHelp, Download, ShareIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 import { toast } from "sonner";
 
@@ -53,6 +54,43 @@ export default function DemoRecap({
   );
 }
 
+function CSVDownloadButton({
+  data,
+  headers,
+  filename,
+}: {
+  data: any[];
+  headers: { label: string; key: string }[];
+  filename: string;
+}) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <Button className="basis-1/3">
+        CSV <Download className="-mt-1" size={20} strokeWidth={3.5} />
+      </Button>
+    );
+  }
+
+  return (
+    <CSVLink
+      className="z-30 basis-1/3"
+      data={data}
+      headers={headers}
+      filename={filename}
+    >
+      <Button>
+        CSV <Download className="-mt-1" size={20} strokeWidth={3.5} />
+      </Button>
+    </CSVLink>
+  );
+}
+
 function ActionButtons({
   demo,
   quickActions,
@@ -70,31 +108,37 @@ function ActionButtons({
     modal?.show(<InfoModal quickActions={quickActions} />);
   };
 
-  const headers = [
-    { label: "Rating", key: "rating" },
-    { label: "Claps", key: "claps" },
-    { label: "Comment", key: "comment" },
-    { label: "Tell me more?", key: "tellMeMore" },
-    ...quickActions.map((action) => ({
-      label: `${action.icon} ${QUICK_ACTIONS_TITLE.replace(
-        "...",
-        "",
-      )} ${action.description.charAt(0).toLowerCase() + action.description.slice(1)}`,
-      key: `quickActions.${action.id}`,
-    })),
-    { label: "Attendee name", key: "attendee.name" },
-    { label: "Attendee email", key: "attendee.email" },
-    { label: "Attendee linkedin", key: "attendee.linkedin" },
-    { label: "Attendee type", key: "attendee.type" },
-  ];
+  const headers = useMemo(
+    () => [
+      { label: "Claps", key: "claps" },
+      { label: "Comment", key: "comment" },
+      { label: "Tell me more?", key: "tellMeMore" },
+      ...quickActions.map((action) => ({
+        label: `${action.icon} ${QUICK_ACTIONS_TITLE.replace(
+          "...",
+          "",
+        )} ${action.description.charAt(0).toLowerCase() + action.description.slice(1)}`,
+        key: `quickActions.${action.id}`,
+      })),
+      { label: "Attendee name", key: "attendee.name" },
+      { label: "Attendee email", key: "attendee.email" },
+      { label: "Attendee linkedin", key: "attendee.linkedin" },
+      { label: "Attendee type", key: "attendee.type" },
+    ],
+    [quickActions],
+  );
 
   const feedback = demo.feedback.map((feedback) => ({
     ...feedback,
-    ...quickActions.reduce<Record<string, boolean>>((acc, action) => {
-      acc[`quickActions.${action.id}`] =
-        feedback.quickActions?.includes(action.id) ?? false;
-      return acc;
-    }, {}),
+    ...quickActions.reduce<Record<string, boolean | undefined>>(
+      (acc, action) => {
+        acc[`quickActions.${action.id}`] = feedback.quickActions?.includes(
+          action.id,
+        );
+        return acc;
+      },
+      {},
+    ),
   }));
 
   return (
@@ -107,16 +151,11 @@ function ActionButtons({
         Help
         <CircleHelp className="-mt-1" size={20} strokeWidth={3.5} />
       </Button>
-      <CSVLink
-        className="z-30 basis-1/3"
+      <CSVDownloadButton
         data={feedback}
         headers={headers}
         filename={`${demo.name} feedback.csv`}
-      >
-        <Button>
-          CSV <Download className="-mt-1" size={20} strokeWidth={3.5} />
-        </Button>
-      </CSVLink>
+      />
     </div>
   );
 }
