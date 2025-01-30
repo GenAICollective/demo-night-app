@@ -9,7 +9,6 @@ import { cn } from "~/lib/utils";
 import { type DemoFeedback } from "~/server/api/routers/demo";
 
 import AttendeeTypeBadge from "~/components/AttendeeTypeBadge";
-import { RATING_EMOJIS } from "~/components/RatingSlider";
 
 export function FeedbackItem({
   feedback,
@@ -19,7 +18,6 @@ export function FeedbackItem({
   quickActions: QuickAction[];
 }) {
   const summary = [
-    feedback.rating ? RATING_EMOJIS[feedback.rating] : null,
     feedback.claps
       ? `👏<span class="text-xs"> x${feedback.claps}</span>`
       : null,
