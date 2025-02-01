@@ -62,11 +62,11 @@ model VerificationToken {
 model Event {
   id String @id @default(cuid())
 
-  name     String
-  date     DateTime
-  url      String
-  partners Json[]
-  secret   String   @default(cuid())
+  name   String
+  date   DateTime
+  url    String
+  config Json     @default("{}")
+  secret String   @default(cuid())
 
   submissions   Submission[]
   demos         Demo[]
@@ -121,10 +121,13 @@ model Demo {
   description String
   email       String
   url         String
+  votable     Boolean @default(true)
 
   feedback Feedback[]
   votes    Vote[]
   awards   Award[]
+
+  @@index([eventId])
 }
 
 model Attendee {
@@ -154,6 +157,8 @@ model Award {
   votable     Boolean @default(true)
 
   votes Vote[]
+
+  @@index([eventId])
 }
 
 model Feedback {

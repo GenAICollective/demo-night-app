@@ -121,6 +121,7 @@ export const demoRouter = createTRPCRouter({
         description: z.string(),
         email: z.string().email(),
         url: z.string().url(),
+        votable: z.boolean(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -133,6 +134,7 @@ export const demoRouter = createTRPCRouter({
             description: input.description,
             email: input.email,
             url: input.url,
+            votable: input.votable,
           },
         });
       } else {
@@ -214,6 +216,7 @@ export const demoRouter = createTRPCRouter({
             description: z.string(),
             email: z.string(),
             url: z.string(),
+            votable: z.boolean(),
           }),
         ),
       }),

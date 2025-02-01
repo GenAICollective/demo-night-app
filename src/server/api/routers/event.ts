@@ -1,8 +1,19 @@
-import { type Award, type Demo, type Event, type Prisma } from "@prisma/client";
+import {
+  type Award,
+  type Demo,
+  type Event,
+  type EventFeedback,
+  type Prisma,
+} from "@prisma/client";
 import { z } from "zod";
 
-import { DEFAULT_AWARDS } from "~/lib/defaultAwards";
+import { DEFAULT_AWARDS } from "~/lib/types/award";
 import * as kv from "~/lib/types/currentEvent";
+import { DEFAULT_DEMOS } from "~/lib/types/demo";
+import {
+  DEFAULT_EVENT_CONFIG,
+  eventConfigSchema,
+} from "~/lib/types/eventConfig";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -10,9 +21,12 @@ import {
 } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
+import { type AdminEvent } from "~/app/admin/[eventId]/contexts/DashboardContext";
+
 export type CompleteEvent = Event & {
   demos: PublicDemo[];
   awards: Award[];
+  eventFeedback: EventFeedback[];
 };
 
 export type PublicDemo = Omit<
@@ -53,22 +67,26 @@ export const eventRouter = createTRPCRouter({
       z.object({
         originalId: z.string().optional(),
         id: z.string().optional(),
-        name: z.string(),
-        date: z.date(),
-        url: z.string().url(),
+        name: z.string().optional(),
+        date: z.date().optional(),
+        url: z.string().url().optional(),
+        config: eventConfigSchema.optional(),
       }),
     )
     .mutation(async ({ input }) => {
+      const data = {
+        id: input.id,
+        name: input.name,
+        date: input.date,
+        url: input.url,
+        config: input.config,
+      };
+
       if (input.originalId) {
         return db.event
           .update({
             where: { id: input.originalId },
-            data: {
-              id: input.id,
-              name: input.name,
-              date: input.date,
-              url: input.url,
-            },
+            data,
           })
           .then(async (res: Event) => {
             const currentEvent = await kv.getCurrentEvent();
@@ -80,7 +98,14 @@ export const eventRouter = createTRPCRouter({
       }
       return db.event.create({
         data: {
-          ...input,
+          id: data.id!,
+          name: data.name!,
+          date: data.date!,
+          url: data.url!,
+          config: data.config ?? DEFAULT_EVENT_CONFIG,
+          demos: {
+            create: DEFAULT_DEMOS,
+          },
           awards: {
             create: DEFAULT_AWARDS,
           },
@@ -92,18 +117,19 @@ export const eventRouter = createTRPCRouter({
       orderBy: { date: "desc" },
     });
   }),
-  getAdmin: protectedProcedure.input(z.string()).query(async ({ input }) => {
-    return db.event.findUnique({
-      where: {
-        id: input,
-      },
-      include: {
-        demos: { orderBy: { index: "asc" } },
-        attendees: { orderBy: { name: "asc" } },
-        awards: { orderBy: { index: "asc" } },
-      },
-    });
-  }),
+  getAdmin: protectedProcedure
+    .input(z.string())
+    .query(async ({ input }): Promise<AdminEvent | null> => {
+      return db.event.findUnique({
+        where: { id: input },
+        include: {
+          demos: { orderBy: { index: "asc" } },
+          attendees: { orderBy: { name: "asc" } },
+          awards: { orderBy: { index: "asc" } },
+          eventFeedback: { orderBy: { createdAt: "desc" } },
+        },
+      });
+    }),
   updateCurrent: protectedProcedure
     .input(z.string().nullable())
     .mutation(async ({ input }) => {
@@ -148,7 +174,7 @@ const completeEventSelect: Prisma.EventSelect = {
   name: true,
   date: true,
   url: true,
-  partners: true,
+  config: true,
   demos: {
     orderBy: { index: "asc" },
     select: {
@@ -158,6 +184,7 @@ const completeEventSelect: Prisma.EventSelect = {
       description: true,
       email: true,
       url: true,
+      votable: true,
     },
   },
   awards: { orderBy: { index: "asc" } },

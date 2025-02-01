@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { type Feedback, PrismaClient, SubmissionStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -78,6 +78,21 @@ async function main() {
     url: demo.url,
   }));
 
+  const submissions = demos.map((demo) => ({
+    id: `submission-${demo.id}`,
+    name: demo.name,
+    tagline: demo.description.split(".")[0]?.trim() ?? demo.name,
+    description: demo.description,
+    email: demo.email,
+    url: demo.url,
+    pocName: "Ada Lovelace",
+    demoUrl: demo.url,
+    status: SubmissionStatus.CONFIRMED,
+    flagged: false,
+    rating: Math.floor(Math.random() * 3) + 3,
+    comment: "",
+  }));
+
   const awardsInfo = [
     {
       name: "🏆 Best Overall",
@@ -97,6 +112,7 @@ async function main() {
     id: `award-${index + 1}`,
     name: award.name,
     description: award.description,
+    winnerId: `demo-${index + 1}`,
     index: index,
   }));
 
@@ -135,6 +151,7 @@ async function main() {
     {
       rating: 4,
       claps: 2,
+      quickActions: ["invest"],
       comment: "Well done!",
     },
     {
@@ -161,6 +178,23 @@ async function main() {
     demoId: `demo-${Math.floor(Math.random() * 10) + 1}`,
   }));
 
+  const eventFeedbackInfo = [
+    {
+      comment:
+        "Amazing event! The demos were incredibly inspiring. Looking forward to the next one!",
+    },
+    {
+      comment:
+        "Great organization and fantastic lineup of demos. The voting system worked smoothly.",
+    },
+  ];
+
+  const eventFeedback = eventFeedbackInfo.map((feedback, index) => ({
+    id: `event-feedback-${index + 1}`,
+    attendeeId: `attendee-${index + 1}`,
+    comment: feedback.comment,
+  }));
+
   await prisma.event.upsert({
     where: { id: "sf-demo" },
     update: {},
@@ -169,11 +203,13 @@ async function main() {
       name: "SF Demo Night 🚀",
       date: new Date(Date.now() + 14 * 86_400_000).toISOString(),
       url: "https://lu.ma/demo-night",
+      submissions: { create: submissions },
       demos: { create: demos },
-      attendees: { create: attendees },
       awards: { create: awards },
+      attendees: { create: attendees },
       feedback: { create: feedback },
       votes: { create: votes },
+      eventFeedback: { create: eventFeedback },
     },
   });
 }

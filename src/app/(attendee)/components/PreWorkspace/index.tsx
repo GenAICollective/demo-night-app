@@ -1,7 +1,7 @@
 import { useWorkspaceContext } from "../../contexts/WorkspaceContext";
 import { UpdateAttendeeForm } from "../UpdateAttendee";
 
-import { GaicoConfetti } from "~/components/Confetti";
+import { LogoConfetti } from "~/components/Confetti";
 
 export default function PreWorkspace() {
   const { attendee, setAttendee } = useWorkspaceContext();
@@ -14,7 +14,7 @@ export default function PreWorkspace() {
       </div>
 
       <div className="z-3 pointer-events-none fixed inset-0">
-        <GaicoConfetti />
+        <LogoConfetti />
       </div>
     </>
   );

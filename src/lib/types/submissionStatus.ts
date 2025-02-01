@@ -22,13 +22,13 @@ export function statusTitle(status: SubmissionStatus): string {
 export function statusScore(status: SubmissionStatus): number {
   switch (status) {
     case SubmissionStatus.PENDING:
-      return 5;
-    case SubmissionStatus.WAITLISTED:
       return 2;
+    case SubmissionStatus.WAITLISTED:
+      return 3;
     case SubmissionStatus.AWAITING_CONFIRMATION:
       return 4;
     case SubmissionStatus.CONFIRMED:
-      return 3;
+      return 5;
     case SubmissionStatus.CANCELLED:
       return 1;
     case SubmissionStatus.REJECTED:

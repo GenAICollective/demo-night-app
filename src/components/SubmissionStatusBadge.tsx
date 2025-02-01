@@ -29,7 +29,7 @@ export default function SubmissionStatusBadge({
   const color = statusColor(status);
   return (
     <span
-      className={`rounded-lg px-2 text-xs font-semibold ${color} text-${color.replace("bg-", "")}-800`}
+      className={`whitespace-nowrap rounded-sm px-2 py-0.5 text-xs font-semibold ${color} text-${color.replace("bg-", "")}-800`}
     >
       {statusTitle(status)}
     </span>

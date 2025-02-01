@@ -1,15 +1,21 @@
-import * as QuickActions from "~/lib/types/quickActions";
+import {
+  QUICK_ACTIONS_ICON,
+  QUICK_ACTIONS_TITLE,
+  type QuickAction,
+} from "~/lib/types/quickAction";
 import { cn } from "~/lib/utils";
 
 import Button from "~/components/Button";
 import { useModal } from "~/components/modal/provider";
 
-const actionItems: {
+type ActionItem = {
   icon: string;
   title?: string;
   description?: string;
   indent?: boolean;
-}[] = [
+};
+
+const actionItems: ActionItem[] = [
   {
     icon: "👏",
     title: "Claps:",
@@ -22,18 +28,26 @@ const actionItems: {
     description: "Send them an email with more info!",
   },
   {
-    icon: QuickActions.icon,
-    title: `The attendee answered "${QuickActions.title}"`,
+    icon: QUICK_ACTIONS_ICON,
+    title: `The attendee answered "${QUICK_ACTIONS_TITLE}"`,
   },
-  ...Object.values(QuickActions.actions).map((action) => ({
-    icon: action.icon,
-    description: action.description,
-    indent: true,
-  })),
 ];
 
-export default function InfoModal() {
+export default function InfoModal({
+  quickActions,
+}: {
+  quickActions: QuickAction[];
+}) {
   const modal = useModal();
+
+  const allActionItems: ActionItem[] = [
+    ...actionItems,
+    ...quickActions.map((action) => ({
+      icon: action.icon,
+      description: action.description,
+      indent: true,
+    })),
+  ];
 
   return (
     <form
@@ -54,7 +68,7 @@ export default function InfoModal() {
         </p>
       </div>
       <ul className="text-md flex w-full flex-col gap-2 font-semibold leading-6 text-gray-700">
-        {actionItems.map((item) => (
+        {allActionItems.map((item) => (
           <li
             key={item.icon}
             className={cn("flex items-center gap-3", item.indent && "pl-6")}

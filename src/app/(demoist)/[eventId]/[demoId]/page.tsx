@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { EventPhase } from "~/lib/types/currentEvent";
+import { eventConfigSchema } from "~/lib/types/eventConfig";
 import { api } from "~/trpc/server";
 
 import DemoRecap from "./components/DemoRecap";
@@ -50,10 +51,12 @@ export default async function DemoistPage({
     );
   }
 
+  const quickActions = eventConfigSchema.parse(event.config).quickActions;
+
   return (
     <main className="m-auto flex size-full max-w-xl flex-col text-black">
       <EventHeader eventName={event.name} demoName={demo.name} />
-      <DemoRecap demo={demo} />
+      <DemoRecap demo={demo} quickActions={quickActions} />
     </main>
   );
 }

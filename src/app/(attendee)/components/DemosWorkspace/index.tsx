@@ -17,7 +17,7 @@ import InfoModal from "./InfoModal";
 import { FeedbackSaveStatus, useFeedback } from "./hooks/useFeedback";
 
 export default function DemosWorkspace() {
-  const { currentEvent, event, attendee } = useWorkspaceContext();
+  const { currentEvent, event, attendee, config } = useWorkspaceContext();
   const { id: eventId, currentDemoId } = currentEvent;
   const [selectedDemo, setSelectedDemo] = useState<PublicDemo>(event.demos[0]!);
   const { feedback, setFeedback, saveStatus } = useFeedback(
@@ -106,11 +106,17 @@ export default function DemosWorkspace() {
             <SaveStatusIndicator status={saveStatus} />
           </div>
         </motion.div>
-        <ActionButtons feedback={feedback} setFeedback={setFeedback} />
+        <ActionButtons
+          feedback={feedback}
+          setFeedback={setFeedback}
+          quickActions={config.quickActions}
+        />
       </AnimatePresence>
       <button
         className="fixed bottom-2 left-2 z-10 h-9 w-9 cursor-pointer rounded-full bg-gray-200 p-[6px] text-gray-500 shadow-xl hover:bg-gray-300 hover:text-gray-700"
-        onClick={() => modal?.show(<InfoModal />)}
+        onClick={() =>
+          modal?.show(<InfoModal quickActions={config.quickActions} />)
+        }
       >
         <BadgeInfo />
       </button>
