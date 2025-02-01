@@ -45,7 +45,7 @@ export default function DemoRecap({
 
   return (
     <>
-      <div className="absolute bottom-0 max-h-[calc(100dvh-120px)] w-full max-w-xl">
+      <div className="w-full max-w-xl pt-32">
         <div className="flex w-full flex-col items-center gap-4 p-4 font-medium">
           <div>
             <h1 className="text-center font-kallisto text-4xl font-bold tracking-tight">
@@ -61,13 +61,13 @@ export default function DemoRecap({
           <div className="flex w-full gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="flex-1">
+                <button className="flex-1">
                   Sort by{" "}
                   {sortOption === "rank-highest"
                     ? "Highest Rank"
                     : "Lowest Rank"}
                   <ChevronDown className="-mt-1" size={20} strokeWidth={3.5} />
-                </Button>
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setSortOption("rank-highest")}>
@@ -81,7 +81,7 @@ export default function DemoRecap({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="flex-1">
+                <button className="flex-1">
                   Filter:{" "}
                   {filterOption === "all"
                     ? "All"
@@ -89,7 +89,7 @@ export default function DemoRecap({
                       ? "Want to Invest"
                       : "Email Me"}
                   <ChevronDown className="-mt-1" size={20} strokeWidth={3.5} />
-                </Button>
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setFilterOption("all")}>
