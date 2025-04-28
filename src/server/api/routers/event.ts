@@ -53,7 +53,21 @@ export const eventRouter = createTRPCRouter({
         skip: input?.offset,
       });
     }),
-  getCurrent: publicProcedure.query(() => kv.getCurrentEvent()),
+  getCurrent: publicProcedure
+    .meta({ openapi: { method: "GET", path: "/event/current" } })
+    .input(z.undefined())
+    .output(
+      z
+        .object({
+          id: z.string(),
+          name: z.string(),
+          phase: z.nativeEnum(kv.EventPhase),
+          currentDemoId: z.string().nullable(),
+          currentAwardId: z.string().nullable(),
+        })
+        .nullable(),
+    )
+    .query(() => kv.getCurrentEvent()),
   get: publicProcedure
     .input(z.string())
     .query(async ({ input }): Promise<CompleteEvent | null> => {
