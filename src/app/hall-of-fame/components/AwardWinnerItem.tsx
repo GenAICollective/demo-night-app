@@ -31,7 +31,7 @@ export default function AwardWinnerItem({
         className="group z-10 flex min-h-28 flex-col rounded-xl bg-yellow-300/50 p-4 shadow-xl backdrop-blur"
       >
         <div className="flex items-center gap-2">
-          <h2 className="font-kallisto text-2xl font-bold group-hover:underline">
+          <h2 className="text-2xl font-bold group-hover:underline">
             {winner.name}
           </h2>
           <ArrowUpRight

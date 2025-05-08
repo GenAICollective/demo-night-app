@@ -33,14 +33,14 @@ export default function Logos({
         height={size}
         className="logo"
       />
-      <Image
+      {/* <Image
         src="/images/produnt-hunt.png"
         id="logo"
         alt="logo"
         width={size}
         height={size}
         className="logo"
-      />
+      /> */}
     </div>
   );
 }

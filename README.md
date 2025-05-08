@@ -12,8 +12,6 @@
 
 _An evening of live demos and collaboration with the innovators shaping tomorrow_. Here's an [example event](https://lu.ma/demo-night)!
 
-<img src="./assets/Logos.png" width="300" alt="Logos">
-
 ## 🧑‍💻 Contributing
 
 If you'd like to contribute to this community project, check out our [issues](https://github.com/GenAICollective/demo-night-app/issues) to find tasks you can help with!
