@@ -20,12 +20,12 @@ export const DEFAULT_PARTNERS: Partner[] = [
     name: "The GenAI Collective",
     url: "https://www.genaicollective.ai",
     description:
-      "A global community for the brightest minds in AI to discuss, exchange, and innovate",
+      "We gather pioneers on the frontier of AI to exchange insights, deepen our human connection, and drive collective progress.",
   },
-  {
-    name: "Product Hunt",
-    url: "https://www.producthunt.com",
-    description:
-      "The place to discover your next favorite thing. Launch, share, and discover new products in tech.",
-  },
+  // {
+  //   name: "Product Hunt",
+  //   url: "https://www.producthunt.com",
+  //   description:
+  //     "The place to discover your next favorite thing. Launch, share, and discover new products in tech.",
+  // },
 ];
