@@ -1,6 +1,7 @@
 "use client";
 
 import { type Event } from "@prisma/client";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -16,6 +17,10 @@ import {
 
 import { DeleteEventButton } from "./DeleteEvent";
 
+const generateRandomId = () => {
+  return Math.random().toString(36).substring(2, 5).toUpperCase();
+};
+
 export function UpsertEventModal({
   event,
   onSubmit,
@@ -29,11 +34,12 @@ export function UpsertEventModal({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const [defaultId] = useState(() => generateRandomId());
   const upsertMutation = api.event.upsert.useMutation();
   const { register, handleSubmit } = useForm({
     values: {
       name: event?.name ?? "",
-      id: event?.id,
+      id: event?.id ?? defaultId,
       date: (event?.date ?? new Date()).toISOString().substring(0, 10),
       url: event?.url ?? "",
     },
@@ -81,18 +87,16 @@ export function UpsertEventModal({
               autoFocus
             />
           </label>
-          {event && (
-            <label className="flex flex-col gap-1">
-              <span className="font-semibold">ID</span>
-              <input
-                type="text"
-                {...register("id")}
-                className="rounded-xl border border-gray-200 p-2 font-mono"
-                autoComplete="off"
-                required
-              />
-            </label>
-          )}
+          <label className="flex flex-col gap-1">
+            <span className="font-semibold">ID</span>
+            <input
+              type="text"
+              {...register("id")}
+              className="rounded-xl border border-gray-200 p-2 font-mono"
+              autoComplete="off"
+              required
+            />
+          </label>
           <label className="flex flex-col gap-1">
             <span className="font-semibold">Date</span>
             <input

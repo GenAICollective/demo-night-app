@@ -1,3 +1,4 @@
+import { type Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { type CompleteEvent } from "~/server/api/routers/event";
@@ -16,6 +17,30 @@ enum SubmissionDeadline {
 }
 
 const DEADLINE: SubmissionDeadline = SubmissionDeadline.DAY_OF_EVENT;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { eventId: string };
+}): Promise<Metadata> {
+  try {
+    const event = await api.event.get(params.eventId);
+
+    if (!event) {
+      return {
+        title: "Submit Demo",
+      };
+    }
+
+    return {
+      title: `Submit Demo - ${event.name}`,
+    };
+  } catch {
+    return {
+      title: "Submit Demo",
+    };
+  }
+}
 
 export default async function SubmitDemoPage({
   params,

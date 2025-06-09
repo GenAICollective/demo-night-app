@@ -111,7 +111,7 @@ export function UpdateAttendeeForm({
         <span className="text-lg font-semibold">Name</span>
         <input
           type="text"
-          placeholder="GenAI Collective"
+          placeholder="Ada Lovelace"
           {...register("name")}
           className="z-30 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
         />
@@ -120,7 +120,7 @@ export function UpdateAttendeeForm({
         <span className="text-lg font-semibold">Email</span>
         <input
           type="email"
-          placeholder="hello@genaicollective.ai"
+          placeholder="ada@aicollective.com"
           {...register("email")}
           className="z-10 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
         />
@@ -129,7 +129,7 @@ export function UpdateAttendeeForm({
         <span className="text-lg font-semibold">LinkedIn</span>
         <input
           type="url"
-          placeholder="https://www.linkedin.com/in/genaicollective"
+          placeholder="https://www.linkedin.com/in/ada-lovelace"
           {...register("linkedin")}
           className="z-10 rounded-xl border-2 border-gray-200 bg-white/60 p-2 text-lg backdrop-blur"
         />

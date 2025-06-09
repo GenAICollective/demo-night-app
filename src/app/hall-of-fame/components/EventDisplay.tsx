@@ -1,8 +1,8 @@
 "use client";
 
-import { ArrowDown, ArrowUpDown, ArrowUpRight, Expand } from "lucide-react";
+import { ArrowUpDown, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { eventConfigSchema } from "~/lib/types/eventConfig";

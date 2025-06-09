@@ -119,7 +119,7 @@ async function main() {
   const attendeesInfo = [
     {
       name: "Chappy Asel",
-      email: "chappy@genaicollective.ai",
+      email: "chappy@aicollective.com",
       linkedin: "https://linkedin.com/in/chappyasel",
       type: "Founder",
     },

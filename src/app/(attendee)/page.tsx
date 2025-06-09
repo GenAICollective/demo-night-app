@@ -6,7 +6,13 @@ import Workspaces from "./components/Workspaces";
 
 export async function generateMetadata() {
   const currentEvent = await api.event.getCurrent();
-  return { title: currentEvent?.name ?? "Demo Night" };
+  return {
+    title: currentEvent?.name ?? "Demo Night",
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
 }
 
 export default async function AttendeePage() {

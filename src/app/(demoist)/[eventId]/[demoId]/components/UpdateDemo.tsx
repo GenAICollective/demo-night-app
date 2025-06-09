@@ -83,7 +83,7 @@ export function UpdateDemoForm({
         <span className="text-lg font-semibold">Startup Name</span>
         <input
           type="text"
-          placeholder="GenAI Collective"
+          placeholder="The AI Collective"
           {...register("name", { required: "Startup name is required" })}
           className={cn(
             "z-30 rounded-xl border-2 bg-white/60 p-2 text-lg backdrop-blur",
@@ -98,7 +98,7 @@ export function UpdateDemoForm({
         <span className="text-lg font-semibold">Startup Website</span>
         <input
           type="url"
-          placeholder="https://genaicollective.ai"
+          placeholder="https://aicollective.com"
           {...register("url", { required: "Startup website is required" })}
           className={cn(
             "z-10 rounded-xl border-2 bg-white/60 p-2 text-lg backdrop-blur",
@@ -116,7 +116,7 @@ export function UpdateDemoForm({
         </span>
         <input
           type="email"
-          placeholder="hello@genaicollective.ai"
+          placeholder="hello@aicollective.com"
           {...register("email", { required: "Email is required" })}
           className={cn(
             "z-10 rounded-xl border-2 bg-white/60 p-2 text-lg backdrop-blur",

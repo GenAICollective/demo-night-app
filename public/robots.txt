@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Allow: /hall-of-fame
+Disallow: /
+
+# Allow only root and hall-of-fame pages to be indexed
+# All other paths are disallowed

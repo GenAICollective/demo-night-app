@@ -17,8 +17,8 @@ export type Partner = z.infer<typeof partnerSchema>;
 
 export const DEFAULT_PARTNERS: Partner[] = [
   {
-    name: "The GenAI Collective",
-    url: "https://www.genaicollective.ai",
+    name: "The AI Collective",
+    url: "https://www.aicollective.com",
     description:
       "We gather pioneers on the frontier of AI to exchange insights, deepen our human connection, and drive collective progress.",
   },

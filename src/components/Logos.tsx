@@ -26,7 +26,7 @@ export default function Logos({
         className="logo"
       />
       <Image
-        src="/images/genai-collective.png"
+        src="/images/ai-collective.png"
         id="logo"
         alt="logo"
         width={size}

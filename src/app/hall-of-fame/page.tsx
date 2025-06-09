@@ -1,5 +1,4 @@
 import { type Metadata } from "next";
-import Link from "next/link";
 
 import { api } from "~/trpc/server";
 
@@ -13,6 +12,12 @@ import { env } from "~/env";
 
 export const metadata: Metadata = {
   title: "Demo Night Hall of Fame 🏆",
+  description:
+    "Browse past Demo Night events and winning demos from our community.",
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default async function HallOfFamePage() {

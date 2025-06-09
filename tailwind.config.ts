@@ -58,8 +58,12 @@ export default {
         "pulse-border": "pulse-border 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       fontFamily: {
-        sans: ["SF Pro Display", ...fontFamily.sans],
-        kallisto: ["var(--font-kallisto)", ...fontFamily.sans],
+        sans: ["var(--font-open-sans)", ...fontFamily.sans],
+        kallisto: [
+          "var(--font-kallisto)",
+          "var(--font-open-sans)",
+          ...fontFamily.sans,
+        ],
       },
       borderRadius: {
         lg: "var(--radius)",

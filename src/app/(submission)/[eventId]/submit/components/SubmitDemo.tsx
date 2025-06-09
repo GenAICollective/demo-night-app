@@ -103,7 +103,7 @@ export function SubmitDemoForm({ event }: { event: CompleteEvent }) {
           <span className="text-lg font-semibold">Demo / Startup Name</span>
           <input
             type="text"
-            placeholder="GenAI Collective"
+            placeholder="The AI Collective"
             {...register("name", {
               required: "Startup / demo name is required",
             })}
@@ -120,7 +120,7 @@ export function SubmitDemoForm({ event }: { event: CompleteEvent }) {
           <span className="text-lg font-semibold">Demo / Startup Website</span>
           <input
             type="url"
-            placeholder="https://genaicollective.ai"
+            placeholder="https://aicollective.com"
             {...register("url", {
               required: "Startup / demo website is required",
             })}
@@ -153,7 +153,7 @@ export function SubmitDemoForm({ event }: { event: CompleteEvent }) {
           <span className="text-lg font-semibold">Your Email</span>
           <input
             type="email"
-            placeholder="ada@genaicollective.ai"
+            placeholder="ada@aicollective.com"
             {...register("email", {
               required: "Point of contact email is required",
             })}

@@ -39,10 +39,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_NODE_ENV: z.string().optional(), // Copy NODE_ENV to the client
     NEXT_PUBLIC_URL: z.string().url(),
-    NEXT_PUBLIC_BASE_URL: z
-      .string()
-      .url()
-      .default("https://genaicollective.ai"),
+    NEXT_PUBLIC_BASE_URL: z.string().url().default("https://aicollective.com"),
   },
 
   /**
