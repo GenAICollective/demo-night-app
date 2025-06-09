@@ -118,7 +118,7 @@ function ContributeButton() {
   return (
     <div className="flex w-full flex-col font-medium leading-6">
       <Link
-        href={"https://github.com/GenAICollective/demo-night-app"}
+        href={"https://github.com/the-ai-collective/demo-night-app"}
         target="_blank"
         className="group z-10 flex w-full flex-col gap-1 rounded-xl bg-blue-300/50 p-4 shadow-xl backdrop-blur"
       >

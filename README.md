@@ -1,6 +1,6 @@
 # Demo Night App 🧬
 
-**The [Demo Night App (DNA)](https://demos.genaicollective.ai) is an open-source, community-led project we use to maximize value for all involved at our flagship demo night events!**
+**The [Demo Night App (DNA)](https://demos.aicollective.com) is an open-source, community-led project we use to maximize value for all involved at our flagship demo night events!**
 
 ![App Screenshots](./assets/App.png)
 
@@ -14,9 +14,9 @@ _An evening of live demos and collaboration with the innovators shaping tomorrow
 
 ## 🧑‍💻 Contributing
 
-If you'd like to contribute to this community project, check out our [issues](https://github.com/GenAICollective/demo-night-app/issues) to find tasks you can help with!
+If you'd like to contribute to this community project, check out our [issues](https://github.com/the-ai-collective/demo-night-app/issues) to find tasks you can help with!
 
-Feel free to reach out to us at [engineering@genaicollective.ai](mailto:engineering@genaicollective.ai)! 😄
+Feel free to reach out to us at [engineering@aicollective.com](mailto:engineering@aicollective.com)! 😄
 
 ## ⚙️ Getting Started
 

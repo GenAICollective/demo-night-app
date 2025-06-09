@@ -96,35 +96,43 @@ export const eventRouter = createTRPCRouter({
         config: input.config,
       };
 
-      if (input.originalId) {
-        return db.event
-          .update({
-            where: { id: input.originalId },
-            data,
-          })
-          .then(async (res: Event) => {
-            const currentEvent = await kv.getCurrentEvent();
-            if (currentEvent?.id === input.originalId) {
-              kv.updateCurrentEvent(res);
-            }
-            return res;
-          });
+      try {
+        if (input.originalId) {
+          return db.event
+            .update({
+              where: { id: input.originalId },
+              data,
+            })
+            .then(async (res: Event) => {
+              const currentEvent = await kv.getCurrentEvent();
+              if (currentEvent?.id === input.originalId) {
+                kv.updateCurrentEvent(res);
+              }
+              return res;
+            });
+        }
+        const result = await db.event.create({
+          data: {
+            id: data.id!,
+            name: data.name!,
+            date: data.date!,
+            url: data.url!,
+            config: data.config ?? DEFAULT_EVENT_CONFIG,
+            demos: {
+              create: DEFAULT_DEMOS,
+            },
+            awards: {
+              create: DEFAULT_AWARDS,
+            },
+          },
+        });
+        return result;
+      } catch (error: any) {
+        if (error.code === "P2002") {
+          throw new Error("An event with this ID already exists");
+        }
+        throw error;
       }
-      return db.event.create({
-        data: {
-          id: data.id!,
-          name: data.name!,
-          date: data.date!,
-          url: data.url!,
-          config: data.config ?? DEFAULT_EVENT_CONFIG,
-          demos: {
-            create: DEFAULT_DEMOS,
-          },
-          awards: {
-            create: DEFAULT_AWARDS,
-          },
-        },
-      });
     }),
   allAdmin: protectedProcedure.query(() => {
     return db.event.findMany({

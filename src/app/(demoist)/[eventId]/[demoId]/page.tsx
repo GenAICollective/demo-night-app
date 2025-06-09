@@ -1,3 +1,4 @@
+import { type Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { EventPhase } from "~/lib/types/currentEvent";
@@ -7,6 +8,39 @@ import { api } from "~/trpc/server";
 import DemoRecap from "./components/DemoRecap";
 import { UpdateDemoPage } from "./components/UpdateDemo";
 import EventHeader from "~/components/EventHeader";
+
+export async function generateMetadata({
+  params: { eventId, demoId },
+  searchParams: { secret },
+}: {
+  params: { eventId: string; demoId: string };
+  searchParams: { secret: string };
+}): Promise<Metadata> {
+  if (!secret) {
+    return {
+      title: "Demo Page",
+    };
+  }
+
+  try {
+    const event = await api.event.get(eventId);
+    const demo = await api.demo.get({ id: demoId, secret });
+
+    if (!event || !demo) {
+      return {
+        title: "Demo Page",
+      };
+    }
+
+    return {
+      title: `${demo.name} - ${event.name}`,
+    };
+  } catch {
+    return {
+      title: "Demo Page",
+    };
+  }
+}
 
 export default async function DemoistPage({
   params: { eventId, demoId },
